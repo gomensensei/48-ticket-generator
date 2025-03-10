@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>チケットメーカー</title>
     <style>
-         @font-face {
-            font-family: 'Alternate Gothic No2 D';
-            src: url('fonts/AlternateGothicNo2DRegular.woff') format('woff');
+        @font-face {
+            font-family: 'ITC Avant Garde Gothic Std';
+            src: url('fonts/ITC Avant Garde Gothic Std.woff') format('woff');
             font-weight: normal;
             font-style: normal;
         }
@@ -25,15 +25,15 @@
             font-weight: normal;
             font-style: normal;
         }
-        
-       body {
-    font-family: "MS Gothic", "AR ADGothicJP", sans-serif;
-    margin: 0;
-    padding: 20px;
-    position: relative;
-    background-color: #FFF4F6;
-    color: #F676A6;
-}
+
+        body { 
+            font-family: "MS Gothic", "AR ADGothicJP", sans-serif;
+            margin: 0; 
+            padding: 20px; 
+            position: relative; 
+            background-color: #FFF4F6; 
+            color: #F676A6; 
+        }
         #mainContainer { 
             display: flex; 
             justify-content: space-between; 
@@ -91,7 +91,7 @@
             background-color: #F676A6; 
             color: #FFFFFF; 
             cursor: pointer; 
-            font-family: "MS Gothic", "AR ADGothicJP", sans-serif;
+            font-family: "MS Gothic", "AR ADGothicJP", sans-serif; 
         }
         #previewSizeButtons button:hover, .input-group button:hover { 
             background-color: #E55A8C; 
@@ -104,7 +104,7 @@
             position: absolute; 
             top: 10px; 
             right: 10px; 
-            font-family: "MS Gothic", "AR ADGothicJP", sans-serif;
+            font-family: "MS Gothic", "AR ADGothicJP", sans-serif; 
             color: #F676A6; 
         }
 
@@ -312,8 +312,8 @@
         const bleedWidth70 = Math.round((baseWidthMm + 2 * bleedMm) * 70 / 25.4);   // 429 px
         const bleedHeight70 = Math.round((baseHeightMm + 2 * bleedMm) * 70 / 25.4); // 195 px
 
-        // 字體定義（僅用於門票生成）
-        const fontAvantGarde = 'Alternate Gothic No2 D';
+        // 字體定義（使用上傳的字型）
+        const fontAvantGarde = 'ITC Avant Garde Gothic Std'; // 矩形1文字使用
         const fontMSGothic = 'MS Gothic';
         const fontARADGothic = 'AR ADGothicJP';
 
