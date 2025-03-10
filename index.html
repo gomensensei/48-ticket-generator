@@ -5,39 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>チケットメーカー</title>
     <style>
-        @font-face {
-            font-family: 'ITC Avant Garde Gothic Std Extra Light';
-            src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'AR ADGothicJP';
-            src: url('fonts/jadhei01m.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'KozGoPr6N';
-            src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-        }
-        body { 
-            font-family: "KozGoPr6N", "AR ADGothicJP", sans-serif; 
+@font-face {
+    font-family: 'ITC Avant Garde Gothic Std Extra Light';
+    src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'AR ADGothicJP';
+    src: url('fonts/jadhei01m.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'KozGoPr6N';
+    src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    
+}
+body { 
+    font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", sans-serif; 
             margin: 0; 
             padding: 20px; 
             position: relative; 
             background-color: #FFF4F6; 
             color: #F676A6; 
         }
-        /* 其他 CSS 保持不變 */
         #previewSizeButtons button, .input-group button { 
-            font-family: "KozGoPr6N", "AR ADGothicJP", sans-serif; 
+            font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", sans-serif; 
         }
         #languageSelector { 
-            font-family: "KozGoPr6N", "AR ADGothicJP", sans-serif; 
+            font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", sans-serif; 
         }
+        /* 其他 CSS 不變 */
     </style>
     <!-- Google AdSense 和 qrcode.js 腳本保持不變 -->
 </head>
@@ -63,9 +64,9 @@
         const bleedHeight70 = Math.round((baseHeightMm + 2 * bleedMm) * 70 / 25.4);
 
         // 字體定義
-        const fontAvantGarde = 'ITC Avant Garde Gothic Std Extra Light'; // 矩形1文字
-        const fontKozGo = 'KozGoPr6N'; // 中文字
-        const fontARADGothic = 'AR ADGothicJP'; // 英文、數字、符號
+        const fontAvantGarde = 'ITC Avant Garde Gothic Std Extra Light, sans-serif'; 矩形1文字
+        const fontKozGo = 'KozGoPr6N, YuGothic, sans-serif'; // 中文字
+        const fontARADGothic = 'AR ADGothicJP, MS PGothic, sans-serif'; // 英文、數字、符號
 
         // 語言翻譯數據（保持不變）
         const translations = {/* 原有 translations 內容 */};
