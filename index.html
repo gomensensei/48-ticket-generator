@@ -27,7 +27,7 @@
         }
 
         body { 
-            font-family: "KozGoPr6N", "AR ADGothicJP", sans-serif;
+            font-family: "KozGoPr6N", "AR ADGothicJP", sans-serif; 
             margin: 0; 
             padding: 20px; 
             position: relative; 
@@ -231,7 +231,7 @@
                 <label class="advanced-label">行間: </label><input type="number" id="bgTextLineHeight" value="46" class="line-height-input"><span class="advanced-label">pt</span>
                 <label class="advanced-label">サイズ: </label><input type="number" id="bgTextSize" value="62" class="size-input"><span class="advanced-label">pt</span><br>
                 <label data-key="bgTextColor">背景文字色: <input type="color" id="bgTextColor" value="#FFFFFF"></label>
-                <label data-key="bgShadowColor">背景文字影の色: <input type="color" id="bgShadowColor" value="#5F96ED"></label>
+                <label data-key="bgShadowColor">背景影の色: <input type="color" id="bgShadowColor" value="#5F96ED"></label>
                 <label class="advanced-label">シャドウX: </label><input type="number" id="bgShadowX" value="0.5" step="0.1" class="shadow-input"><span class="advanced-label">mm</span>
                 <label class="advanced-label">シャドウY: </label><input type="number" id="bgShadowY" value="-0.4" step="0.1" class="shadow-input"><span class="advanced-label">mm</span>
                 <label class="advanced-label">シャドウ透明度: </label><input type="number" id="bgShadowOpacity" value="0.2" min="0" max="1" step="0.1" class="opacity-input"><span class="advanced-label">（0-1）</span><br>
@@ -312,7 +312,7 @@
         const bleedWidth70 = Math.round((baseWidthMm + 2 * bleedMm) * 70 / 25.4);   // 429 px
         const bleedHeight70 = Math.round((baseHeightMm + 2 * bleedMm) * 70 / 25.4); // 195 px
 
-        // 字體定義
+        // 字體定義（用於門票生成）
         const fontAvantGarde = 'ITC Avant Garde Gothic Std Extra Light'; // 矩形1文字
         const fontKozGo = 'KozGoPr6N'; // 中文字
         const fontARADGothic = 'AR ADGothicJP'; // 英文、數字、符號
@@ -338,7 +338,7 @@
                 'bgColor': '全体の背景色',
                 'bgText': '背景テキスト',
                 'bgTextColor': '背景文字色',
-                'bgShadowColor': '背景文字影の色',
+                'bgShadowColor': '背景影の色',
                 'rect9Color': 'エリア9 背景色',
                 'text10': 'テキスト10',
                 'text11': 'テキスト11',
@@ -580,7 +580,7 @@
             }
         };
 
-        // 精確字距與行距繪製函數（根據字符類型選擇字體）
+        // 精確字距與行距繪製函數
         function drawTextWithSpacingAndLeading(lines, x, y, font, fontSize, letterSpacing, lineHeight, color, align = 'left', alternateFont = null, dpi = 300) {
             const ptToPx = dpi / 72;
             ctx.fillStyle = color;
