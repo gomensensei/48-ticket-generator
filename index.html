@@ -7,19 +7,19 @@
     <style>
         @font-face {
             font-family: 'ITC Avant Garde Gothic Std Extra Light';
-            src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2') format('woff2');
+            src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2?v=1.0') format('woff2');
             font-weight: normal;
             font-style: normal;
         }
         @font-face {
             font-family: 'AR ADGothicJP';
-            src: url('fonts/jadhei01m.woff2') format('woff2');
+            src: url('fonts/jadhei01m.woff2?v=1.0') format('woff2');
             font-weight: normal;
             font-style: normal;
         }
         @font-face {
             font-family: 'KozGoPr6N';
-            src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2');
+            src: url('fonts/KozGoPr6N-Medium.woff2?v=1.0') format('woff2');
             font-weight: normal;
             font-style: normal;
         }
@@ -119,6 +119,10 @@
             }
         }
     </style>
+    <!-- 預載入字體 -->
+    <link rel="preload" href="fonts/ITC Avant Garde Gothic Std Extra Light.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/jadhei01m.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/KozGoPr6N-Medium.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Google AdSense 腳本（需替換為你的代碼） -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
     <!-- 引入 qrcode.js 庫 -->
@@ -780,7 +784,14 @@
             document.querySelector('#qrCodeText').placeholder = translations[lang]['qrPlaceholder'];
         }
 
-        drawTicket(300);
+        // 確保字體載入後再渲染
+        document.fonts.load('47pt ITC Avant Garde Gothic Std Extra Light').then(() => {
+            document.fonts.load('14.2pt KozGoPr6N').then(() => {
+                document.fonts.load('10pt AR ADGothicJP').then(() => {
+                    drawTicket(300); // 初始渲染
+                });
+            });
+        });
     </script>
 </body>
 </html>
