@@ -15,10 +15,9 @@
  #controlsContainer{width:45%;overflow-y:auto;max-height:90vh;}
  .input-group{margin:10px 0;}
  .note{color:#F676A6;font-size:14px;}
- .position-input,.spacing-input,.size-input,.line-height-input,.shadow-input,.opacity-input{width:50px;margin-left:5px;display:none;}
- .advanced-mode.active .position-input,.advanced-mode.active .spacing-input,.advanced-mode.active .size-input,.advanced-mode.active .line-height-input,.advanced-mode.active .shadow-input,.advanced-mode.active .opacity-input{display:inline;}
- .advanced-label{display:none;}
- .advanced-mode.active .advanced-label{display:inline;}
+ .position-input,.spacing-input,.size-input,.line-height-input,.shadow-input,.opacity-input{width:50px;margin-left:5px;}
+ .advanced-mode .position-input,.advanced-mode .spacing-input,.advanced-mode .size-input,.advanced-mode .line-height-input,.advanced-mode .shadow-input,.advanced-mode .opacity-input{display:inline;}
+ .advanced-label{display:inline;}
  #advancedModeBtn{margin-left:10px;}
  #previewSizeButtons{margin-top:10px;}
  #previewSizeButtons button,.input-group button{margin:0 5px;padding:8px 16px;border-radius:20px;border:none;background:#F676A6;color:#FFF;cursor:pointer;font-family:"KozGoPr6N","AR ADGothicJP","YuGothic","Meiryo",sans-serif;}
@@ -47,7 +46,7 @@
  <h1>チケットプレビュー</h1>
  <canvas id="ticketCanvas"></canvas>
  <div id="previewSizeButtons">
- <button onclick="setPreviewScale(0.12)">12%</button><button onclick="setPreviewScale(0.25)">25%</button><button onclick="setPreviewScale(0.5)">50%</button><button onclick="setPreviewScale(1.0)">100%</button>
+ <button onclick="setPreviewScale(0.25)">25%</button><button onclick="setPreviewScale(0.5)">50%</button><button onclick="setPreviewScale(1.0)">100%</button><button onclick="setPreviewScale(2.0)">200%</button>
  </div>
  <p id="disclaimer">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。</p>
  </div>
@@ -167,7 +166,7 @@
    kozgo: 'KozGoPr6N, YuGothic, sans-serif',
    ar: 'AR ADGothicJP, MS PGothic, sans-serif'
  };
- const sizes = { base: { w: 150, h: 65 }, bleed: 3 };
+ const sizes = { base: { w: 150, h: 65 }, bleed: 3 }; // mm
  const dpi = {
    300: {
      base: { w: sizes.base.w * 300 / 25.4, h: sizes.base.h * 300 / 25.4 },
@@ -178,7 +177,7 @@
      bleed: { w: (sizes.base.w + 2 * sizes.bleed) * 70 / 25.4, h: (sizes.base.h + 2 * sizes.bleed) * 70 / 25.4 }
    }
  };
- let qrImage = null, previewScale = 0.5;
+ let qrImage = null, previewScale = 1.0;
 
  const langs = {
    ja: { title: 'チケットメーカー', preview: 'チケットプレビュー', custom: 'オリジナルチケット', rect1Line1: 'エリア1 テキスト (1行目)', rect1Line2: 'エリア1 テキスト (2行目)', rect1Color: 'エリア1 背景色', rect1TextColor: 'エリア1 文字色', text2: 'テキスト2', text3Line1: 'テキスト3 (1行目)', text3Line2: 'テキスト3 (2行目)', text4Line1: 'テキスト4 (1行目)', text4Line2: 'テキスト4 (2行目)', text5: 'テキスト5', text6: 'テキスト6', textColor: '文字色 (2-6)', bgColor: '全体の背景色', bgText: '背景テキスト', bgTextColor: '背景文字色', bgShadowColor: '背景影の色', rect9Color: 'エリア9 背景色', text10: 'テキスト10', text11: 'テキスト11', text12: 'テキスト12', footerTextColor: '文字色 (10-12)', qrCodeText: 'QRコードの内容', qrCodeInput: 'QRコード画像 (優先)', showQR: 'QRコード枠を表示', qrSquareColor: 'QR枠の色', bleedOption: '裁ち落とし付き (+3mm)', download300: 'ダウンロード (300 DPI)', download70: 'ダウンロード (70 DPI)', advancedMode: '詳細設定', donate: '寄付する', note: '※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。', qrPlaceholder: 'URLかチケット番号を入力', disclaimer: 'AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。' },
@@ -190,7 +189,7 @@
    id: { title: 'Pembuat Tiket', preview: 'Pratinjau Tiket', custom: 'Tiket Kustom', rect1Line1: 'Teks Persegi 1 (Baris 1)', rect1Line2: 'Teks Persegi 1 (Baris 2)', rect1Color: 'Warna Persegi 1', rect1TextColor: 'Warna Teks Persegi 1', text2: 'Teks 2', text3Line1: 'Teks 3 (Baris 1)', text3Line2: 'Teks 3 (Baris 2)', text4Line1: 'Teks 4 (Baris 1)', text4Line2: 'Teks 4 (Baris 2)', text5: 'Teks 5', text6: 'Teks 6', textColor: 'Warna Teks (2-6)', bgColor: 'Warna Latar Belakang', bgText: 'Teks Latar Belakang', bgTextColor: 'Warna Teks Latar Belakang', bgShadowColor: 'Warna Bayangan Latar Belakang', rect9Color: 'Warna Persegi 9', text10: 'Teks 10', text11: 'Teks 11', text12: 'Teks 12', footerTextColor: 'Warna Teks (10-12)', qrCodeText: 'Konten QR Code', qrCodeInput: 'Unggah QR Code (Prioritas)', showQR: 'Tampilkan Kotak QR Code', qrSquareColor: 'Warna Kotak', bleedOption: 'Sertakan Bleed (3mm per sisi)', download300: 'Unduh Tiket (300 DPI)', download70: 'Unduh Tiket (70 DPI)', advancedMode: 'Mode Lanjutan', donate: 'Donasi', note: 'Catatan: PNG yang diunduh dalam mode RGB. Untuk pencetakan, harap konversi ke CMYK menggunakan Photoshop atau GIMP.', qrPlaceholder: 'Masukkan URL atau nomor tiket', disclaimer: 'Melihat bahwa penggemar telah membuat ulang tiket teater fisik, yang tidak lagi dicetak ulang, sebagai barang dukungan selama pertunjukan teater ulang tahun anggota AKB48, saya membuat situs web ini secara spontan untuk memungkinkan penggemar merancang dan menyimpan tiket ideal mereka. Ini murni proyek hobi; harap jangan gunakan untuk tujuan komersial atau ilegal lainnya. Semua hak milik © AKB48 dan DH Co., Ltd. Saya tidak bertanggung jawab atas segala hal, jadi harap perhatikan.' }
  };
 
- // 繪製門票的核心函數
+ // 繪製門票
  function drawTicket(dpiValue = 70, targetCanvas = canvas, targetCtx = ctx) {
    const dpiData = dpi[dpiValue];
    if (!dpiData) {
@@ -199,9 +198,9 @@
    }
 
    const bleed = $('bleedOption').checked ? sizes.bleed : 0;
-   const scale = (dpiValue / 25.4) * (targetCanvas === canvas ? previewScale : 1);
-   targetCanvas.width = dpiData.base.w * (targetCanvas === canvas ? previewScale : 1) + (bleed * 2 * dpiValue / 25.4);
-   targetCanvas.height = dpiData.base.h * (targetCanvas === canvas ? previewScale : 1) + (bleed * 2 * dpiValue / 25.4);
+   const scale = (targetCanvas === canvas ? previewScale : dpiValue / 25.4);
+   targetCanvas.width = (sizes.base.w + bleed * 2) * scale;
+   targetCanvas.height = (sizes.base.h + bleed * 2) * scale;
 
    targetCtx.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
 
@@ -210,7 +209,7 @@
    targetCtx.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
 
    // 背景文字
-   targetCtx.font = `${$('bgTextSize').value * scale}pt ${fonts.kozgo}`;
+   targetCtx.font = `${$('bgTextSize').value * scale}px ${fonts.kozgo}`;
    targetCtx.fillStyle = $('bgTextColor').value;
    targetCtx.shadowColor = $('bgShadowColor').value;
    targetCtx.shadowOffsetX = $('bgShadowX').value * scale;
@@ -224,34 +223,34 @@
    targetCtx.fillStyle = $('rect1Color').value;
    targetCtx.fillRect(0, 0, 30 * scale, targetCanvas.height);
    targetCtx.fillStyle = $('rect1TextColor').value;
-   targetCtx.font = `${$('rect1Size').value * scale}pt ${fonts.avant}`;
+   targetCtx.font = `${$('rect1Size').value * scale}px ${fonts.avant}`;
    targetCtx.fillText($('rect1Line1').value, $('rect1Line1X').value * scale, $('rect1Line1Y').value * scale);
    targetCtx.fillText($('rect1Line2').value, $('rect1Line2X').value * scale, $('rect1Line2Y').value * scale);
 
    // 文本2-6
    targetCtx.fillStyle = $('textColor').value;
-   targetCtx.font = `${$('text2Size').value * scale}pt ${fonts.kozgo}`;
+   targetCtx.font = `${$('text2Size').value * scale}px ${fonts.kozgo}`;
    targetCtx.fillText($('text2').value, $('text2X').value * scale, $('text2Y').value * scale);
-   targetCtx.font = `${$('text3Size').value * scale}pt ${fonts.kozgo}`;
+   targetCtx.font = `${$('text3Size').value * scale}px ${fonts.kozgo}`;
    targetCtx.fillText($('text3Line1').value, $('text3Line1X').value * scale, $('text3Line1Y').value * scale);
    targetCtx.fillText($('text3Line2').value, $('text3Line2X').value * scale, $('text3Line2Y').value * scale + $('text3LineHeight').value * scale);
-   targetCtx.font = `${$('text4Size').value * scale}pt ${fonts.kozgo}`;
+   targetCtx.font = `${$('text4Size').value * scale}px ${fonts.kozgo}`;
    targetCtx.fillText($('text4Line1').value, $('text4Line1X').value * scale, $('text4Line1Y').value * scale);
    targetCtx.fillText($('text4Line2').value, $('text4Line1X').value * scale, $('text4Line1Y').value * scale + $('text4LineHeight').value * scale);
-   targetCtx.font = `${$('text5Size').value * scale}pt ${fonts.kozgo}`;
+   targetCtx.font = `${$('text5Size').value * scale}px ${fonts.kozgo}`;
    targetCtx.fillText($('text5').value, $('text5X').value * scale, $('text5Y').value * scale);
-   targetCtx.font = `${$('text6Size').value * scale}pt ${fonts.kozgo}`;
+   targetCtx.font = `${$('text6Size').value * scale}px ${fonts.kozgo}`;
    targetCtx.fillText($('text6').value, $('text6X').value * scale, $('text6Y').value * scale);
 
    // 區域9 和 文本10-12
    targetCtx.fillStyle = $('rect9Color').value;
    targetCtx.fillRect(0, 60 * scale, targetCanvas.width, targetCanvas.height - 60 * scale);
    targetCtx.fillStyle = $('footerTextColor').value;
-   targetCtx.font = `${$('text10Size').value * scale}pt ${fonts.kozgo}`;
+   targetCtx.font = `${$('text10Size').value * scale}px ${fonts.kozgo}`;
    targetCtx.fillText($('text10').value, $('text10X').value * scale, $('text10Y').value * scale);
-   targetCtx.font = `${$('text11Size').value * scale}pt ${fonts.kozgo}`;
+   targetCtx.font = `${$('text11Size').value * scale}px ${fonts.kozgo}`;
    targetCtx.fillText($('text11').value, $('text11X').value * scale, $('text11Y').value * scale);
-   targetCtx.font = `${$('text12Size').value * scale}pt ${fonts.kozgo}`;
+   targetCtx.font = `${$('text12Size').value * scale}px ${fonts.kozgo}`;
    targetCtx.fillText($('text12').value, $('text12X').value * scale, $('text12Y').value * scale);
 
    // QR碼
@@ -323,9 +322,10 @@
  // 初始化和事件綁定
  document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', () => drawTicket(70)));
  window.onload = () => {
-   setPreviewScale(0.5);
+   setPreviewScale(1.0); // 初始為100%
    drawTicket(70);
    changeLanguage('ja');
+   toggleAdvancedMode(); // 初始顯示進階選項
  };
  </script>
 </body>
