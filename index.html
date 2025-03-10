@@ -5,29 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>チケットメーカー</title>
     <style>
-        @font-face {
-            font-family: 'ITC Avant Garde Gothic Std Extra Light';
-            src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'AR ADGothicJP';
-            src: url('fonts/jadhei01m.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'KozGoPr6N';
-            src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-        }
-
         body { 
-            font-family: "KozGoPr6N", "AR ADGothicJP", sans-serif; 
+            font-family: "YuGothic", 'Noto Sans JP', "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif; 
             margin: 0; 
             padding: 20px; 
             position: relative; 
@@ -91,7 +70,7 @@
             background-color: #F676A6; 
             color: #FFFFFF; 
             cursor: pointer; 
-            font-family: "KozGoPr6N", "AR ADGothicJP", sans-serif; 
+            font-family: "YuGothic", 'Noto Sans JP', "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif; 
         }
         #previewSizeButtons button:hover, .input-group button:hover { 
             background-color: #E55A8C; 
@@ -104,7 +83,7 @@
             position: absolute; 
             top: 10px; 
             right: 10px; 
-            font-family: "KozGoPr6N", "AR ADGothicJP", sans-serif; 
+            font-family: "YuGothic", 'Noto Sans JP', "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif; 
             color: #F676A6; 
         }
 
@@ -312,10 +291,10 @@
         const bleedWidth70 = Math.round((baseWidthMm + 2 * bleedMm) * 70 / 25.4);   // 429 px
         const bleedHeight70 = Math.round((baseHeightMm + 2 * bleedMm) * 70 / 25.4); // 195 px
 
-        // 字體定義（用於門票生成）
-        const fontAvantGarde = 'ITC Avant Garde Gothic Std Extra Light'; // 矩形1文字
-        const fontKozGo = 'KozGoPr6N'; // 中文字
-        const fontARADGothic = 'AR ADGothicJP'; // 英文、數字、符號
+        // 字體定義（僅用於門票生成）
+        const fontAvantGarde = 'ITC Avant Garde Gothic Std';
+        const fontMSGothic = 'MS PGothic';
+        const fontARADGothic = 'AR ADGothicJP';
 
         // 語言翻譯數據
         const translations = {
@@ -592,7 +571,7 @@
 
                 for (let i = 0; i < line.length; i++) {
                     const char = line[i];
-                    const isAlternate = alternateFont && /[A-Za-z0-9①❘－]/.test(char); // 英文、數字、符號
+                    const isAlternate = alternateFont && /[A-Za-z0-9①❘－]/.test(char);
                     ctx.font = `${fontSize * ptToPx}px ${isAlternate ? alternateFont : font}`;
                     ctx.fillText(char, currentX, lineY);
                     const charWidth = ctx.measureText(char).width;
@@ -618,7 +597,7 @@
             ctx.fillStyle = document.getElementById('bgColor').value;
             ctx.fillRect(0, 0, width, height);
 
-            // 背景文字與陰影（使用 ITC Avant Garde Gothic Std Extra Light）
+            // 背景文字與陰影
             const bgText = document.getElementById('bgText').value || "AKB48";
             const bgTextX = parseFloat(document.getElementById('bgTextX').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0);
             const bgTextY = parseFloat(document.getElementById('bgTextY').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0);
@@ -661,7 +640,7 @@
                 rowIndex++;
             }
 
-            // 矩形1（使用 ITC Avant Garde Gothic Std Extra Light）
+            // 矩形1
             ctx.fillStyle = document.getElementById('rect1Color').value;
             ctx.fillRect(8 * mmToPx + (useBleed ? bleedMm * mmToPx : 0), 0 + (useBleed ? bleedMm * mmToPx : 0), 25 * mmToPx, 35 * mmToPx);
             const rect1Color = document.getElementById('rect1TextColor').value;
@@ -676,24 +655,24 @@
             drawTextWithSpacingAndLeading([document.getElementById('rect1Line1').value], rect1Line1X, rect1Line1Y, fontAvantGarde, rect1Size, rect1Spacing, 0, rect1Color, 'center', null, dpi);
             drawTextWithSpacingAndLeading([document.getElementById('rect1Line2').value], rect1Line2X, rect1Line2Y, fontAvantGarde, rect1Line2Size, rect1Line2Spacing, 0, rect1Color, 'center', null, dpi);
 
-            // 其他文字（中文字用 KozGoPr6N，英文/數字/符號用 AR ADGothicJP）
+            // 其他文字
             const textColor = document.getElementById('textColor').value;
-            drawTextWithSpacingAndLeading([document.getElementById('text2').value], parseFloat(document.getElementById('text2X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text2Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontKozGo, parseFloat(document.getElementById('text2Size').value), parseFloat(document.getElementById('text2Spacing').value), 0, textColor, 'left', fontARADGothic, dpi);
-            drawTextWithSpacingAndLeading([document.getElementById('text3Line1').value], parseFloat(document.getElementById('text3Line1X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text3Line1Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontKozGo, parseFloat(document.getElementById('text3Size').value), parseFloat(document.getElementById('text3Spacing').value), 0, textColor, 'left', fontARADGothic, dpi);
-            drawTextWithSpacingAndLeading([document.getElementById('text3Line2').value], parseFloat(document.getElementById('text3Line2X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text3Line2Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontKozGo, parseFloat(document.getElementById('text3Line2Size').value), parseFloat(document.getElementById('text3Line2Spacing').value), 0, textColor, 'left', fontARADGothic, dpi);
-            drawTextWithSpacingAndLeading([document.getElementById('text4Line1').value, document.getElementById('text4Line2').value], parseFloat(document.getElementById('text4Line1X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text4Line1Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontKozGo, parseFloat(document.getElementById('text4Size').value), parseFloat(document.getElementById('text4Spacing').value), parseFloat(document.getElementById('text4LineHeight').value), textColor, 'left', fontARADGothic, dpi);
-            drawTextWithSpacingAndLeading([document.getElementById('text5').value], parseFloat(document.getElementById('text5X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text5Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontKozGo, parseFloat(document.getElementById('text5Size').value), parseFloat(document.getElementById('text5Spacing').value), 27, textColor, 'left', fontARADGothic, dpi);
-            drawTextWithSpacingAndLeading([document.getElementById('text6').value], parseFloat(document.getElementById('text6X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text6Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontKozGo, parseFloat(document.getElementById('text6Size').value), parseFloat(document.getElementById('text6Spacing').value), 27, textColor, 'left', fontARADGothic, dpi);
+            drawTextWithSpacingAndLeading([document.getElementById('text2').value], parseFloat(document.getElementById('text2X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text2Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontMSGothic, parseFloat(document.getElementById('text2Size').value), parseFloat(document.getElementById('text2Spacing').value), 0, textColor, 'left', fontARADGothic, dpi);
+            drawTextWithSpacingAndLeading([document.getElementById('text3Line1').value], parseFloat(document.getElementById('text3Line1X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text3Line1Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontMSGothic, parseFloat(document.getElementById('text3Size').value), parseFloat(document.getElementById('text3Spacing').value), 0, textColor, 'left', fontARADGothic, dpi);
+            drawTextWithSpacingAndLeading([document.getElementById('text3Line2').value], parseFloat(document.getElementById('text3Line2X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text3Line2Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontMSGothic, parseFloat(document.getElementById('text3Line2Size').value), parseFloat(document.getElementById('text3Line2Spacing').value), 0, textColor, 'left', fontARADGothic, dpi);
+            drawTextWithSpacingAndLeading([document.getElementById('text4Line1').value, document.getElementById('text4Line2').value], parseFloat(document.getElementById('text4Line1X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text4Line1Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontMSGothic, parseFloat(document.getElementById('text4Size').value), parseFloat(document.getElementById('text4Spacing').value), parseFloat(document.getElementById('text4LineHeight').value), textColor, 'left', fontARADGothic, dpi);
+            drawTextWithSpacingAndLeading([document.getElementById('text5').value], parseFloat(document.getElementById('text5X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text5Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontMSGothic, parseFloat(document.getElementById('text5Size').value), parseFloat(document.getElementById('text5Spacing').value), 27, textColor, 'left', fontARADGothic, dpi);
+            drawTextWithSpacingAndLeading([document.getElementById('text6').value], parseFloat(document.getElementById('text6X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text6Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontMSGothic, parseFloat(document.getElementById('text6Size').value), parseFloat(document.getElementById('text6Spacing').value), 27, textColor, 'left', fontARADGothic, dpi);
 
             // 矩形9
             ctx.fillStyle = document.getElementById('rect9Color').value;
             ctx.fillRect(0 + (useBleed ? bleedMm * mmToPx : 0), 58 * mmToPx + (useBleed ? bleedMm * mmToPx : 0), 150 * mmToPx, 7 * mmToPx);
 
-            // 文字10-12（中文字用 KozGoPr6N，英文/數字/符號用 AR ADGothicJP）
+            // 文字10-12
             const footerColor = document.getElementById('footerTextColor').value;
-            drawTextWithSpacingAndLeading([document.getElementById('text10').value], parseFloat(document.getElementById('text10X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text10Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontKozGo, parseFloat(document.getElementById('text10Size').value), parseFloat(document.getElementById('text10Spacing').value), 0, footerColor, 'left', fontARADGothic, dpi);
-            drawTextWithSpacingAndLeading([document.getElementById('text11').value], parseFloat(document.getElementById('text11X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text11Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontKozGo, parseFloat(document.getElementById('text11Size').value), parseFloat(document.getElementById('text11Spacing').value), 0, footerColor, 'left', fontARADGothic, dpi);
-            drawTextWithSpacingAndLeading([document.getElementById('text12').value], parseFloat(document.getElementById('text12X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text12Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontKozGo, parseFloat(document.getElementById('text12Size').value), parseFloat(document.getElementById('text12Spacing').value), 0, footerColor, 'left', fontARADGothic, dpi);
+            drawTextWithSpacingAndLeading([document.getElementById('text10').value], parseFloat(document.getElementById('text10X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text10Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontMSGothic, parseFloat(document.getElementById('text10Size').value), parseFloat(document.getElementById('text10Spacing').value), 0, footerColor, 'left', fontARADGothic, dpi);
+            drawTextWithSpacingAndLeading([document.getElementById('text11').value], parseFloat(document.getElementById('text11X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text11Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontMSGothic, parseFloat(document.getElementById('text11Size').value), parseFloat(document.getElementById('text11Spacing').value), 0, footerColor, 'left', fontARADGothic, dpi);
+            drawTextWithSpacingAndLeading([document.getElementById('text12').value], parseFloat(document.getElementById('text12X').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), parseFloat(document.getElementById('text12Y').value) * mmToPx + (useBleed ? bleedMm * mmToPx : 0), fontMSGothic, parseFloat(document.getElementById('text12Size').value), parseFloat(document.getElementById('text12Spacing').value), 0, footerColor, 'left', fontARADGothic, dpi);
 
             // QR Code 正方形
             if (document.getElementById('showQR').checked) {
