@@ -49,13 +49,110 @@
             <div id="previewSizeButtons">
                 <button onclick="setPreviewScale(0.12)">12%</button><button onclick="setPreviewScale(0.25)">25%</button><button onclick="setPreviewScale(0.5)">50%</button><button onclick="setPreviewScale(1.0)">100%</button>
             </div>
-            <p id="disclaimer">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。
-商業目的や違法な使用はご遠慮ください。
-権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。
-
-</p>
+            <p id="disclaimer">有見AKB48 Memberの生誕祭劇場公演中、ファンが作成した応援グッズに再印刷されていない実物の劇場チケットの復刻版があったため、思いつきでこのサイトを作成し、ファンが自分の理想のチケットを自作して保存できるようにしました。純粋に趣味で作ったもので、商業目的やその他の違法な使用はご遠慮ください。すべての権利は© AKB48および株式会社DHに帰属し、作者は一切の責任を負いませんのでご注意ください。</p>
         </div>
-        <!-- 其他 controlsContainer 內容保持不變 -->
+        <div id="controlsContainer">
+            <h1>オリジナルチケット</h1>
+            <div class="input-group advanced-mode">
+                <label data-key="rect1Line1">エリア1 テキスト (1行目): <input type="text" id="rect1Line1" value="AKB"></label>
+                <label class="advanced-label">X: </label><input type="number" id="rect1Line1X" value="13.5" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="rect1Line1Y" value="12" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="rect1Spacing" value="-7000" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="rect1Size" value="47" class="size-input"><span class="advanced-label">pt</span><br>
+                <label data-key="rect1Line2">エリア1 テキスト (2行目): <input type="text" id="rect1Line2" value="48"></label>
+                <label class="advanced-label">X: </label><input type="number" id="rect1Line2X" value="13.5" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="rect1Line2Y" value="24" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="rect1Line2Spacing" value="-7000" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="rect1Line2Size" value="47" class="size-input"><span class="advanced-label">pt</span><br>
+                <label data-key="rect1Color">エリア1 背景色: <input type="color" id="rect1Color" value="#2086D1"></label>
+                <label data-key="rect1TextColor">エリア1 文字色: <input type="color" id="rect1TextColor" value="#FFFFFF"></label><br>
+            </div>
+            <div class="input-group advanced-mode">
+                <label data-key="text2">テキスト2: <input type="text" id="text2" value="「ここからだ」 公演"></label>
+                <label class="advanced-label">X: </label><input type="number" id="text2X" value="37" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="text2Y" value="12" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="text2Spacing" value="2000" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="text2Size" value="14.2" class="size-input"><span class="advanced-label">pt</span><br>
+                <label data-key="text3Line1">テキスト3 (1行目): <input type="text" id="text3Line1" value="秋元康 生誕祭"></label>
+                <label class="advanced-label">X: </label><input type="number" id="text3Line1X" value="35" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="text3Line1Y" value="19" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="text3Spacing" value="2000" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="text3Size" value="14.2" class="size-input"><span class="advanced-label">pt</span>
+                <label class="advanced-label">行間: </label><input type="number" id="text3LineHeight" value="18" class="line-height-input"><span class="advanced-label">pt</span><br>
+                <label data-key="text3Line2">テキスト3 (2行目): <input type="text" id="text3Line2" value="AKB48劇場"></label>
+                <label class="advanced-label">X: </label><input type="number" id="text3Line2X" value="35" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="text3Line2Y" value="25" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="text3Line2Spacing" value="2000" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="text3Line2Size" value="14.2" class="size-input"><span class="advanced-label">pt</span><br>
+                <label data-key="text4Line1">テキスト4 (1行目): <input type="text" id="text4Line1" value="＜日付＞2025年05月02日（金）"></label>
+                <label class="advanced-label">X: </label><input type="number" id="text4Line1X" value="13" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="text4Line1Y" value="43" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="text4Spacing" value="1000" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="text4Size" value="11" class="size-input"><span class="advanced-label">pt</span>
+                <label class="advanced-label">行間: </label><input type="number" id="text4LineHeight" value="14" class="line-height-input"><span class="advanced-label">pt</span><br>
+                <label data-key="text4Line2">テキスト4 (2行目): <input type="text" id="text4Line2" value="OPEN：18時10分       START：18時30分      ￥3,400"></label><br>
+                <label data-key="text5">テキスト5: <input type="text" id="text5" value="048番"></label>
+                <label class="advanced-label">X: </label><input type="number" id="text5X" value="13" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="text5Y" value="55" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="text5Spacing" value="200" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="text5Size" value="16" class="size-input"><span class="advanced-label">pt</span><br>
+                <label data-key="text6">テキスト6: <input type="text" id="text6" value="① ❘ 000－0000 ❘ ゴメン先生 様"></label>
+                <label class="advanced-label">X: </label><input type="number" id="text6X" value="36" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="text6Y" value="55" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="text6Spacing" value="311" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="text6Size" value="13" class="size-input"><span class="advanced-label">pt</span><br>
+                <label data-key="textColor">文字色 (2-6): <input type="color" id="textColor" value="#000000"></label><br>
+            </div>
+            <div class="input-group advanced-mode">
+                <label data-key="bgColor">全体の背景色: <input type="color" id="bgColor" value="#E5EDF9"></label><br>
+                <label data-key="bgText">背景テキスト: <input type="text" id="bgText" value="AKB48"></label>
+                <label class="advanced-label">X: </label><input type="number" id="bgTextX" value="-100" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="bgTextY" value="0" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="bgTextSpacing" value="-6000" class="spacing-input">
+                <label class="advanced-label">行間: </label><input type="number" id="bgTextLineHeight" value="46" class="line-height-input"><span class="advanced-label">pt</span>
+                <label class="advanced-label">サイズ: </label><input type="number" id="bgTextSize" value="62" class="size-input"><span class="advanced-label">pt</span><br>
+                <label data-key="bgTextColor">背景文字色: <input type="color" id="bgTextColor" value="#FFFFFF"></label>
+                <label data-key="bgShadowColor">背景影の色: <input type="color" id="bgShadowColor" value="#5F96ED"></label>
+                <label class="advanced-label">シャドウX: </label><input type="number" id="bgShadowX" value="0.5" step="0.1" class="shadow-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">シャドウY: </label><input type="number" id="bgShadowY" value="-0.4" step="0.1" class="shadow-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">シャドウ透明度: </label><input type="number" id="bgShadowOpacity" value="0.2" min="0" max="1" step="0.1" class="opacity-input"><span class="advanced-label">（0-1）</span><br>
+            </div>
+            <div class="input-group advanced-mode">
+                <label data-key="rect9Color">エリア9 背景色: <input type="color" id="rect9Color" value="#2086D1"></label><br>
+                <label data-key="text10">テキスト10: <input type="text" id="text10" value="<主催 ‧ お問い合せ>"></label>
+                <label class="advanced-label">X: </label><input type="number" id="text10X" value="54" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="text10Y" value="62.5" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="text10Spacing" value="236" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="text10Size" value="7" class="size-input"><span class="advanced-label">pt</span><br>
+                <label data-key="text11">テキスト11: <input type="text" id="text11" value="AKB48 Theater"></label>
+                <label class="advanced-label">X: </label><input type="number" id="text11X" value="80.5" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="text11Y" value="63" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="text11Spacing" value="238" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="text11Size" value="10" class="size-input"><span class="advanced-label">pt</span><br>
+                <label data-key="text12">テキスト12: <input type="text" id="text12" value="TEL:03-5298-8648"></label>
+                <label class="advanced-label">X: </label><input type="number" id="text12X" value="108" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">Y: </label><input type="number" id="text12Y" value="63" class="position-input"><span class="advanced-label">mm</span>
+                <label class="advanced-label">字間: </label><input type="number" id="text12Spacing" value="236" class="spacing-input">
+                <label class="advanced-label">サイズ: </label><input type="number" id="text12Size" value="12.5" class="size-input"><span class="advanced-label">pt</span><br>
+                <label data-key="footerTextColor">文字色 (10-12): <input type="color" id="footerTextColor" value="#FFFFFF"></label><br>
+            </div>
+            <div class="input-group">
+                <label data-key="qrCodeText">QRコードの内容: <input type="text" id="qrCodeText" value="https://example.com" placeholder="URLかチケット番号を入力"></label><br>
+                <label data-key="qrCodeInput">QRコード画像 (優先): <input type="file" id="qrCodeInput" accept="image/*"></label><br>
+                <label data-key="showQR"><input type="checkbox" id="showQR" checked> QRコード枠を表示</label><br>
+                <label data-key="qrSquareColor">QR枠の色: <input type="color" id="qrSquareColor" value="#2086D1"></label><br>
+            </div>
+            <div class="input-group">
+                <label data-key="bleedOption"><input type="checkbox" id="bleedOption"> 裁ち落とし付き (+3mm)</label>
+            </div>
+            <div class="input-group">
+                <button onclick="downloadTicket(300)" data-key="download300">ダウンロード (300 DPI)</button>
+                <button onclick="downloadTicket(70)" data-key="download70">ダウンロード (70 DPI)</button>
+                <button id="advancedModeBtn" onclick="toggleAdvancedMode()" data-key="advancedMode">詳細設定</button>
+                <button onclick="window.open('https://paypal.me/gomensensei?country.x=HK&locale.x=zh_HK','_blank')" data-key="donate">寄付する</button>
+            </div>
+            <p class="note" data-key="note">※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。</p>
+        </div>
     </div>
     <div class="ad-container">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="ZZZZZZZZZZ" data-ad-format="auto" data-full-width-responsive="true"></ins>
@@ -64,9 +161,9 @@
     <script>
         const $=id=>document.getElementById(id),ctx=$('ticketCanvas').getContext('2d'),fonts={avant:'ITC Avant Garde Gothic Std Extra Light, sans-serif',kozgo:'KozGoPr6N, YuGothic, sans-serif',ar:'AR ADGothicJP, MS PGothic, sans-serif'},sizes={base:{w:150,h:65},bleed:3},dpi={300:{base:{w:sizes.base.w*300/25.4,h:sizes.base.h*300/25.4},bleed:{w:(sizes.base.w+2*sizes.bleed)*300/25.4,h:(sizes.base.h+2*sizes.bleed)*300/25.4}},70:{base:{w:sizes.base.w*70/25.4,h:sizes.base.h*70/25.4},bleed:{w:(sizes.base.w+2*sizes.bleed)*70/25.4,h:(sizes.base.h+2*sizes.bleed)*70/25.4}}};let qrImage=null,previewScale=.5;
         const langs={
-            ja:{title:'チケットメーカー',preview:'チケットプレビュー',custom:'オリジナルチケット',rect1Line1:'エリア1 テキスト (1行目)',rect1Line2:'エリア1 テキスト (2行目)',rect1Color:'エリア1 背景色',rect1TextColor:'エリア1 文字色',text2:'テキスト2',text3Line1:'テキスト3 (1行目)',text3Line2:'テキスト3 (2行目)',text4Line1:'テキスト4 (1行目)',text4Line2:'テキスト4 (2行目)',text5:'テキスト5',text6:'テキスト6',textColor:'文字色 (2-6)',bgColor:'全体の背景色',bgText:'背景テキスト',bgTextColor:'背景文字色',bgShadowColor:'背景影の色',rect9Color:'エリア9 背景色',text10:'テキスト10',text11:'テキスト11',text12:'テキスト12',footerTextColor:'文字色 (10-12)',qrCodeText:'QRコードの内容',qrCodeInput:'QRコード画像 (優先)',showQR:'QRコード枠を表示',qrSquareColor:'QR枠の色',bleedOption:'裁ち落とし付き (+3mm)',download300:'ダウンロード (300 DPI)',download70:'ダウンロード (70 DPI)',advancedMode:'詳細設定',donate:'寄付する',note:'※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。',qrPlaceholder:'URLかチケット番号を入力',disclaimer:'AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は©AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。'},
-            'zh-TW':{title:'門票生成器',preview:'門票預覽',custom:'自訂門票',rect1Line1:'矩形1文字 (行1)',rect1Line2:'矩形1文字 (行2)',rect1Color:'矩形1顏色',rect1TextColor:'矩形1文字顏色',text2:'文字2',text3Line1:'文字3 (行1)',text3Line2:'文字3 (行2)',text4Line1:'文字4 (行1)',text4Line2:'文字4 (行2)',text5:'文字5',text6:'文字6',textColor:'文字顏色 (2-6)',bgColor:'背景顏色',bgText:'背景文字',bgTextColor:'背景文字顏色',bgShadowColor:'背景陰影顏色',rect9Color:'矩形9顏色',text10:'文字10',text11:'文字11',text12:'文字12',footerTextColor:'文字顏色 (10-12)',qrCodeText:'QR Code 內容',qrCodeInput:'QR Code 上傳（優先使用）',showQR:'顯示 QR Code 正方形',qrSquareColor:'正方形顏色',bleedOption:'包含出血位 (每邊 +3mm)',download300:'下載門票 (300 DPI)',download70:'下載門票 (70 DPI)',advancedMode:'進階模式',donate:'捐贈',note:'注意：下載的 PNG 為 RGB 模式。為印刷準備，請使用 Photoshop 或 GIMP 轉為 CMYK。',qrPlaceholder:'輸入網址或票號',disclaimer:'有鑑於AKB48成員的生誕祭劇場公演中，粉絲製作的應援品包括已不再印刷的實體劇場門票復刻版，因此突發奇想製作此網站，讓粉絲們能自製心目中的票券並自行保存。此網站純粹出於興趣製作，請勿用於商業或其他非法用途。所有權利歸©AKB48及株式会社DH所有，本人對一切責任免責，請注意。'},
-            'zh-CN':{title:'门票生成器',preview:'门票预览',custom:'自定义门票',rect1Line1:'矩形1文字 (行1)',rect1Line2:'矩形1文字 (行2)',rect1Color:'矩形1颜色',rect1TextColor:'矩形1文字颜色',text2:'文字2',text3Line1:'文字3 (行1)',text3Line2:'文字3 (行2)',text4Line1:'文字4 (行1)',text4Line2:'文字4 (行2)',text5:'文字5',text6:'文字6',textColor:'文字颜色 (2-6)',bgColor:'背景颜色',bgText:'背景文字',bgTextColor:'背景文字颜色',bgShadowColor:'背景阴影颜色',rect9Color:'矩形9颜色',text10:'文字10',text11:'文字11',text12:'文字12',footerTextColor:'文字颜色 (10-12)',qrCodeText:'QR Code 内容',qrCodeInput:'QR Code 上传（优先使用）',showQR:'显示 QR Code 正方形',qrSquareColor:'正方形颜色',bleedOption:'包含出血位 (每边 +3mm)',download300:'下载门票 (300 DPI)',download70:'下载门票 (70 DPI)',advancedMode:'高级模式',donate:'捐款',note:'注意：下载的 PNG 为 RGB 模式。为印刷准备，请使用 Photoshop 或 GIMP 转为 CMYK。',qrPlaceholder:'输入网址或票号',disclaimer:'鉴于AKB48成员的生诞祭剧场公演中，粉丝制作的应援品包括已不再印刷的实体剧场门票复刻版，因此突发奇想制作此网站，让粉丝们能自制心目中的票券并自行保存。此网站纯属兴趣制作，请勿用于商业或其他非法用途。所有权利归©AKB48及株式会社DH所有，本人对一切责任免责，请注意。'},
+            ja:{title:'チケットメーカー',preview:'チケットプレビュー',custom:'オリジナルチケット',rect1Line1:'エリア1 テキスト (1行目)',rect1Line2:'エリア1 テキスト (2行目)',rect1Color:'エリア1 背景色',rect1TextColor:'エリア1 文字色',text2:'テキスト2',text3Line1:'テキスト3 (1行目)',text3Line2:'テキスト3 (2行目)',text4Line1:'テキスト4 (1行目)',text4Line2:'テキスト4 (2行目)',text5:'テキスト5',text6:'テキスト6',textColor:'文字色 (2-6)',bgColor:'全体の背景色',bgText:'背景テキスト',bgTextColor:'背景文字色',bgShadowColor:'背景影の色',rect9Color:'エリア9 背景色',text10:'テキスト10',text11:'テキスト11',text12:'テキスト12',footerTextColor:'文字色 (10-12)',qrCodeText:'QRコードの内容',qrCodeInput:'QRコード画像 (優先)',showQR:'QRコード枠を表示',qrSquareColor:'QR枠の色',bleedOption:'裁ち落とし付き (+3mm)',download300:'ダウンロード (300 DPI)',download70:'ダウンロード (70 DPI)',advancedMode:'詳細設定',donate:'寄付する',note:'※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。',qrPlaceholder:'URLかチケット番号を入力',disclaimer:'有見AKB48 Memberの生誕祭劇場公演中、ファンが作成した応援グッズに再印刷されていない実物の劇場チケットの復刻版があったため、思いつきでこのサイトを作成し、ファンが自分の理想のチケットを自作して保存できるようにしました。純粋に趣味で作ったもので、商業目的やその他の違法な使用はご遠慮ください。すべての権利は© AKB48および株式会社DHに帰属し、作者は一切の責任を負いませんのでご注意ください。'},
+            'zh-TW':{title:'門票生成器',preview:'門票預覽',custom:'自訂門票',rect1Line1:'矩形1文字 (行1)',rect1Line2:'矩形1文字 (行2)',rect1Color:'矩形1顏色',rect1TextColor:'矩形1文字顏色',text2:'文字2',text3Line1:'文字3 (行1)',text3Line2:'文字3 (行2)',text4Line1:'文字4 (行1)',text4Line2:'文字4 (行2)',text5:'文字5',text6:'文字6',textColor:'文字顏色 (2-6)',bgColor:'背景顏色',bgText:'背景文字',bgTextColor:'背景文字顏色',bgShadowColor:'背景陰影顏色',rect9Color:'矩形9顏色',text10:'文字10',text11:'文字11',text12:'文字12',footerTextColor:'文字顏色 (10-12)',qrCodeText:'QR Code 內容',qrCodeInput:'QR Code 上傳（優先使用）',showQR:'顯示 QR Code 正方形',qrSquareColor:'正方形顏色',bleedOption:'包含出血位 (每邊 +3mm)',download300:'下載門票 (300 DPI)',download70:'下載門票 (70 DPI)',advancedMode:'進階模式',donate:'捐贈',note:'注意：下載的 PNG 為 RGB 模式。為印刷準備，請使用 Photoshop 或 GIMP 轉為 CMYK。',qrPlaceholder:'輸入網址或票號',disclaimer:'有鑑於AKB48成員的生誕祭劇場公演中，粉絲製作的應援品包括已不再印刷的實體劇場門票復刻版，因此突發奇想製作此網站，讓粉絲們能自製心目中的票券並自行保存。此網站純粹出於興趣製作，請勿用於商業或其他非法用途。所有權利歸© AKB48及株式会社DH所有，本人對一切責任免責，請注意。'},
+            'zh-CN':{title:'门票生成器',preview:'门票预览',custom:'自定义门票',rect1Line1:'矩形1文字 (行1)',rect1Line2:'矩形1文字 (行2)',rect1Color:'矩形1颜色',rect1TextColor:'矩形1文字颜色',text2:'文字2',text3Line1:'文字3 (行1)',text3Line2:'文字3 (行2)',text4Line1:'文字4 (行1)',text4Line2:'文字4 (行2)',text5:'文字5',text6:'文字6',textColor:'文字颜色 (2-6)',bgColor:'背景颜色',bgText:'背景文字',bgTextColor:'背景文字颜色',bgShadowColor:'背景阴影颜色',rect9Color:'矩形9颜色',text10:'文字10',text11:'文字11',text12:'文字12',footerTextColor:'文字颜色 (10-12)',qrCodeText:'QR Code 内容',qrCodeInput:'QR Code 上传（优先使用）',showQR:'显示 QR Code 正方形',qrSquareColor:'正方形颜色',bleedOption:'包含出血位 (每边 +3mm)',download300:'下载门票 (300 DPI)',download70:'下载门票 (70 DPI)',advancedMode:'高级模式',donate:'捐款',note:'注意：下载的 PNG 为 RGB 模式。为印刷准备，请使用 Photoshop 或 GIMP 转为 CMYK。',qrPlaceholder:'输入网址或票号',disclaimer:'鉴于AKB48成员的生诞祭剧场公演中，粉丝制作的应援品包括已不再印刷的实体剧场门票复刻版，因此突发奇想制作此网站，让粉丝们能自制心目中的票券并自行保存。此网站纯属兴趣制作，请勿用于商业或其他非法用途。所有权利归© AKB48及株式会社DH所有，本人对一切责任免责，请注意。'},
             en:{title:'Ticket Generator',preview:'Ticket Preview',custom:'Custom Ticket',rect1Line1:'Rectangle 1 Text (Line 1)',rect1Line2:'Rectangle 1 Text (Line 2)',rect1Color:'Rectangle 1 Color',rect1TextColor:'Rectangle 1 Text Color',text2:'Text 2',text3Line1:'Text 3 (Line 1)',text3Line2:'Text 3 (Line 2)',text4Line1:'Text 4 (Line 1)',text4Line2:'Text 4 (Line 2)',text5:'Text 5',text6:'Text 6',textColor:'Text Color (2-6)',bgColor:'Background Color',bgText:'Background Text',bgTextColor:'Background Text Color',bgShadowColor:'Background Shadow Color',rect9Color:'Rectangle 9 Color',text10:'Text 10',text11:'Text 11',text12:'Text 12',footerTextColor:'Text Color (10-12)',qrCodeText:'QR Code Content',qrCodeInput:'QR Code Upload (Priority)',showQR:'Show QR Code Square',qrSquareColor:'Square Color',bleedOption:'Include Bleed (3mm each side)',download300:'Download Ticket (300 DPI)',download70:'Download Ticket (70 DPI)',advancedMode:'Advanced Mode',donate:'Donate',note:'Note: The downloaded PNG is in RGB mode. For printing, please convert to CMYK using Photoshop or GIMP.',qrPlaceholder:'Enter URL or ticket number',disclaimer:'Seeing that fans have recreated physical theater tickets, which are no longer reprinted, as support items during AKB48 members’ birthday theater performances, I created this website on a whim to allow fans to design and keep their ideal tickets. This is purely a hobby project; please do not use it for commercial or other illegal purposes. All rights belong to © AKB48 and DH Co., Ltd. I disclaim all liability, so please take note.'},
             ko:{title:'티켓 생성기',preview:'티켓 미리보기',custom:'커스텀 티켓',rect1Line1:'사각형 1 텍스트 (1행)',rect1Line2:'사각형 1 텍스트 (2행)',rect1Color:'사각형 1 색상',rect1TextColor:'사각형 1 텍스트 색상',text2:'텍스트 2',text3Line1:'텍스트 3 (1행)',text3Line2:'텍스트 3 (2행)',text4Line1:'텍스트 4 (1행)',text4Line2:'텍스트 4 (2행)',text5:'텍스트 5',text6:'텍스트 6',textColor:'텍스트 색상 (2-6)',bgColor:'배경 색상',bgText:'배경 텍스트',bgTextColor:'배경 텍스트 색상',bgShadowColor:'배경 그림자 색상',rect9Color:'사각형 9 색상',text10:'텍스트 10',text11:'텍스트 11',text12:'텍스트 12',footerTextColor:'텍스트 색상 (10-12)',qrCodeText:'QR 코드 내용',qrCodeInput:'QR 코드 업로드 (우선 사용)',showQR:'QR 코드 사각형 표시',qrSquareColor:'사각형 색상',bleedOption:'블리드 포함 (각 변 +3mm)',download300:'티켓 다운로드 (300 DPI)',download70:'티켓 다운로드 (70 DPI)',advancedMode:'고급 모드',donate:'기부',note:'참고: 다운로드된 PNG는 RGB 모드입니다. 인쇄를 위해 Photoshop 또는 GIMP를 사용하여 CMYK로 변환하십시오.',qrPlaceholder:'URL 또는 티켓 번호 입력',disclaimer:'AKB48 멤버의 생일 공연에서 팬들이 더 이상 재인쇄되지 않는 실물 극장 티켓을 복각한 응원 물품을 제작하는 것을 보고, 즉흥적으로 이 사이트를 만들어 팬들이 원하는 티켓을 직접 제작하고 보관할 수 있도록 했습니다. 순수한 취미로 제작된 것이며, 상업적 또는 기타 불법적인 용도로 사용하지 말아주세요. 모든 권리는 © AKB48 및 DH 주식회사에 있으며, 본인은 모든 책임을 면책합니다. 주의 부탁드립니다.'},
             th:{title:'เครื่องสร้างตั๋ว',preview:'ตัวอย่างตั๋ว',custom:'ตั๋วที่กำหนดเอง',rect1Line1:'ข้อความสี่เหลี่ยม 1 (บรรทัด 1)',rect1Line2:'ข้อความสี่เหลี่ยม 1 (บรรทัด 2)',rect1Color:'สีสี่เหลี่ยม 1',rect1TextColor:'สีข้อความสี่เหลี่ยม 1',text2:'ข้อความ 2',text3Line1:'ข้อความ 3 (บรรทัด 1)',text3Line2:'ข้อความ 3 (บรรทัด 2)',text4Line1:'ข้อความ 4 (บรรทัด 1)',text4Line2:'ข้อความ 4 (บรรทัด 2)',text5:'ข้อความ 5',text6:'ข้อความ 6',textColor:'สีข้อความ (2-6)',bgColor:'สีพื้นหลัง',bgText:'ข้อความพื้นหลัง',bgTextColor:'สีข้อความพื้นหลัง',bgShadowColor:'สีเงาพื้นหลัง',rect9Color:'สีสี่เหลี่ยม 9',text10:'ข้อความ 10',text11:'ข้อความ 11',text12:'ข้อความ 12',footerTextColor:'สีข้อความ (10-12)',qrCodeText:'เนื้อหา QR Code',qrCodeInput:'อัปโหลด QR Code (ใช้優先)',showQR:'แสดงสี่เหลี่ยม QR Code',qrSquareColor:'สีสี่เหลี่ยม',bleedOption:'รวมขอบตัด (ด้านละ +3mm)',download300:'ดาวน์โหลดตั๋ว (300 DPI)',download70:'ดาวน์โหลดตั๋ว (70 DPI)',advancedMode:'โหมดขั้นสูง',donate:'บริจาค',note:'หมายเหตุ: PNG ที่ดาวน์โหลดเป็นโหมด RGB สำหรับการพิมพ์ กรุณาแปลงเป็น CMYK โดยใช้ Photoshop หรือ GIMP',qrPlaceholder:'ป้อน URL หรือหมายเลขตั๋ว',disclaimer:'จากการที่เห็นแฟน ๆ สร้างของที่ระลึกในงานฉลองวันเกิดของสมาชิก AKB48 ที่โรงละคร ซึ่งรวมถึงการทำตั๋วโรงละครที่เลิกพิมพ์แล้วขึ้นมาใหม่ จึงเกิดไอเดียสร้างเว็บไซต์นี้เพื่อให้แฟน ๆ สามารถออกแบบตั๋วในใจของตนเองและเก็บไว้ได้ เว็บนี้ทำขึ้นเพื่อความสนุกสนานเท่านั้น โปรดอย่าใช้ในเชิงพาณิชย์หรือวัตถุประสงค์ที่ผิดกฎหมาย สิทธิ์ทั้งหมดเป็นของ © AKB48 และบริษัท DH ผู้สร้างไม่รับผิดชอบใด ๆ โปรดทราบ'},
