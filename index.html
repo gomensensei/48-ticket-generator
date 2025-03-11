@@ -68,7 +68,7 @@
 
     <div id="mainContainer">
         <div id="canvasContainer">
-            <h1>チケットプレビュー</h1>
+            <h1 data-key="preview">チケットプレビュー</h1>
             <canvas id="ticketCanvas" aria-label="Ticket preview canvas"></canvas>
             <div id="previewSizeButtons">
                 <button onclick="setPreviewScale(0.12)">12%</button>
@@ -80,7 +80,7 @@
         </div>
 
         <div id="controlsContainer">
-            <h1>オリジナルチケット</h1>
+            <h1 data-key="custom">オリジナルチケット</h1>
 
             <div class="input-group advanced-mode">
                 <label data-key="rect1Line1" for="rect1Line1">エリア1 テキスト (1行目): <input type="text" id="rect1Line1" value="AKB" aria-label="エリア1 テキスト 1行目"></label>
@@ -88,7 +88,7 @@
                 <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line1Y" value="12" class="position-input" aria-label="エリア1 テキスト 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1Y-error"></span>
                 <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Spacing" value="-7000" class="spacing-input" aria-label="エリア1 字間"><span class="error-msg" id="rect1Spacing-error"></span>
                 <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Size" value="47" class="size-input" aria-label="エリア1 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Size-error"></span><br>
-                <label data-key="rect1Line2" for="rect1Line2">エリア1 テキスト (2行目): <input type="text" id="rect1Line1" value="48" aria-label="エリア1 テキスト 2行目"></label>
+                <label data-key="rect1Line2" for="rect1Line2">エリア1 テキスト (2行目): <input type="text" id="rect1Line2" value="48" aria-label="エリア1 テキスト 2行目"></label>
                 <label class="advanced-label" data-key="x">X: </label><input type="number" id="rect1Line2X" value="13.5" class="position-input" aria-label="エリア1 テキスト 2行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2X-error"></span>
                 <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line2Y" value="24" class="position-input" aria-label="エリア1 テキスト 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2Y-error"></span>
                 <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Line2Spacing" value="-7000" class="spacing-input" aria-label="エリア1 2行目 字間"><span class="error-msg" id="rect1Line2Spacing-error"></span>
@@ -296,19 +296,33 @@
             ctx.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
         }
 
-        const bg = { t: $('bgText').value || 'AKB48', x: parseFloat($('bgTextX').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), y: parseFloat($('bgTextY').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), s: parseFloat($('bgTextSpacing').value), lh: parseFloat($('bgTextLineHeight').value), sz: parseFloat($('bgTextSize').value) };
+        const bg = { 
+            t: $('bgText').value || 'AKB48', 
+            x: parseFloat($('bgTextX').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
+            y: parseFloat($('bgTextY').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
+            s: parseFloat($('bgTextSpacing').value), 
+            lh: parseFloat($('bgTextLineHeight').value), 
+            sz: parseFloat($('bgTextSize').value) 
+        };
         ctx.font = `${bg.sz * (dpiVal / 72)}px ${fonts.custom || fonts.avant}`;
-        const cw = ctx.measureText(bg.t.charAt(0)).width, tw = ctx.measureText(bg.t).width, gx = tw + bg.s * (dpiVal / 72) / 1000, gy = bg.lh * (dpiVal / 72);
+        const cw = ctx.measureText(bg.t.charAt(0)).width, 
+              tw = ctx.measureText(bg.t).width, 
+              gx = tw + bg.s * (dpiVal / 72) / 1000, 
+              gy = bg.lh * (dpiVal / 72);
         ctx.globalAlpha = parseFloat($('bgShadowOpacity').value);
         ctx.fillStyle = $('bgShadowColor').value;
         ctx.shadowColor = $('bgShadowColor').value;
         ctx.shadowOffsetX = parseFloat($('bgShadowX').value) * mmPx;
         ctx.shadowOffsetY = parseFloat($('bgShadowY').value) * mmPx;
-        for (let y = bg.y, r = 0; y < h; y += gy, r++) for (let x = bg.x + r * cw; x < w; x += gx) ctx.fillText(bg.t, x, y);
+        for (let y = bg.y, r = 0; y < h; y += gy, r++) 
+            for (let x = bg.x + r * cw; x < w; x += gx) 
+                ctx.fillText(bg.t, x, y);
         ctx.globalAlpha = 1;
         ctx.shadowOffsetX = ctx.shadowOffsetY = 0;
         ctx.fillStyle = $('bgTextColor').value;
-        for (let y = bg.y, r = 0; y < h; y += gy, r++) for (let x = bg.x + r * cw; x < w; x += gx) ctx.fillText(bg.t, x, y);
+        for (let y = bg.y, r = 0; y < h; y += gy, r++) 
+            for (let x = bg.x + r * cw; x < w; x += gx) 
+                ctx.fillText(bg.t, x, y);
 
         ctx.fillStyle = $('rect1Color').value;
         ctx.fillRect(8 * mmPx + (bleed ? sizes.bleed * mmPx : 0), bleed ? sizes.bleed * mmPx : 0, 25 * mmPx, 35 * mmPx);
@@ -320,8 +334,8 @@
         drawText([$('text3Line1').value], parseFloat($('text3Line1X').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line1Y').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.custom || fonts.kozgo, parseFloat($('text3Size').value), parseFloat($('text3Spacing').value), 0, tc, 'left', fonts.ar, dpiVal);
         drawText([$('text3Line2').value], parseFloat($('text3Line2X').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line2Y').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.custom || fonts.kozgo, parseFloat($('text3Line2Size').value), parseFloat($('text3Line2Spacing').value), 0, tc, 'left', fonts.ar, dpiVal);
         drawText([$('text4Line1').value, $('text4Line2').value], parseFloat($('text4Line1X').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text4Line1Y').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.custom || fonts.kozgo, parseFloat($('text4Size').value), parseFloat($('text4Spacing').value), parseFloat($('text4LineHeight').value), tc, 'left', fonts.ar, dpiVal);
-        drawText([$('text5').value], parseFloat($('text5X').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text5Y').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.custom || fonts.kozgo, parseFloat($('text5Size').value), parseFloat($('text5Spacing').value), 27, tc, 'left', fonts.ar, dpiVal);
-        drawText([$('text6').value], parseFloat($('text6X').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text6Y').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.custom || fonts.kozgo, parseFloat($('text6Size').value), parseFloat($('text6Spacing').value), 27, tc, 'left', fonts.ar, dpiVal);
+        drawText([$('text5').value], parseFloat($('text5X').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text5Y').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.custom || fonts.kozgo, parseFloat($('text5Size').value), parseFloat($('text5Spacing').value), 0, tc, 'left', fonts.ar, dpiVal);
+        drawText([$('text6').value], parseFloat($('text6X').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text6Y').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.custom || fonts.kozgo, parseFloat($('text6Size').value), parseFloat($('text6Spacing').value), 0, tc, 'left', fonts.ar, dpiVal);
 
         ctx.fillStyle = $('rect9Color').value;
         ctx.fillRect(bleed ? sizes.bleed * mmPx : 0, 58 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 150 * mmPx, 7 * mmPx);
@@ -331,7 +345,9 @@
         drawText([$('text12').value], parseFloat($('text12X').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y').value) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.custom || fonts.kozgo, parseFloat($('text12Size').value), parseFloat($('text12Spacing').value), 0, fc, 'left', fonts.ar, dpiVal);
 
         if ($('showQR').checked) {
-            const qx = w - 8.5 * mmPx - 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), qy = 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), qs = 23 * mmPx;
+            const qx = w - 8.5 * mmPx - 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
+                  qy = 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
+                  qs = 23 * mmPx;
             ctx.fillStyle = $('qrSquareColor').value;
             ctx.fillRect(qx, qy, qs, qs);
             if (qrImage) ctx.drawImage(qrImage, qx, qy, qs, qs);
@@ -342,156 +358,93 @@
         }
     };
 
-    const setPreviewScale = s => { previewScale = s; drawTicket(300); };
+    const setPreviewScale = (scale) => {
+        previewScale = scale;
+        drawTicket(70);
+    };
 
-    const downloadTicket = dpiVal => {
-        try {
-            $('loading').style.display = 'block';
+    const downloadTicket = (dpiVal) => {
+        $('loading').style.display = 'block';
+        setTimeout(() => {
             drawTicket(dpiVal);
-            setTimeout(() => {
-                const l = document.createElement('a');
-                const lang = document.documentElement.lang;
-                const bleedText = $('bleedOption').checked ? (langs[lang]?.bleedOption.match(/\((.*?)\)/)?.[1] || '_with_bleed') : '';
-                l.download = `${langs[lang]?.title || 'ticket'}_${dpiVal}dpi${bleedText}.png`;
-                l.href = canvas.toDataURL('image/png', 1.0);
-                if (l.href === 'data:,') throw new Error('Canvas data is empty');
-                l.click();
-                drawTicket(300);
-                $('loading').style.display = 'none';
-            }, 100);
-        } catch (e) {
+            const link = document.createElement('a');
+            link.download = `ticket-${dpiVal}dpi.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
             $('loading').style.display = 'none';
-            alert(langs[document.documentElement.lang]?.downloadError || 'ダウンロードに失敗しました。もう一度お試しください。');
-            console.error('Download failed:', e);
-        }
+        }, 100);
     };
 
-    const debounce = (func, wait) => {
-        let timeout;
-        return (...args) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func(...args), wait);
-        };
-    };
-    const debouncedDraw = debounce(() => drawTicket(300), 100);
-
-    const validateInput = (input, min = 0, max = Infinity) => {
-        input.addEventListener('input', () => {
-            const val = parseFloat(input.value);
-            const errorMsg = $(`${input.id}-error`);
-            if (isNaN(val) || val < min || val > max) {
-                input.value = Math.max(min, Math.min(max, val || min));
-                errorMsg.textContent = max === 1 ? langs[document.documentElement.lang]?.opacityError : langs[document.documentElement.lang]?.inputError;
-                errorMsg.style.display = 'inline';
-            } else {
-                errorMsg.style.display = 'none';
-            }
-            debouncedDraw();
-        });
+    const toggleAdvancedMode = () => {
+        document.querySelectorAll('.advanced-mode').forEach(el => el.classList.toggle('active'));
+        $('advancedModeBtn').textContent = $('advancedModeBtn').textContent === langs.ja.advancedMode ? '基本設定' : langs.ja.advancedMode;
     };
 
     const generateQRCode = () => {
         const text = $('qrCodeText').value;
         if (!text) return;
         const qrCanvas = document.createElement('canvas');
-        new QRCode(qrCanvas, {
-            text: text,
-            width: 300,
-            height: 300,
-            colorDark: '#000000',
-            colorLight: '#FFFFFF'
-        });
+        new QRCode(qrCanvas, { text, width: 300, height: 300 });
         qrImage = new Image();
         qrImage.src = qrCanvas.toDataURL('image/png');
-        qrImage.onload = () => debouncedDraw();
+        qrImage.onload = () => drawTicket(70);
     };
 
-    $('qrCodeInput').addEventListener('change', e => {
-        const f = e.target.files[0];
-        if (!f) return;
-        if (!f.type.startsWith('image/')) {
-            alert(langs[document.documentElement.lang]?.qrFormatError || 'サポートされていないファイル形式です。画像を選択してください。');
-            e.target.value = '';
+    $('qrCodeInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith('image/')) {
+            alert(langs.ja.qrFormatError);
             return;
         }
-        const r = new FileReader();
-        r.onload = ev => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
             qrImage = new Image();
             qrImage.src = ev.target.result;
-            qrImage.onload = () => debouncedDraw();
-            qrImage.onerror = () => {
-                alert(langs[document.documentElement.lang]?.qrLoadError || 'QRコード画像の読み込みに失敗しました。');
-                qrImage = null;
-                debouncedDraw();
-            };
+            qrImage.onload = () => drawTicket(70);
         };
-        r.onerror = () => alert(langs[document.documentElement.lang]?.qrReadError || 'ファイルの読み込みに失敗しました。');
-        r.readAsDataURL(f);
+        reader.onerror = () => alert(langs.ja.qrReadError);
+        reader.readAsDataURL(file);
     });
 
-    $('customImageInput').addEventListener('change', e => {
-        const f = e.target.files[0];
-        if (!f || !f.type.startsWith('image/')) {
-            alert(langs[document.documentElement.lang]?.qrFormatError || 'サポートされていないファイル形式です。画像を選択してください。');
-            e.target.value = '';
-            return;
-        }
-        const r = new FileReader();
-        r.onload = ev => {
+    $('customImageInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
             customImage = new Image();
             customImage.src = ev.target.result;
-            customImage.onload = () => debouncedDraw();
+            customImage.onload = () => drawTicket(70);
         };
-        r.readAsDataURL(f);
+        reader.readAsDataURL(file);
     });
 
-    $('customFontInput').addEventListener('change', e => {
-        const f = e.target.files[0];
-        if (!f) return;
-        const r = new FileReader();
-        r.onload = ev => {
+    $('customFontInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
             const font = new FontFace('CustomFont', ev.target.result);
-            font.load().then(loadedFont => {
-                document.fonts.add(loadedFont);
+            font.load().then(() => {
+                document.fonts.add(font);
                 fonts.custom = 'CustomFont';
-                debouncedDraw();
-            }).catch(() => {
-                alert(langs[document.documentElement.lang]?.fontLoadError || 'フォントの読み込みに失敗しました。デフォルトフォントを使用します。');
-                fonts.custom = null;
-                debouncedDraw();
-            });
+                drawTicket(70);
+            }).catch(() => alert(langs.ja.fontLoadError));
         };
-        r.readAsArrayBuffer(f);
+        reader.readAsArrayBuffer(file);
     });
 
-    const toggleAdvancedMode = () => {
-        document.querySelectorAll('.advanced-mode').forEach(el => el.classList.toggle('active'));
-        $('advancedModeBtn').textContent = $('advancedModeBtn').textContent === langs.ja.advancedMode ? '簡易モード' : langs.ja.advancedMode;
-    };
-
-    const changeLanguage = lang => {
-        document.documentElement.lang = lang;
+    const changeLanguage = (lang) => {
+        document.title = langs[lang].title;
         document.querySelectorAll('[data-key]').forEach(el => {
-            const k = el.getAttribute('data-key');
-            el.textContent = langs[lang][k] || el.textContent;
-            if (el.tagName === 'LABEL') el.childNodes[0].textContent = langs[lang][k] + ': ';
+            const key = el.dataset.key;
+            if (langs[lang][key]) el.textContent = langs[lang][key] + (el.tagName === 'BUTTON' ? '' : el.textContent.replace(/^[^:]+:/, ''));
         });
-        drawTicket(300);
     };
 
-    document.querySelectorAll('input, select').forEach(i => {
-        if (i.type === 'text' || i.type === 'number' || i.type === 'color' || i.type === 'checkbox' || i.tagName === 'SELECT') i.addEventListener('input', debouncedDraw);
-        if (i.type === 'number' && i.classList.contains('opacity-input')) validateInput(i, 0, 1);
-        else if (i.type === 'number' && (i.classList.contains('size-input') || i.classList.contains('line-height-input'))) validateInput(i, 1);
-        else if (i.type === 'number') validateInput(i);
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        changeLanguage('ja');
-        drawTicket(300);
-    });
+    document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', () => drawTicket(70)));
+    window.onload = () => drawTicket(70);
 </script>
 
-</body>
+    </body>
 </html>
 
