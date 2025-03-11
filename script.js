@@ -23,7 +23,7 @@ const dpi = {
     }
 };
 
-let qrImage = null, customImage = null, previewScale = 1.0;
+let qrImage = null, customImage = null, previewScale = 1.0, qrCodeInstance = null;
 
 const langs = {
     ja: {
@@ -32,12 +32,14 @@ const langs = {
     'zh-TW': {
         title: '門票生成器', preview: '門票預覽', custom: '自訂門票', rect1Line1: '矩形1文字 (行1)', rect1Line2: '矩形1文字 (行2)', rect1Color: '矩形1顏色', rect1TextColor: '矩形1文字顏色', text2: '文字2', text3Line1: '文字3 (行1)', text3Line2: '文字3 (行2)', text4Line1: '文字4 (行1)', text4Line2: '文字4 (行2)', text5: '文字5', text6: '文字6', textColor: '文字顏色 (2-6)', bgColor: '背景顏色', bgText: '背景文字', bgTextColor: '背景文字顏色', bgShadowColor: '背景陰影顏色', rect9Color: '矩形9顏色', text10: '文字10', text11: '文字11', text12: '文字12', footerTextColor: '文字顏色 (10-12)', qrCodeInput: 'QR碼圖片 (優先)', qrCodeText: 'QR碼文字', generateQR: '生成QR碼', showQR: '顯示QR碼框架', qrSquareColor: 'QR框架顏色', customImageInput: '自訂圖片', imageLayer: '圖片層次', customFontRect1: '矩形1用自訂字體', customFontText2_3: '文字2-3用自訂字體', customFontText4_6: '文字4-6用自訂字體', customFontText10_12: '文字10-12用自訂字體', bleedOption: '包含出血位 (每邊 +3mm)', download300: '下載門票 (300 DPI)', download70: '下載門票 (70 DPI)', advancedMode: '進階模式', donate: '捐贈', reportBug: '回報錯誤', note: '注意：下載的PNG為RGB模式。為印刷準備，請使用Photoshop或GIMP轉為CMYK。', disclaimer: '有鑑於AKB48成員的生誕祭劇場公演中，粉絲製作的應援品包括已不再印刷的實體劇場門票復刻版，因此突發奇想製作此網站，讓粉絲們能自製心目中的票券並自行保存。此網站純粹出於興趣製作，請勿用於商業或其他非法用途。所有權利歸© AKB48及株式会社DH所有，本人對一切責任免責，請注意。', downloadError: '下載失敗。請再試一次。', inputError: '不可使用負值或無效值。', opacityError: '透明度必須介於0到1之間。', qrFormatError: '不支援的檔案格式。請選擇圖片。', qrLoadError: 'QR碼圖片載入失敗。', qrReadError: '檔案讀取失敗。', fontLoadError: '字體載入失敗，將使用預設字體。', qrGenerateError: 'QR碼生成失敗。', x: 'X', y: 'Y', spacing: '字距', size: '大小', lineHeight: '行距', shadowX: '陰影X', shadowY: '陰影Y', shadowOpacity: '陰影透明度', recommendedSize: '（推薦尺寸: 65mm x 150mm）'
     }
-    // 其他語言省略以縮減篇幅，可從之前版本補全
+    // 其他語言省略，可從之前版本補全
 };
 
 const checkFontAvailability = async (fontName) => {
     await document.fonts.ready;
-    return document.fonts.check(`1em ${fontName}`);
+    const isAvailable = document.fonts.check(`1em ${fontName}`);
+    console.log(`Font "${fontName}" availability: ${isAvailable}`);
+    return isAvailable;
 };
 
 const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left', altFont, dpiVal = 300) => {
@@ -58,10 +60,7 @@ const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left
 
 const drawTicket = async (dpiVal) => {
     const isAvantLoaded = await checkFontAvailability('ITC Avant Garde Gothic Std Extra Light');
-    if (!isAvantLoaded) {
-        console.warn('Font "ITC Avant Garde Gothic Std Extra Light" not loaded, falling back to sans-serif.');
-        fonts.avant = 'sans-serif';
-    }
+    if (!isAvantLoaded) console.warn('Using fallback font for ITC Avant Garde Gothic Std Extra Light.');
 
     const bleed = $('bleedOption').checked;
     const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
@@ -88,7 +87,9 @@ const drawTicket = async (dpiVal) => {
         lh: parseFloat($('bgTextLineHeight').value || 46), 
         sz: parseFloat($('bgTextSize').value || 62) 
     };
-    ctx.font = `${bg.sz * (dpiVal / 72)}px ${fonts.customRect1 || fonts.avant}`;
+    const bgFont = fonts.customRect1 || (isAvantLoaded ? 'ITC Avant Garde Gothic Std Extra Light' : 'sans-serif');
+    ctx.font = `${bg.sz * (dpiVal / 72)}px ${bgFont}`;
+    console.log(`Drawing background text with font: ${ctx.font}`);
     const cw = ctx.measureText(bg.t.charAt(0)).width, 
           tw = ctx.measureText(bg.t).width, 
           gx = tw + bg.s * (dpiVal / 72) / 1000, 
@@ -110,8 +111,8 @@ const drawTicket = async (dpiVal) => {
 
     ctx.fillStyle = $('rect1Color').value;
     ctx.fillRect(8 * mmPx + (bleed ? sizes.bleed * mmPx : 0), bleed ? sizes.bleed * mmPx : 0, 25 * mmPx, 35 * mmPx);
-    drawText([$('rect1Line1').value], parseFloat($('rect1Line1X').value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line1Y').value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Size').value || 47), parseFloat($('rect1Spacing').value || -7000), 0, $('rect1TextColor').value, 'center', null, dpiVal);
-    drawText([$('rect1Line2').value], parseFloat($('rect1Line2X').value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line2Y').value || 24) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Line2Size').value || 47), parseFloat($('rect1Line2Spacing').value || -7000), 0, $('rect1TextColor').value, 'center', null, dpiVal);
+    drawText([$('rect1Line1').value], parseFloat($('rect1Line1X').value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line1Y').value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || (isAvantLoaded ? 'ITC Avant Garde Gothic Std Extra Light' : 'sans-serif'), parseFloat($('rect1Size').value || 47), parseFloat($('rect1Spacing').value || -7000), 0, $('rect1TextColor').value, 'center', null, dpiVal);
+    drawText([$('rect1Line2').value], parseFloat($('rect1Line2X').value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line2Y').value || 24) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || (isAvantLoaded ? 'ITC Avant Garde Gothic Std Extra Light' : 'sans-serif'), parseFloat($('rect1Line2Size').value || 47), parseFloat($('rect1Line2Spacing').value || -7000), 0, $('rect1TextColor').value, 'center', null, dpiVal);
 
     const tc = $('textColor').value;
     drawText([$('text2').value], parseFloat($('text2X').value || 37) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text2Y').value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text2Size').value || 14.2), parseFloat($('text2Spacing').value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
@@ -136,6 +137,7 @@ const drawTicket = async (dpiVal) => {
         ctx.strokeStyle = $('qrSquareColor').value;
         ctx.lineWidth = 2;
         ctx.strokeRect(qx, qy, qs, qs);
+        console.log('QR code drawn at:', qx, qy, qs);
     }
 
     if (customImage && $('imageLayer').value === 'foreground') {
@@ -145,6 +147,7 @@ const drawTicket = async (dpiVal) => {
 
 const setPreviewScale = (scale) => {
     previewScale = scale;
+    console.log(`Setting preview scale to ${scale}x`);
     drawTicket(70);
 };
 
@@ -170,19 +173,24 @@ const generateQRCode = () => {
         return;
     }
     try {
-        qrImage = null; // 清空舊 QR 碼
         const qrCanvas = document.createElement('canvas');
-        new QRCode(qrCanvas, { 
-            text: text, 
-            width: 300, 
-            height: 300,
-            colorDark: "#000000",
-            colorLight: "#ffffff"
-        });
+        if (!qrCodeInstance) {
+            qrCodeInstance = new QRCode(qrCanvas, {
+                text: text,
+                width: 300,
+                height: 300,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        } else {
+            qrCodeInstance.clear();
+            qrCodeInstance.makeCode(text);
+        }
         qrImage = new Image();
         qrImage.src = qrCanvas.toDataURL('image/png');
         qrImage.onload = () => {
-            console.log('QR code generated and loaded.');
+            console.log('QR code generated and loaded successfully.');
             drawTicket(70);
         };
         qrImage.onerror = () => {
