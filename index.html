@@ -6,28 +6,45 @@
     <meta name="google-adsense-account" content="ca-pub-5661724500759448">
     <title>チケットメーカー</title>
     <style>
-        @font-face{font-family:'ITC Avant Garde Gothic Std Extra Light';src:url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2?v=1.0') format('woff2');font-weight:normal;font-style:normal;}
-        @font-face{font-family:'AR ADGothicJP';src:url('fonts/jadhei01m.woff2?v=1.0') format('woff2');font-weight:normal;font-style:normal;}
-        @font-face{font-family:'KozGoPr6N';src:url('fonts/KozGoPr6N-Medium.woff2?v=1.0') format('woff2');font-weight:normal;font-style:normal;}
-        body{font-family:"KozGoPr6N","AR ADGothicJP","YuGothic","Meiryo",sans-serif;margin:0;padding:20px;background:#FFF4F6;color:#F676A6;position:relative;}
-        #mainContainer{display:flex;justify-content:space-between;}
-        #canvasContainer{width:50%;text-align:center;overflow:auto;}
-        #ticketCanvas{border:1px solid #ccc;}
-        #controlsContainer{width:45%;overflow-y:auto;max-height:90vh;}
-        .input-group{margin:10px 0;}
-        .note{color:#F676A6;font-size:14px;}
-        .position-input,.spacing-input,.size-input,.line-height-input,.shadow-input,.opacity-input{width:50px;margin-left:5px;display:none;}
-        .advanced-mode.active .position-input,.advanced-mode.active .spacing-input,.advanced-mode.active .size-input,.advanced-mode.active .line-height-input,.advanced-mode.active .shadow-input,.advanced-mode.active .opacity-input{display:inline;}
-        .advanced-label{display:none;}
-        .advanced-mode.active .advanced-label{display:inline;}
-        #advancedModeBtn{margin-left:10px;}
-        #previewSizeButtons{margin-top:10px;}
-        #previewSizeButtons button,.input-group button{margin:0 5px;padding:8px 16px;border-radius:20px;border:none;background:#F676A6;color:#FFF;cursor:pointer;font-family:"KozGoPr6N","AR ADGothicJP","YuGothic","Meiryo",sans-serif;}
-        #previewSizeButtons button:hover,.input-group button:hover{background:#E55A8C;}
-        .ad-container{text-align:center;margin:20px 0;}
-        #languageSelector{position:absolute;top:10px;right:10px;font-family:"KozGoPr6N","AR ADGothicJP","YuGothic","Meiryo",sans-serif;color:#F676A6;}
-        #disclaimer{font-size:7pt;color:#F676A6;text-align:center;margin-top:10px;}
-        @media (max-width:768px) and (orientation:portrait){#mainContainer{flex-direction:column;}#canvasContainer,#controlsContainer{width:100%;}#canvasContainer{order:2;}#controlsContainer{order:1;}}
+        /* 字體定義 */
+        @font-face { font-family: 'ITC Avant Garde Gothic Std Extra Light'; src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2?v=1.0') format('woff2'); }
+        @font-face { font-family: 'AR ADGothicJP'; src: url('fonts/jadhei01m.woff2?v=1.0') format('woff2'); }
+        @font-face { font-family: 'KozGoPr6N'; src: url('fonts/KozGoPr6N-Medium.woff2?v=1.0') format('woff2'); }
+
+        /* 整體樣式 */
+        body { font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", sans-serif; margin: 0; padding: 20px; background: #FFF4F6; color: #F676A6; position: relative; }
+        #mainContainer { display: flex; justify-content: space-between; }
+        #canvasContainer { width: 50%; text-align: center; overflow: auto; }
+        #ticketCanvas { border: 1px solid #ccc; }
+        #controlsContainer { width: 45%; overflow-y: auto; max-height: 90vh; }
+
+        /* 輸入組和按鈕 */
+        .input-group { margin: 10px 0; }
+        .note { color: #F676A6; font-size: 14px; }
+        .position-input, .spacing-input, .size-input, .line-height-input, .shadow-input, .opacity-input { width: 50px; margin-left: 5px; display: none; }
+        .advanced-mode.active .position-input, .advanced-mode.active .spacing-input, .advanced-mode.active .size-input, .advanced-mode.active .line-height-input, .advanced-mode.active .shadow-input, .advanced-mode.active .opacity-input { display: inline; }
+        .advanced-label { display: none; }
+        .advanced-mode.active .advanced-label { display: inline; }
+        #previewSizeButtons { margin-top: 10px; }
+        #previewSizeButtons button, .input-group button { margin: 0 5px 10px; padding: 8px 16px; border-radius: 20px; border: none; background: #F676A6; color: #FFF; cursor: pointer; }
+        #previewSizeButtons button:hover, .input-group button:hover { background: #E55A8C; }
+
+        /* 錯誤訊息 */
+        .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
+
+        /* 其他樣式 */
+        .ad-container { text-align: center; margin: 20px 0; }
+        #languageSelector { position: absolute; top: 10px; right: 10px; color: #F676A6; }
+        #disclaimer { font-size: 7pt; color: #F676A6; text-align: center; margin-top: 10px; }
+        #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) and (orientation: portrait) {
+            #mainContainer { flex-direction: column; }
+            #canvasContainer, #controlsContainer { width: 100%; }
+            #canvasContainer { order: 2; }
+            #controlsContainer { order: 1; }
+        }
     </style>
     <link rel="preload" href="fonts/ITC Avant Garde Gothic Std Extra Light.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/jadhei01m.woff2" as="font" type="font/woff2" crossorigin>
@@ -36,112 +53,142 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
+    <!-- 廣告 -->
     <div class="ad-container">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5661724500759448" data-ad-slot="5661724500759448" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
+
+    <!-- 語言選擇器 -->
     <select id="languageSelector" onchange="changeLanguage(this.value)">
-        <option value="ja" selected>日本語</option><option value="zh-TW">中文（繁體）</option><option value="zh-CN">中文（简体）</option><option value="en">English</option><option value="ko">한국어</option><option value="th">ไทย</option><option value="id">Bahasa Indonesia</option>
+        <option value="ja" selected>日本語</option>
+        <option value="zh-TW">中文（繁體）</option>
+        <option value="zh-CN">中文（简体）</option>
+        <option value="en">English</option>
+        <option value="ko">한국어</option>
+        <option value="th">ไทย</option>
+        <option value="id">Bahasa Indonesia</option>
     </select>
+
+    <!-- 主容器 -->
     <div id="mainContainer">
         <div id="canvasContainer">
             <h1>チケットプレビュー</h1>
             <canvas id="ticketCanvas" aria-label="Ticket preview canvas"></canvas>
             <div id="previewSizeButtons">
-                <button onclick="setPreviewScale(0.12)">12%</button><button onclick="setPreviewScale(0.25)">25%</button><button onclick="setPreviewScale(0.5)">50%</button><button onclick="setPreviewScale(1.0)">100%</button>
+                <button onclick="setPreviewScale(0.12)">12%</button>
+                <button onclick="setPreviewScale(0.25)">25%</button>
+                <button onclick="setPreviewScale(0.5)">50%</button>
+                <button onclick="setPreviewScale(1.0)">100%</button>
             </div>
-            <p id="disclaimer">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。</p>
+            <p id="slideModeNote" class="note" style="display:none;" data-key="slideModeNote">滑動モードが有効になると、マウスを押したまま（スマートフォンやタブレットでは指を押したまま）でプレビュー内のテキストを自由に移動できます。また、Shiftキーを押しながらマウスを押したまま（スマートフォンやタブレットでは通常のピンチズームジェスチャー）でテキストを拡大縮小できます。</p>
+            <p id="disclaimer" data-key="disclaimer">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。</p>
         </div>
+
         <div id="controlsContainer">
             <h1>オリジナルチケット</h1>
+
+            <!-- 區域 1 -->
             <div class="input-group advanced-mode">
                 <label data-key="rect1Line1" for="rect1Line1">エリア1 テキスト (1行目): <input type="text" id="rect1Line1" value="AKB" aria-label="エリア1 テキスト 1行目"></label>
-                <label class="advanced-label">X: </label><input type="number" id="rect1Line1X" value="13.5" class="position-input" aria-label="エリア1 テキスト 1行目 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="rect1Line1Y" value="12" class="position-input" aria-label="エリア1 テキスト 1行目 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="rect1Spacing" value="-7000" class="spacing-input" aria-label="エリア1 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="rect1Size" value="47" class="size-input" aria-label="エリア1 文字サイズ"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="rect1Line1X" value="13.5" class="position-input" aria-label="エリア1 テキスト 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line1Y" value="12" class="position-input" aria-label="エリア1 テキスト 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Spacing" value="-7000" class="spacing-input" aria-label="エリア1 字間"><span class="error-msg" id="rect1Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Size" value="47" class="size-input" aria-label="エリア1 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Size-error"></span><br>
                 <label data-key="rect1Line2" for="rect1Line2">エリア1 テキスト (2行目): <input type="text" id="rect1Line2" value="48" aria-label="エリア1 テキスト 2行目"></label>
-                <label class="advanced-label">X: </label><input type="number" id="rect1Line2X" value="13.5" class="position-input" aria-label="エリア1 テキスト 2行目 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="rect1Line2Y" value="24" class="position-input" aria-label="エリア1 テキスト 2行目 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="rect1Line2Spacing" value="-7000" class="spacing-input" aria-label="エリア1 2行目 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="rect1Line2Size" value="47" class="size-input" aria-label="エリア1 2行目 文字サイズ"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="rect1Line2X" value="13.5" class="position-input" aria-label="エリア1 テキスト 2行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line2Y" value="24" class="position-input" aria-label="エリア1 テキスト 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Line2Spacing" value="-7000" class="spacing-input" aria-label="エリア1 2行目 字間"><span class="error-msg" id="rect1Line2Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Line2Size" value="47" class="size-input" aria-label="エリア1 2行目 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Line2Size-error"></span><br>
                 <label data-key="rect1Color" for="rect1Color">エリア1 背景色: <input type="color" id="rect1Color" value="#2086D1" aria-label="エリア1 背景色"></label>
                 <label data-key="rect1TextColor" for="rect1TextColor">エリア1 文字色: <input type="color" id="rect1TextColor" value="#FFFFFF" aria-label="エリア1 文字色"></label><br>
             </div>
+
+            <!-- 文本 2-6 -->
             <div class="input-group advanced-mode">
                 <label data-key="text2" for="text2">テキスト2: <input type="text" id="text2" value="「ここからだ」 公演" aria-label="テキスト2"></label>
-                <label class="advanced-label">X: </label><input type="number" id="text2X" value="37" class="position-input" aria-label="テキスト2 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="text2Y" value="12" class="position-input" aria-label="テキスト2 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="text2Spacing" value="2000" class="spacing-input" aria-label="テキスト2 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="text2Size" value="14.2" class="size-input" aria-label="テキスト2 文字サイズ"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="text2X" value="37" class="position-input" aria-label="テキスト2 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text2X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text2Y" value="12" class="position-input" aria-label="テキスト2 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text2Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text2Spacing" value="2000" class="spacing-input" aria-label="テキスト2 字間"><span class="error-msg" id="text2Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text2Size" value="14.2" class="size-input" aria-label="テキスト2 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text2Size-error"></span><br>
                 <label data-key="text3Line1" for="text3Line1">テキスト3 (1行目): <input type="text" id="text3Line1" value="秋元康 生誕祭" aria-label="テキスト3 1行目"></label>
-                <label class="advanced-label">X: </label><input type="number" id="text3Line1X" value="35" class="position-input" aria-label="テキスト3 1行目 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="text3Line1Y" value="19" class="position-input" aria-label="テキスト3 1行目 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="text3Spacing" value="2000" class="spacing-input" aria-label="テキスト3 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="text3Size" value="14.2" class="size-input" aria-label="テキスト3 文字サイズ"><span class="advanced-label">pt</span>
-                <label class="advanced-label">行間: </label><input type="number" id="text3LineHeight" value="18" class="line-height-input" aria-label="テキスト3 行間"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="text3Line1X" value="35" class="position-input" aria-label="テキスト3 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line1X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text3Line1Y" value="19" class="position-input" aria-label="テキスト3 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line1Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text3Spacing" value="2000" class="spacing-input" aria-label="テキスト3 字間"><span class="error-msg" id="text3Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text3Size" value="14.2" class="size-input" aria-label="テキスト3 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text3Size-error"></span>
+                <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="text3LineHeight" value="18" class="line-height-input" aria-label="テキスト3 行間"><span class="advanced-label">pt</span><span class="error-msg" id="text3LineHeight-error"></span><br>
                 <label data-key="text3Line2" for="text3Line2">テキスト3 (2行目): <input type="text" id="text3Line2" value="AKB48劇場" aria-label="テキスト3 2行目"></label>
-                <label class="advanced-label">X: </label><input type="number" id="text3Line2X" value="35" class="position-input" aria-label="テキスト3 2行目 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="text3Line2Y" value="25" class="position-input" aria-label="テキスト3 2行目 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="text3Line2Spacing" value="2000" class="spacing-input" aria-label="テキスト3 2行目 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="text3Line2Size" value="14.2" class="size-input" aria-label="テキスト3 2行目 文字サイズ"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="text3Line2X" value="35" class="position-input" aria-label="テキスト3 2行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line2X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text3Line2Y" value="25" class="position-input" aria-label="テキスト3 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line2Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text3Line2Spacing" value="2000" class="spacing-input" aria-label="テキスト3 2行目 字間"><span class="error-msg" id="text3Line2Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text3Line2Size" value="14.2" class="size-input" aria-label="テキスト3 2行目 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text3Line2Size-error"></span><br>
                 <label data-key="text4Line1" for="text4Line1">テキスト4 (1行目): <input type="text" id="text4Line1" value="＜日付＞2025年05月02日（金）" aria-label="テキスト4 1行目"></label>
-                <label class="advanced-label">X: </label><input type="number" id="text4Line1X" value="13" class="position-input" aria-label="テキスト4 1行目 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="text4Line1Y" value="43" class="position-input" aria-label="テキスト4 1行目 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="text4Spacing" value="1000" class="spacing-input" aria-label="テキスト4 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="text4Size" value="11" class="size-input" aria-label="テキスト4 文字サイズ"><span class="advanced-label">pt</span>
-                <label class="advanced-label">行間: </label><input type="number" id="text4LineHeight" value="14" class="line-height-input" aria-label="テキスト4 行間"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="text4Line1X" value="13" class="position-input" aria-label="テキスト4 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text4Line1Y" value="43" class="position-input" aria-label="テキスト4 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text4Spacing" value="1000" class="spacing-input" aria-label="テキスト4 字間"><span class="error-msg" id="text4Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text4Size" value="11" class="size-input" aria-label="テキスト4 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text4Size-error"></span>
+                <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="text4LineHeight" value="14" class="line-height-input" aria-label="テキスト4 行間"><span class="advanced-label">pt</span><span class="error-msg" id="text4LineHeight-error"></span><br>
                 <label data-key="text4Line2" for="text4Line2">テキスト4 (2行目): <input type="text" id="text4Line2" value="OPEN：18時10分       START：18時30分      ￥3,400" aria-label="テキスト4 2行目"></label><br>
                 <label data-key="text5" for="text5">テキスト5: <input type="text" id="text5" value="048番" aria-label="テキスト5"></label>
-                <label class="advanced-label">X: </label><input type="number" id="text5X" value="13" class="position-input" aria-label="テキスト5 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="text5Y" value="55" class="position-input" aria-label="テキスト5 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="text5Spacing" value="200" class="spacing-input" aria-label="テキスト5 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="text5Size" value="16" class="size-input" aria-label="テキスト5 文字サイズ"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="text5X" value="13" class="position-input" aria-label="テキスト5 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text5X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text5Y" value="55" class="position-input" aria-label="テキスト5 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text5Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text5Spacing" value="200" class="spacing-input" aria-label="テキスト5 字間"><span class="error-msg" id="text5Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text5Size" value="16" class="size-input" aria-label="テキスト5 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text5Size-error"></span><br>
                 <label data-key="text6" for="text6">テキスト6: <input type="text" id="text6" value="① ❘ 000－0000 ❘ ゴメン先生 様" aria-label="テキスト6"></label>
-                <label class="advanced-label">X: </label><input type="number" id="text6X" value="36" class="position-input" aria-label="テキスト6 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="text6Y" value="55" class="position-input" aria-label="テキスト6 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="text6Spacing" value="311" class="spacing-input" aria-label="テキスト6 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="text6Size" value="13" class="size-input" aria-label="テキスト6 文字サイズ"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="text6X" value="36" class="position-input" aria-label="テキスト6 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text6X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text6Y" value="55" class="position-input" aria-label="テキスト6 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text6Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text6Spacing" value="311" class="spacing-input" aria-label="テキスト6 字間"><span class="error-msg" id="text6Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text6Size" value="13" class="size-input" aria-label="テキスト6 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text6Size-error"></span><br>
                 <label data-key="textColor" for="textColor">文字色 (2-6): <input type="color" id="textColor" value="#000000" aria-label="文字色 (2-6)"></label><br>
             </div>
+
+            <!-- 背景設置 -->
             <div class="input-group advanced-mode">
                 <label data-key="bgColor" for="bgColor">全体の背景色: <input type="color" id="bgColor" value="#E5EDF9" aria-label="全体の背景色"></label><br>
                 <label data-key="bgText" for="bgText">背景テキスト: <input type="text" id="bgText" value="AKB48" aria-label="背景テキスト"></label>
-                <label class="advanced-label">X: </label><input type="number" id="bgTextX" value="-100" class="position-input" aria-label="背景テキスト X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="bgTextY" value="0" class="position-input" aria-label="背景テキスト Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="bgTextSpacing" value="-6000" class="spacing-input" aria-label="背景テキスト 字間">
-                <label class="advanced-label">行間: </label><input type="number" id="bgTextLineHeight" value="46" class="line-height-input" aria-label="背景テキスト 行間"><span class="advanced-label">pt</span>
-                <label class="advanced-label">サイズ: </label><input type="number" id="bgTextSize" value="62" class="size-input" aria-label="背景テキスト 文字サイズ"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="bgTextX" value="-100" class="position-input" aria-label="背景テキスト X位置"><span class="advanced-label">mm</span><span class="error-msg" id="bgTextX-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="bgTextY" value="0" class="position-input" aria-label="背景テキスト Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="bgTextY-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="bgTextSpacing" value="-6000" class="spacing-input" aria-label="背景テキスト 字間"><span class="error-msg" id="bgTextSpacing-error"></span>
+                <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="bgTextLineHeight" value="46" class="line-height-input" aria-label="背景テキスト 行間"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextLineHeight-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="bgTextSize" value="62" class="size-input" aria-label="背景テキスト 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextSize-error"></span><br>
                 <label data-key="bgTextColor" for="bgTextColor">背景文字色: <input type="color" id="bgTextColor" value="#FFFFFF" aria-label="背景文字色"></label>
                 <label data-key="bgShadowColor" for="bgShadowColor">背景影の色: <input type="color" id="bgShadowColor" value="#5F96ED" aria-label="背景影の色"></label>
-                <label class="advanced-label">シャドウX: </label><input type="number" id="bgShadowX" value="0.5" step="0.1" class="shadow-input" aria-label="背景影 X偏移"><span class="advanced-label">mm</span>
-                <label class="advanced-label">シャドウY: </label><input type="number" id="bgShadowY" value="-0.4" step="0.1" class="shadow-input" aria-label="背景影 Y偏移"><span class="advanced-label">mm</span>
-                <label class="advanced-label">シャドウ透明度: </label><input type="number" id="bgShadowOpacity" value="0.2" min="0" max="1" step="0.1" class="opacity-input" aria-label="背景影 透明度"><span class="advanced-label">（0-1）</span><br>
+                <label class="advanced-label" data-key="shadowX">シャドウX: </label><input type="number" id="bgShadowX" value="0.5" step="0.1" class="shadow-input" aria-label="背景影 X偏移"><span class="advanced-label">mm</span><span class="error-msg" id="bgShadowX-error"></span>
+                <label class="advanced-label" data-key="shadowY">シャドウY: </label><input type="number" id="bgShadowY" value="-0.4" step="0.1" class="shadow-input" aria-label="背景影 Y偏移"><span class="advanced-label">mm</span><span class="error-msg" id="bgShadowY-error"></span>
+                <label class="advanced-label" data-key="shadowOpacity">シャドウ透明度: </label><input type="number" id="bgShadowOpacity" value="0.2" min="0" max="1" step="0.1" class="opacity-input" aria-label="背景影 透明度"><span class="advanced-label">（0-1）</span><span class="error-msg" id="bgShadowOpacity-error"></span><br>
             </div>
+
+            <!-- 區域 9 和文本 10-12 -->
             <div class="input-group advanced-mode">
                 <label data-key="rect9Color" for="rect9Color">エリア9 背景色: <input type="color" id="rect9Color" value="#2086D1" aria-label="エリア9 背景色"></label><br>
                 <label data-key="text10" for="text10">テキスト10: <input type="text" id="text10" value="<主催 ‧ お問い合せ>" aria-label="テキスト10"></label>
-                <label class="advanced-label">X: </label><input type="number" id="text10X" value="54" class="position-input" aria-label="テキスト10 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="text10Y" value="62.5" class="position-input" aria-label="テキスト10 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="text10Spacing" value="236" class="spacing-input" aria-label="テキスト10 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="text10Size" value="7" class="size-input" aria-label="テキスト10 文字サイズ"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="text10X" value="54" class="position-input" aria-label="テキスト10 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text10X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text10Y" value="62.5" class="position-input" aria-label="テキスト10 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text10Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text10Spacing" value="236" class="spacing-input" aria-label="テキスト10 字間"><span class="error-msg" id="text10Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text10Size" value="7" class="size-input" aria-label="テキスト10 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text10Size-error"></span><br>
                 <label data-key="text11" for="text11">テキスト11: <input type="text" id="text11" value="AKB48 Theater" aria-label="テキスト11"></label>
-                <label class="advanced-label">X: </label><input type="number" id="text11X" value="80.5" class="position-input" aria-label="テキスト11 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="text11Y" value="63" class="position-input" aria-label="テキスト11 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="text11Spacing" value="238" class="spacing-input" aria-label="テキスト11 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="text11Size" value="10" class="size-input" aria-label="テキスト11 文字サイズ"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="text11X" value="80.5" class="position-input" aria-label="テキスト11 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text11X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text11Y" value="63" class="position-input" aria-label="テキスト11 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text11Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text11Spacing" value="238" class="spacing-input" aria-label="テキスト11 字間"><span class="error-msg" id="text11Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text11Size" value="10" class="size-input" aria-label="テキスト11 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text11Size-error"></span><br>
                 <label data-key="text12" for="text12">テキスト12: <input type="text" id="text12" value="TEL:03-5298-8648" aria-label="テキスト12"></label>
-                <label class="advanced-label">X: </label><input type="number" id="text12X" value="108" class="position-input" aria-label="テキスト12 X位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">Y: </label><input type="number" id="text12Y" value="63" class="position-input" aria-label="テキスト12 Y位置"><span class="advanced-label">mm</span>
-                <label class="advanced-label">字間: </label><input type="number" id="text12Spacing" value="236" class="spacing-input" aria-label="テキスト12 字間">
-                <label class="advanced-label">サイズ: </label><input type="number" id="text12Size" value="12.5" class="size-input" aria-label="テキスト12 文字サイズ"><span class="advanced-label">pt</span><br>
+                <label class="advanced-label" data-key="x">X: </label><input type="number" id="text12X" value="108" class="position-input" aria-label="テキスト12 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text12X-error"></span>
+                <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text12Y" value="63" class="position-input" aria-label="テキスト12 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text12Y-error"></span>
+                <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text12Spacing" value="236" class="spacing-input" aria-label="テキスト12 字間"><span class="error-msg" id="text12Spacing-error"></span>
+                <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text12Size" value="12.5" class="size-input" aria-label="テキスト12 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text12Size-error"></span><br>
                 <label data-key="footerTextColor" for="footerTextColor">文字色 (10-12): <input type="color" id="footerTextColor" value="#FFFFFF" aria-label="文字色 (10-12)"></label><br>
             </div>
+
+            <!-- QR 碼設置 -->
             <div class="input-group">
                 <label data-key="qrCodeInput" for="qrCodeInput">QRコード画像 (優先): <input type="file" id="qrCodeInput" accept="image/*" aria-label="QRコード画像"></label><br>
+                <label data-key="qrCodeText" for="qrCodeText">QRコードテキスト: <input type="text" id="qrCodeText" placeholder="URLまたはテキスト" aria-label="QRコードテキスト"></label>
+                <button onclick="generateQRCode()" data-key="generateQR" aria-label="QRコード生成">QRコード生成</button><br>
                 <label data-key="showQR" for="showQR"><input type="checkbox" id="showQR" checked aria-label="QRコード枠を表示"> QRコード枠を表示</label><br>
                 <label data-key="qrSquareColor" for="qrSquareColor">QR枠の色: <input type="color" id="qrSquareColor" value="#2086D1" aria-label="QR枠の色"></label><br>
             </div>
+
+            <!-- 自訂圖片 -->
             <div class="input-group">
                 <label data-key="customImageInput" for="customImageInput">カスタム画像: <input type="file" id="customImageInput" accept="image/*" aria-label="カスタム画像"></label><br>
                 <label data-key="imageLayer" for="imageLayer">画像のレイヤー: 
@@ -151,246 +198,411 @@
                     </select>
                 </label>
             </div>
+
+            <!-- 裁切選項 -->
             <div class="input-group">
                 <label data-key="bleedOption" for="bleedOption"><input type="checkbox" id="bleedOption" aria-label="裁ち落とし付き"> 裁ち落とし付き (+3mm)</label>
             </div>
+
+            <!-- 操作按鈕 -->
             <div class="input-group">
                 <button onclick="downloadTicket(300)" data-key="download300" aria-label="ダウンロード 300 DPI">ダウンロード (300 DPI)</button>
                 <button onclick="downloadTicket(70)" data-key="download70" aria-label="ダウンロード 70 DPI">ダウンロード (70 DPI)</button>
+                <button id="slideModeBtn" onclick="toggleSlideMode()" data-key="slideMode" aria-label="滑動モード">滑動モード</button>
                 <button id="advancedModeBtn" onclick="toggleAdvancedMode()" data-key="advancedMode" aria-label="詳細設定">詳細設定</button>
                 <button onclick="window.open('https://paypal.me/gomensensei?country.x=HK&locale.x=zh_HK','_blank')" data-key="donate" aria-label="寄付する">寄付する</button>
+                <button onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-key="reportBug" aria-label="報錯">報錯</button>
             </div>
             <p class="note" data-key="note">※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。</p>
         </div>
     </div>
+
+    <!-- 下方廣告 -->
     <div class="ad-container">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5661724500759448" data-ad-slot="5661724500759448" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
-    <script>
-        const $ = id => document.getElementById(id);
-        const canvas = $('ticketCanvas');
-        const ctx = canvas.getContext('2d');
-        const fonts = {
-            avant: 'ITC Avant Garde Gothic Std Extra Light, sans-serif',
-            kozgo: 'KozGoPr6N, YuGothic, sans-serif',
-            ar: 'AR ADGothicJP, MS PGothic, sans-serif'
-        };
-        const sizes = { base: { w: 150, h: 65 }, bleed: 3 };
-        const dpi = {
-            300: {
-                base: { w: sizes.base.w * 300 / 25.4, h: sizes.base.h * 300 / 25.4 },
-                bleed: { w: (sizes.base.w + 2 * sizes.bleed) * 300 / 25.4, h: (sizes.base.h + 2 * sizes.bleed) * 300 / 25.4 }
-            },
-            70: {
-                base: { w: sizes.base.w * 70 / 25.4, h: sizes.base.h * 70 / 25.4 },
-                bleed: { w: (sizes.base.w + 2 * sizes.bleed) * 70 / 25.4, h: (sizes.base.h + 2 * sizes.bleed) * 70 / 25.4 }
-            }
-        };
-        let qrImage = null, customImage = null, previewScale = 0.5;
 
-        const langs = {
-            ja: { title: 'チケットメーカー', preview: 'チケットプレビュー', custom: 'オリジナルチケット', rect1Line1: 'エリア1 テキスト (1行目)', rect1Line2: 'エリア1 テキスト (2行目)', rect1Color: 'エリア1 背景色', rect1TextColor: 'エリア1 文字色', text2: 'テキスト2', text3Line1: 'テキスト3 (1行目)', text3Line2: 'テキスト3 (2行目)', text4Line1: 'テキスト4 (1行目)', text4Line2: 'テキスト4 (2行目)', text5: 'テキスト5', text6: 'テキスト6', textColor: '文字色 (2-6)', bgColor: '全体の背景色', bgText: '背景テキスト', bgTextColor: '背景文字色', bgShadowColor: '背景影の色', rect9Color: 'エリア9 背景色', text10: 'テキスト10', text11: 'テキスト11', text12: 'テキスト12', footerTextColor: '文字色 (10-12)', qrCodeInput: 'QRコード画像 (優先)', showQR: 'QRコード枠を表示', qrSquareColor: 'QR枠の色', customImageInput: 'カスタム画像', imageLayer: '画像のレイヤー', bleedOption: '裁ち落とし付き (+3mm)', download300: 'ダウンロード (300 DPI)', download70: 'ダウンロード (70 DPI)', advancedMode: '詳細設定', donate: '寄付する', note: '※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。', disclaimer: 'AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。', downloadError: 'ダウンロードに失敗しました。もう一度お試しください。', inputError: '負の値または無効な値は使用できません。', opacityError: '透明度は0から1の間で入力してください。', qrFormatError: 'サポートされていないファイル形式です。画像を選択してください。', qrLoadError: 'QRコード画像の読み込みに失敗しました。', qrReadError: 'ファイルの読み込みに失敗しました。' },
-            'zh-TW': { title: '門票生成器', preview: '門票預覽', custom: '自訂門票', rect1Line1: '矩形1文字 (行1)', rect1Line2: '矩形1文字 (行2)', rect1Color: '矩形1顏色', rect1TextColor: '矩形1文字顏色', text2: '文字2', text3Line1: '文字3 (行1)', text3Line2: '文字3 (行2)', text4Line1: '文字4 (行1)', text4Line2: '文字4 (行2)', text5: '文字5', text6: '文字6', textColor: '文字顏色 (2-6)', bgColor: '背景顏色', bgText: '背景文字', bgTextColor: '背景文字顏色', bgShadowColor: '背景陰影顏色', rect9Color: '矩形9顏色', text10: '文字10', text11: '文字11', text12: '文字12', footerTextColor: '文字顏色 (10-12)', qrCodeInput: 'QR碼圖片 (優先)', showQR: '顯示QR碼框架', qrSquareColor: 'QR框架顏色', customImageInput: '自訂圖片', imageLayer: '圖片層次', bleedOption: '包含出血位 (每邊 +3mm)', download300: '下載門票 (300 DPI)', download70: '下載門票 (70 DPI)', advancedMode: '進階模式', donate: '捐贈', note: '注意：下載的PNG為RGB模式。為印刷準備，請使用Photoshop或GIMP轉為CMYK。', disclaimer: '有鑑於AKB48成員的生誕祭劇場公演中，粉絲製作的應援品包括已不再印刷的實體劇場門票復刻版，因此突發奇想製作此網站，讓粉絲們能自製心目中的票券並自行保存。此網站純粹出於興趣製作，請勿用於商業或其他非法用途。所有權利歸© AKB48及株式会社DH所有，本人對一切責任免責，請注意。', downloadError: '下載失敗。請再試一次。', inputError: '不可使用負值或無效值。', opacityError: '透明度必須介於0到1之間。', qrFormatError: '不支援的檔案格式。請選擇圖片。', qrLoadError: 'QR碼圖片載入失敗。', qrReadError: '檔案讀取失敗。' },
-            'zh-CN': { title: '门票生成器', preview: '门票预览', custom: '自定义门票', rect1Line1: '矩形1文字 (行1)', rect1Line2: '矩形1文字 (行2)', rect1Color: '矩形1颜色', rect1TextColor: '矩形1文字颜色', text2: '文字2', text3Line1: '文字3 (行1)', text3Line2: '文字3 (行2)', text4Line1: '文字4 (行1)', text4Line2: '文字4 (行2)', text5: '文字5', text6: '文字6', textColor: '文字颜色 (2-6)', bgColor: '背景颜色', bgText: '背景文字', bgTextColor: '背景文字颜色', bgShadowColor: '背景阴影颜色', rect9Color: '矩形9颜色', text10: '文字10', text11: '文字11', text12: '文字12', footerTextColor: '文字颜色 (10-12)', qrCodeInput: 'QR码图片 (优先)', showQR: '显示QR码框架', qrSquareColor: 'QR框架颜色', customImageInput: '自定义图片', imageLayer: '图片层次', bleedOption: '包含出血位 (每边 +3mm)', download300: '下载门票 (300 DPI)', download70: '下载门票 (70 DPI)', advancedMode: '高级模式', donate: '捐款', note: '注意：下载的PNG为RGB模式。为印刷准备，请使用Photoshop或GIMP转为CMYK。', disclaimer: '鉴于AKB48成员的生诞祭剧场公演中，粉丝制作的应援品包括已不再印刷的实体剧场门票复刻版，因此突发奇想制作此网站，让粉丝们能自制心目中的票券并自行保存。此网站纯属兴趣制作，请勿用于商业或其他非法用途。所有权利归© AKB48及株式会社DH所有，本人对一切责任免责，请注意。', downloadError: '下载失败。请再试一次。', inputError: '不可使用负值或无效值。', opacityError: '透明度必须介于0到1之间。', qrFormatError: '不支持的文件格式。请选择图片。', qrLoadError: 'QR码图片加载失败。', qrReadError: '文件读取失败。' },
-            en: { title: 'Ticket Generator', preview: 'Ticket Preview', custom: 'Custom Ticket', rect1Line1: 'Rectangle 1 Text (Line 1)', rect1Line2: 'Rectangle 1 Text (Line 2)', rect1Color: 'Rectangle 1 Color', rect1TextColor: 'Rectangle 1 Text Color', text2: 'Text 2', text3Line1: 'Text 3 (Line 1)', text3Line2: 'Text 3 (Line 2)', text4Line1: 'Text 4 (Line 1)', text4Line2: 'Text 4 (Line 2)', text5: 'Text 5', text6: 'Text 6', textColor: 'Text Color (2-6)', bgColor: 'Background Color', bgText: 'Background Text', bgTextColor: 'Background Text Color', bgShadowColor: 'Background Shadow Color', rect9Color: 'Rectangle 9 Color', text10: 'Text 10', text11: 'Text 11', text12: 'Text 12', footerTextColor: 'Text Color (10-12)', qrCodeInput: 'QR Code Upload (Priority)', showQR: 'Show QR Code Square', qrSquareColor: 'Square Color', customImageInput: 'Custom Image', imageLayer: 'Image Layer', bleedOption: 'Include Bleed (3mm each side)', download300: 'Download Ticket (300 DPI)', download70: 'Download Ticket (70 DPI)', advancedMode: 'Advanced Mode', donate: 'Donate', note: 'Note: The downloaded PNG is in RGB mode. For printing, please convert to CMYK using Photoshop or GIMP.', disclaimer: 'Seeing that fans have recreated physical theater tickets, which are no longer reprinted, as support items during AKB48 members’ birthday theater performances, I created this website on a whim to allow fans to design and keep their ideal tickets. This is purely a hobby project; please do not use it for commercial or other illegal purposes. All rights belong to © AKB48 and DH Co., Ltd. I disclaim all liability, so please take note.', downloadError: 'Download failed. Please try again.', inputError: 'Negative or invalid values are not allowed.', opacityError: 'Opacity must be between 0 and 1.', qrFormatError: 'Unsupported file format. Please select an image.', qrLoadError: 'Failed to load QR code image.', qrReadError: 'Failed to read the file.' },
-            ko: { title: '티켓 생성기', preview: '티켓 미리보기', custom: '커스텀 티켓', rect1Line1: '사각형 1 텍스트 (1행)', rect1Line2: '사각형 1 텍스트 (2행)', rect1Color: '사각형 1 색상', rect1TextColor: '사각형 1 텍스트 색상', text2: '텍스트 2', text3Line1: '텍스트 3 (1행)', text3Line2: '텍스트 3 (2행)', text4Line1: '텍스트 4 (1행)', text4Line2: '텍스트 4 (2행)', text5: '텍스트 5', text6: '텍스트 6', textColor: '텍스트 색상 (2-6)', bgColor: '배경 색상', bgText: '배경 텍스트', bgTextColor: '배경 텍스트 색상', bgShadowColor: '배경 그림자 색상', rect9Color: '사각형 9 색상', text10: '텍스트 10', text11: '텍스트 11', text12: '텍스트 12', footerTextColor: '텍스트 색상 (10-12)', qrCodeInput: 'QR 코드 업로드 (우선 사용)', showQR: 'QR 코드 사각형 표시', qrSquareColor: '사각형 색상', customImageInput: '커스텀 이미지', imageLayer: '이미지 레이어', bleedOption: '블리드 포함 (각 변 +3mm)', download300: '티켓 다운로드 (300 DPI)', download70: '티켓 다운로드 (70 DPI)', advancedMode: '고급 모드', donate: '기부', note: '참고: 다운로드된 PNG는 RGB 모드입니다. 인쇄를 위해 Photoshop 또는 GIMP를 사용하여 CMYK로 변환하십시오.', disclaimer: 'AKB48 멤버의 생일 공연에서 팬들이 더 이상 재인쇄되지 않는 실물 극장 티켓을 복각한 응원 물품을 제작하는 것을 보고, 즉흥적으로 이 사이트를 만들어 팬들이 원하는 티켓을 직접 제작하고 보관할 수 있도록 했습니다. 순수한 취미로 제작된 것이며, 상업적 또는 기타 불법적인 용도로 사용하지 말아주세요. 모든 권리는 © AKB48 및 DH 주식회사에 있으며, 본인은 모든 책임을 면책합니다. 주의 부탁드립니다.', downloadError: '다운로드에 실패했습니다. 다시 시도해주세요.', inputError: '음수 또는 유효하지 않은 값은 사용할 수 없습니다.', opacityError: '투명도는 0에서 1 사이여야 합니다.', qrFormatError: '지원되지 않는 파일 형식입니다. 이미지를 선택해주세요.', qrLoadError: 'QR 코드 이미지 로드에 실패했습니다.', qrReadError: '파일 읽기에 실패했습니다.' },
-            th: { title: 'เครื่องสร้างตั๋ว', preview: 'ตัวอย่างตั๋ว', custom: 'ตั๋วที่กำหนดเอง', rect1Line1: 'ข้อความสี่เหลี่ยม 1 (บรรทัด 1)', rect1Line2: 'ข้อความสี่เหลี่ยม 1 (บรรทัด 2)', rect1Color: 'สีสี่เหลี่ยม 1', rect1TextColor: 'สีข้อความสี่เหลี่ยม 1', text2: 'ข้อความ 2', text3Line1: 'ข้อความ 3 (บรรทัด 1)', text3Line2: 'ข้อความ 3 (บรรทัด 2)', text4Line1: 'ข้อความ 4 (บรรทัด 1)', text4Line2: 'ข้อความ 4 (บรรทัด 2)', text5: 'ข้อความ 5', text6: 'ข้อความ 6', textColor: 'สีข้อความ (2-6)', bgColor: 'สีพื้นหลัง', bgText: 'ข้อความพื้นหลัง', bgTextColor: 'สีข้อความพื้นหลัง', bgShadowColor: 'สีเงาพื้นหลัง', rect9Color: 'สีสี่เหลี่ยม 9', text10: 'ข้อความ 10', text11: 'ข้อความ 11', text12: 'ข้อความ 12', footerTextColor: 'สีข้อความ (10-12)', qrCodeInput: 'อัปโหลด QR Code (優先)', showQR: 'แสดงสี่เหลี่ยม QR Code', qrSquareColor: 'สีสี่เหลี่ยม', customImageInput: 'ภาพกำหนดเอง', imageLayer: 'ชั้นภาพ', bleedOption: 'รวมขอบตัด (ด้านละ +3mm)', download300: 'ดาวน์โหลดตั๋ว (300 DPI)', download70: 'ดาวน์โหลดตั๋ว (70 DPI)', advancedMode: 'โหมดขั้นสูง', donate: 'บริจาค', note: 'หมายเหตุ: PNG ที่ดาวน์โหลดเป็นโหมด RGB สำหรับการพิมพ์ กรุณาแปลงเป็น CMYK โดยใช้ Photoshop หรือ GIMP', disclaimer: 'จากการที่เห็นแฟน ๆ สร้างของที่ระลึกในงานฉลองวันเกิดของสมาชิก AKB48 ที่โรงละคร ซึ่งรวมถึงการทำตั๋วโรงละครที่เลิกพิมพ์แล้วขึ้นมาใหม่ จึงเกิดไอเดียสร้างเว็บไซต์นี้เพื่อให้แฟน ๆ สามารถออกแบบตั๋วในใจของตนเองและเก็บไว้ได้ เว็บนี้ทำขึ้นเพื่อความสนุกสนานเท่านั้น โปรดอย่าใช้ในเชิงพาณิชย์หรือวัตถุประสงค์ที่ผิดกฎหมาย สิทธิ์ทั้งหมดเป็นของ © AKB48 และบริษัท DH ผู้สร้างไม่รับผิดชอบใด ๆ โปรดทราบ', downloadError: 'การดาวน์โหลดล้มเหลว กรุณาลองใหม่', inputError: 'ไม่สามารถใช้ค่าลบหรือค่าที่ไม่ถูกต้องได้', opacityError: 'ความโปร่งใสต้องอยู่ระหว่าง 0 ถึง 1', qrFormatError: 'รูปแบบไฟล์ไม่รองรับ กรุณาเลือกภาพ', qrLoadError: 'โหลดภาพ QR Code ไม่สำเร็จ', qrReadError: 'การอ่านไฟล์ล้มเหลว' },
-            id: { title: 'Pembuat Tiket', preview: 'Pratinjau Tiket', custom: 'Tiket Kustom', rect1Line1: 'Teks Persegi 1 (Baris 1)', rect1Line2: 'Teks Persegi 1 (Baris 2)', rect1Color: 'Warna Persegi 1', rect1TextColor: 'Warna Teks Persegi 1', text2: 'Teks 2', text3Line1: 'Teks 3 (Baris 1)', text3Line2: 'Teks 3 (Baris 2)', text4Line1: 'Teks 4 (Baris 1)', text4Line2: 'Teks 4 (Baris 2)', text5: 'Teks 5', text6: 'Teks 6', textColor: 'Warna Teks (2-6)', bgColor: 'Warna Latar Belakang', bgText: 'Teks Latar Belakang', bgTextColor: 'Warna Teks Latar Belakang', bgShadowColor: 'Warna Bayangan Latar Belakang', rect9Color: 'Warna Persegi 9', text10: 'Teks 10', text11: 'Teks 11', text12: 'Teks 12', footerTextColor: 'Warna Teks (10-12)', qrCodeInput: 'Unggah QR Code (Prioritas)', showQR: 'Tampilkan Kotak QR Code', qrSquareColor: 'Warna Kotak', customImageInput: 'Gambar Kustom', imageLayer: 'Lapisan Gambar', bleedOption: 'Sertakan Bleed (3mm per sisi)', download300: 'Unduh Tiket (300 DPI)', download70: 'Unduh Tiket (70 DPI)', advancedMode: 'Mode Lanjutan', donate: 'Donasi', note: 'Catatan: PNG yang diunduh dalam mode RGB. Untuk pencetakan, harap konversi ke CMYK menggunakan Photoshop atau GIMP.', disclaimer: 'Menyadari bahwa dalam pertunjukan teater ulang tahun anggota AKB48, barang dukungan yang dibuat penggemar termasuk replika tiket teater fisik yang tidak dicetak ulang, saya secara spontan membuat situs ini agar penggemar bisa merancang tiket idaman mereka sendiri dan menyimpannya. Situs ini murni dibuat untuk hobi; harap jangan gunakan untuk tujuan komersial atau ilegal lainnya. Semua hak milik © AKB48 dan DH Co., Ltd. Saya tidak bertanggung jawab atas segala hal, mohon diperhatikan.', downloadError: 'Unduhan gagal. Silakan coba lagi.', inputError: 'Nilai negatif atau tidak valid tidak diperbolehkan.', opacityError: 'Opasitas harus antara 0 dan 1.', qrFormatError: 'Format file tidak didukung. Pilih gambar.', qrLoadError: 'Gagal memuat gambar QR Code.', qrReadError: 'Gagal membaca file.' }
-        };
+    <!-- 載入提示 -->
+    <div id="loading">生成中...</div>
 
-        const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left', altFont, dpiVal = 300) => {
-            const ptPx = dpiVal / 72;
-            ctx.fillStyle = color;
-            ctx.textAlign = align;
-            lines.forEach((l, i) => {
-                let cx = x, ly = y + i * height * ptPx;
-                l.split('').forEach(c => {
-                    const isAlt = altFont && /[A-Za-z0-9①❘－]/.test(c);
-                    ctx.font = `${size * ptPx}px ${isAlt ? altFont : font}`;
-                    ctx.fillText(c, cx, ly);
-                    cx += ctx.measureText(c).width + spacing * ptPx / 1000;
-                });
+<script>
+    // === 工具函數 ===
+    const $ = id => document.getElementById(id);
+    const canvas = $('ticketCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // === 常量定義 ===
+    const fonts = {
+        avant: 'ITC Avant Garde Gothic Std Extra Light, sans-serif',
+        kozgo: 'KozGoPr6N, YuGothic, sans-serif',
+        ar: 'AR ADGothicJP, MS PGothic, sans-serif'
+    };
+    const sizes = { base: { w: 150, h: 65 }, bleed: 3 };
+    const dpi = {
+        300: {
+            base: { w: sizes.base.w * 300 / 25.4, h: sizes.base.h * 300 / 25.4 },
+            bleed: { w: (sizes.base.w + 2 * sizes.bleed) * 300 / 25.4, h: (sizes.base.h + 2 * sizes.bleed) * 300 / 25.4 }
+        },
+        70: {
+            base: { w: sizes.base.w * 70 / 25.4, h: sizes.base.h * 70 / 25.4 },
+            bleed: { w: (sizes.base.w + 2 * sizes.bleed) * 70 / 25.4, h: (sizes.base.h + 2 * sizes.bleed) * 70 / 25.4 }
+        }
+    };
+
+    // === 全局變量 ===
+    let qrImage = null, customImage = null, previewScale = 0.5, slideMode = false, selectedText = null, startX, startY, pinchDistance;
+
+    // === 多語言支持 ===
+    const langs = {
+        ja: {
+            title: 'チケットメーカー', preview: 'チケットプレビュー', custom: 'オリジナルチケット', rect1Line1: 'エリア1 テキスト (1行目)', rect1Line2: 'エリア1 テキスト (2行目)', rect1Color: 'エリア1 背景色', rect1TextColor: 'エリア1 文字色', text2: 'テキスト2', text3Line1: 'テキスト3 (1行目)', text3Line2: 'テキスト3 (2行目)', text4Line1: 'テキスト4 (1行目)', text4Line2: 'テキスト4 (2行目)', text5: 'テキスト5', text6: 'テキスト6', textColor: '文字色 (2-6)', bgColor: '全体の背景色', bgText: '背景テキスト', bgTextColor: '背景文字色', bgShadowColor: '背景影の色', rect9Color: 'エリア9 背景色', text10: 'テキスト10', text11: 'テキスト11', text12: 'テキスト12', footerTextColor: '文字色 (10-12)', qrCodeInput: 'QRコード画像 (優先)', qrCodeText: 'QRコードテキスト', generateQR: 'QRコード生成', showQR: 'QRコード枠を表示', qrSquareColor: 'QR枠の色', customImageInput: 'カスタム画像', imageLayer: '画像のレイヤー', bleedOption: '裁ち落とし付き (+3mm)', download300: 'ダウンロード (300 DPI)', download70: 'ダウンロード (70 DPI)', slideMode: '滑動モード', advancedMode: '詳細設定', donate: '寄付する', reportBug: '報錯', note: '※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。', disclaimer: 'AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。', slideModeNote: '滑動モードが有効になると、マウスを押したまま（スマートフォンやタブレットでは指を押したまま）でプレビュー内のテキストを自由に移動できます。また、Shiftキーを押しながらマウスを押したまま（スマートフォンやタブレットでは通常のピンチズームジェスチャー）でテキストを拡大縮小できます。', downloadError: 'ダウンロードに失敗しました。もう一度お試しください。', inputError: '負の値または無効な値は使用できません。', opacityError: '透明度は0から1の間で入力してください。', qrFormatError: 'サポートされていないファイル形式です。画像を選択してください。', qrLoadError: 'QRコード画像の読み込みに失敗しました。', qrReadError: 'ファイルの読み込みに失敗しました。', x: 'X', y: 'Y', spacing: '字間', size: 'サイズ', lineHeight: '行間', shadowX: 'シャドウX', shadowY: 'シャドウY', shadowOpacity: 'シャドウ透明度'
+        },
+        'zh-TW': {
+            title: '門票生成器', preview: '門票預覽', custom: '自訂門票', rect1Line1: '矩形1文字 (行1)', rect1Line2: '矩形1文字 (行2)', rect1Color: '矩形1顏色', rect1TextColor: '矩形1文字顏色', text2: '文字2', text3Line1: '文字3 (行1)', text3Line2: '文字3 (行2)', text4Line1: '文字4 (行1)', text4Line2: '文字4 (行2)', text5: '文字5', text6: '文字6', textColor: '文字顏色 (2-6)', bgColor: '背景顏色', bgText: '背景文字', bgTextColor: '背景文字顏色', bgShadowColor: '背景陰影顏色', rect9Color: '矩形9顏色', text10: '文字10', text11: '文字11', text12: '文字12', footerTextColor: '文字顏色 (10-12)', qrCodeInput: 'QR碼圖片 (優先)', qrCodeText: 'QR碼文字', generateQR: '生成QR碼', showQR: '顯示QR碼框架', qrSquareColor: 'QR框架顏色', customImageInput: '自訂圖片', imageLayer: '圖片層次', bleedOption: '包含出血位 (每邊 +3mm)', download300: '下載門票 (300 DPI)', download70: '下載門票 (70 DPI)', slideMode: '滑動模式', advancedMode: '進階模式', donate: '捐贈', reportBug: '回報錯誤', note: '注意：下載的PNG為RGB模式。為印刷準備，請使用Photoshop或GIMP轉為CMYK。', disclaimer: '有鑑於AKB48成員的生誕祭劇場公演中，粉絲製作的應援品包括已不再印刷的實體劇場門票復刻版，因此突發奇想製作此網站，讓粉絲們能自製心目中的票券並自行保存。此網站純粹出於興趣製作，請勿用於商業或其他非法用途。所有權利歸© AKB48及株式会社DH所有，本人對一切責任免責，請注意。', slideModeNote: '啟用滑動模式後，您可以按住滑鼠（在智能手機或平板電腦上則按住手指）在預覽中自由移動文字位置。此外，按住Shift鍵並拖動滑鼠（在智能手機或平板電腦上使用常規捏合縮放手勢）即可放大或縮小文字。', downloadError: '下載失敗。請再試一次。', inputError: '不可使用負值或無效值。', opacityError: '透明度必須介於0到1之間。', qrFormatError: '不支援的檔案格式。請選擇圖片。', qrLoadError: 'QR碼圖片載入失敗。', qrReadError: '檔案讀取失敗。', x: 'X', y: 'Y', spacing: '字距', size: '大小', lineHeight: '行距', shadowX: '陰影X', shadowY: '陰影Y', shadowOpacity: '陰影透明度'
+        },
+        'zh-CN': {
+            title: '门票生成器', preview: '门票预览', custom: '自定义门票', rect1Line1: '矩形1文字 (行1)', rect1Line2: '矩形1文字 (行2)', rect1Color: '矩形1颜色', rect1TextColor: '矩形1文字颜色', text2: '文字2', text3Line1: '文字3 (行1)', text3Line2: '文字3 (行2)', text4Line1: '文字4 (行1)', text4Line2: '文字4 (行2)', text5: '文字5', text6: '文字6', textColor: '文字颜色 (2-6)', bgColor: '背景颜色', bgText: '背景文字', bgTextColor: '背景文字颜色', bgShadowColor: '背景阴影颜色', rect9Color: '矩形9颜色', text10: '文字10', text11: '文字11', text12: '文字12', footerTextColor: '文字颜色 (10-12)', qrCodeInput: 'QR码图片 (优先)', qrCodeText: 'QR码文字', generateQR: '生成QR码', showQR: '显示QR码框架', qrSquareColor: 'QR框架颜色', customImageInput: '自定义图片', imageLayer: '图片层次', bleedOption: '包含出血位 (每边 +3mm)', download300: '下载门票 (300 DPI)', download70: '下载门票 (70 DPI)', slideMode: '滑动模式', advancedMode: '高级模式', donate: '捐款', reportBug: '报告错误', note: '注意：下载的PNG为RGB模式。为印刷准备，请使用Photoshop或GIMP转为CMYK。', disclaimer: '鉴于AKB48成员的生诞祭剧场公演中，粉丝制作的应援品包括已不再印刷的实体剧场门票复刻版，因此突发奇想制作此网站，让粉丝们能自制心目中的票券并自行保存。此网站纯属兴趣制作，请勿用于商业或其他非法用途。所有权利归© AKB48及株式会社DH所有，本人对一切责任免责，请注意。', slideModeNote: '启用滑动模式后，您可以按住鼠标（在智能手机或平板电脑上则按住手指）在预览中自由移动文字位置。此外，按住Shift键并拖动鼠标（在智能手机或平板电脑上使用常规捏合缩放手势）即可放大或缩小文字。', downloadError: '下载失败。请再试一次。', inputError: '不可使用负值或无效值。', opacityError: '透明度必须介于0到1之间。', qrFormatError: '不支持的文件格式。请选择图片。', qrLoadError: 'QR码图片加载失败。', qrReadError: '文件读取失败。', x: 'X', y: 'Y', spacing: '字距', size: '大小', lineHeight: '行距', shadowX: '阴影X', shadowY: '阴影Y', shadowOpacity: '阴影透明度'
+        },
+        en: {
+            title: 'Ticket Generator', preview: 'Ticket Preview', custom: 'Custom Ticket', rect1Line1: 'Rectangle 1 Text (Line 1)', rect1Line2: 'Rectangle 1 Text (Line 2)', rect1Color: 'Rectangle 1 Color', rect1TextColor: 'Rectangle 1 Text Color', text2: 'Text 2', text3Line1: 'Text 3 (Line 1)', text3Line2: 'Text 3 (Line 2)', text4Line1: 'Text 4 (Line 1)', text4Line2: 'Text 4 (Line 2)', text5: 'Text 5', text6: 'Text 6', textColor: 'Text Color (2-6)', bgColor: 'Background Color', bgText: 'Background Text', bgTextColor: 'Background Text Color', bgShadowColor: 'Background Shadow Color', rect9Color: 'Rectangle 9 Color', text10: 'Text 10', text11: 'Text 11', text12: 'Text 12', footerTextColor: 'Text Color (10-12)', qrCodeInput: 'QR Code Upload (Priority)', qrCodeText: 'QR Code Text', generateQR: 'Generate QR Code', showQR: 'Show QR Code Square', qrSquareColor: 'Square Color', customImageInput: 'Custom Image', imageLayer: 'Image Layer', bleedOption: 'Include Bleed (3mm each side)', download300: 'Download Ticket (300 DPI)', download70: 'Download Ticket (70 DPI)', slideMode: 'Slide Mode', advancedMode: 'Advanced Mode', donate: 'Donate', reportBug: 'Report Bug', note: 'Note: The downloaded PNG is in RGB mode. For printing, please convert to CMYK using Photoshop or GIMP.', disclaimer: 'Seeing that fans have recreated physical theater tickets, which are no longer reprinted, as support items during AKB48 members’ birthday theater performances, I created this website on a whim to allow fans to design and keep their ideal tickets. This is purely a hobby project; please do not use it for commercial or other illegal purposes. All rights belong to © AKB48 and DH Co., Ltd. I disclaim all liability, so please take note.', slideModeNote: 'When Slide Mode is enabled, you can hold the mouse (or press and hold on a smartphone/tablet) to freely move text in the preview. Additionally, hold Shift and drag the mouse (or use a standard pinch-zoom gesture on a smartphone/tablet) to scale the text.', downloadError: 'Download failed. Please try again.', inputError: 'Negative or invalid values are not allowed.', opacityError: 'Opacity must be between 0 and 1.', qrFormatError: 'Unsupported file format. Please select an image.', qrLoadError: 'Failed to load QR code image.', qrReadError: 'Failed to read the file.', x: 'X', y: 'Y', spacing: 'Spacing', size: 'Size', lineHeight: 'Line Height', shadowX: 'Shadow X', shadowY: 'Shadow Y', shadowOpacity: 'Shadow Opacity'
+        },
+        ko: {
+            title: '티켓 생성기', preview: '티켓 미리보기', custom: '커스텀 티켓', rect1Line1: '사각형 1 텍스트 (1행)', rect1Line2: '사각형 1 텍스트 (2행)', rect1Color: '사각형 1 색상', rect1TextColor: '사각형 1 텍스트 색상', text2: '텍스트 2', text3Line1: '텍스트 3 (1행)', text3Line2: '텍스트 3 (2행)', text4Line1: '텍스트 4 (1행)', text4Line2: '텍스트 4 (2행)', text5: '텍스트 5', text6: '텍스트 6', textColor: '텍스트 색상 (2-6)', bgColor: '배경 색상', bgText: '배경 텍스트', bgTextColor: '배경 텍스트 색상', bgShadowColor: '배경 그림자 색상', rect9Color: '사각형 9 색상', text10: '텍스트 10', text11: '텍스트 11', text12: '텍스트 12', footerTextColor: '텍스트 색상 (10-12)', qrCodeInput: 'QR 코드 업로드 (우선 사용)', qrCodeText: 'QR 코드 텍스트', generateQR: 'QR 코드 생성', showQR: 'QR 코드 사각형 표시', qrSquareColor: '사각형 색상', customImageInput: '커스텀 이미지', imageLayer: '이미지 레이어', bleedOption: '블리드 포함 (각 변 +3mm)', download300: '티켓 다운로드 (300 DPI)', download70: '티켓 다운로드 (70 DPI)', slideMode: '슬라이드 모드', advancedMode: '고급 모드', donate: '기부', reportBug: '버그 신고', note: '참고: 다운로드된 PNG는 RGB 모드입니다. 인쇄를 위해 Photoshop 또는 GIMP를 사용하여 CMYK로 변환하십시오.', disclaimer: 'AKB48 멤버의 생일 공연에서 팬들이 더 이상 재인쇄되지 않는 실물 극장 티켓을 복각한 응원 물품을 제작하는 것을 보고, 즉흥적으로 이 사이트를 만들어 팬들이 원하는 티켓을 직접 제작하고 보관할 수 있도록 했습니다. 순수한 취미로 제작된 것이며, 상업적 또는 기타 불법적인 용도로 사용하지 말아주세요. 모든 권리는 © AKB48 및 DH 주식회사에 있으며, 본인은 모든 책임을 면책합니다. 주의 부탁드립니다.', slideModeNote: '슬라이드 모드가 활성화되면 마우스를 누른 채로(스마트폰이나 태블릿에서는 손가락을 누른 채로) 프리뷰 내 텍스트를 자유롭게 이동할 수 있습니다. 또한 Shift 키를 누른 상태에서 마우스를 드래그하거나(스마트폰이나 태블릿에서는 일반 핀치 줌 제스처로) 텍스트를 확대/축소할 수 있습니다.', downloadError: '다운로드에 실패했습니다. 다시 시도해주세요.', inputError: '음수 또는 유효하지 않은 값은 사용할 수 없습니다.', opacityError: '투명도는 0에서 1 사이여야 합니다.', qrFormatError: '지원되지 않는 파일 형식입니다. 이미지를 선택해주세요.', qrLoadError: 'QR 코드 이미지 로드에 실패했습니다.', qrReadError: '파일 읽기에 실패했습니다.', x: 'X', y: 'Y', spacing: '자간', size: '크기', lineHeight: '행간', shadowX: '그림자 X', shadowY: '그림자 Y', shadowOpacity: '그림자 투명도'
+        },
+        th: {
+            title: 'เครื่องสร้างตั๋ว', preview: 'ตัวอย่างตั๋ว', custom: 'ตั๋วที่กำหนดเอง', rect1Line1: 'ข้อความสี่เหลี่ยม 1 (บรรทัด 1)', rect1Line2: 'ข้อความสี่เหลี่ยม 1 (บรรทัด 2)', rect1Color: 'สีสี่เหลี่ยม 1', rect1TextColor: 'สีข้อความสี่เหลี่ยม 1', text2: 'ข้อความ 2', text3Line1: 'ข้อความ 3 (บรรทัด 1)', text3Line2: 'ข้อความ 3 (บรรทัด 2)', text4Line1: 'ข้อความ 4 (บรรทัด 1)', text4Line2: 'ข้อความ 4 (บรรทัด 2)', text5: 'ข้อความ 5', text6: 'ข้อความ 6', textColor: 'สีข้อความ (2-6)', bgColor: 'สีพื้นหลัง', bgText: 'ข้อความพื้นหลัง', bgTextColor: 'สีข้อความพื้นหลัง', bgShadowColor: 'สีเงาพื้นหลัง', rect9Color: 'สีสี่เหลี่ยม 9', text10: 'ข้อความ 10', text11: 'ข้อความ 11', text12: 'ข้อความ 12', footerTextColor: 'สีข้อความ (10-12)', qrCodeInput: 'อัปโหลด QR Code (優先)', qrCodeText: 'ข้อความ QR Code', generateQR: 'สร้าง QR Code', showQR: 'แสดงสี่เหลี่ยม QR Code', qrSquareColor: 'สีสี่เหลี่ยม', customImageInput: 'ภาพกำหนดเอง', imageLayer: 'ชั้นภาพ', bleedOption: 'รวมขอบตัด (ด้านละ +3mm)', download300: 'ดาวน์โหลดตั๋ว (300 DPI)', download70: 'ดาวน์โหลดตั๋ว (70 DPI)', slideMode: 'โหมดเลื่อน', advancedMode: 'โหมดขั้นสูง', donate: 'บริจาค', reportBug: 'รายงานข้อผิดพลาด', note: 'หมายเหตุ: PNG ที่ดาวน์โหลดเป็นโหมด RGB สำหรับการพิมพ์ กรุณาแปลงเป็น CMYK โดยใช้ Photoshop หรือ GIMP', disclaimer: 'จากการที่เห็นแฟน ๆ สร้างของที่ระลึกในงานฉลองวันเกิดของสมาชิก AKB48 ที่โรงละคร ซึ่งรวมถึงการทำตั๋วโรงละครที่เลิกพิมพ์แล้วขึ้นมาใหม่ จึงเกิดไอเดียสร้างเว็บไซต์นี้เพื่อให้แฟน ๆ สามารถออกแบบตั๋วในใจของตนเองและเก็บไว้ได้ เว็บนี้ทำขึ้นเพื่อความสนุกสนานเท่านั้น โปรดอย่าใช้ในเชิงพาณิชย์หรือวัตถุประสงค์ที่ผิดกฎหมาย สิทธิ์ทั้งหมดเป็นของ © AKB48 และบริษัท DH ผู้สร้างไม่รับผิดชอบใด ๆ โปรดทราบ', slideModeNote: 'เมื่อเปิดใช้งานโหมดเลื่อน คุณสามารถกดเมาส์ค้างไว้ (หรือกดนิ้วค้างไว้บนสมาร์ทโฟน/แท็บเล็ต) เพื่อเลื่อนตำแหน่งข้อความในตัวอย่างได้อย่างอิสระ นอกจากนี้ กด Shift ค้างไว้แล้วลากเมาส์ (หรือใช้ท่าทางการซูมแบบปกติบนสมาร์ทโฟน/แท็บเล็ต) เพื่อขยายหรือย่อข้อความได้', downloadError: 'การดาวน์โหลดล้มเหลว กรุณาลองใหม่', inputError: 'ไม่สามารถใช้ค่าลบหรือค่าที่ไม่ถูกต้องได้', opacityError: 'ความโปร่งใสต้องอยู่ระหว่าง 0 ถึง 1', qrFormatError: 'รูปแบบไฟล์ไม่รองรับ กรุณาเลือกภาพ', qrLoadError: 'โหลดภาพ QR Code ไม่สำเร็จ', qrReadError: 'การอ่านไฟล์ล้มเหลว', x: 'X', y: 'Y', spacing: 'ระยะห่างตัวอักษร', size: 'ขนาด', lineHeight: 'ระยะห่างบรรทัด', shadowX: 'เงา X', shadowY: 'เงา Y', shadowOpacity: 'ความโปร่งใสของเงา'
+        },
+        id: {
+            title: 'Pembuat Tiket', preview: 'Pratinjau Tiket', custom: 'Tiket Kustom', rect1Line1: 'Teks Persegi 1 (Baris 1)', rect1Line2: 'Teks Persegi 1 (Baris 2)', rect1Color: 'Warna Persegi 1', rect1TextColor: 'Warna Teks Persegi 1', text2: 'Teks 2', text3Line1: 'Teks 3 (Baris 1)', text3Line2: 'Teks 3 (Baris 2)', text4Line1: 'Teks 4 (Baris 1)', text4Line2: 'Teks 4 (Baris 2)', text5: 'Teks 5', text6: 'Teks 6', textColor: 'Warna Teks (2-6)', bgColor: 'Warna Latar Belakang', bgText: 'Teks Latar Belakang', bgTextColor: 'Warna Teks Latar Belakang', bgShadowColor: 'Warna Bayangan Latar Belakang', rect9Color: 'Warna Persegi 9', text10: 'Teks 10', text11: 'Teks 11', text12: 'Teks 12', footerTextColor: 'Warna Teks (10-12)', qrCodeInput: 'Unggah QR Code (Prioritas)', qrCodeText: 'Teks QR Code', generateQR: 'Buat QR Code', showQR: 'Tampilkan Kotak QR Code', qrSquareColor: 'Warna Kotak', customImageInput: 'Gambar Kustom', imageLayer: 'Lapisan Gambar', bleedOption: 'Sertakan Bleed (3mm per sisi)', download300: 'Unduh Tiket (300 DPI)', download70: 'Unduh Tiket (70 DPI)', slideMode: 'Mode Geser', advancedMode: 'Mode Lanjutan', donate: 'Donasi', reportBug: 'Laporkan Bug', note: 'Catatan: PNG yang diunduh dalam mode RGB. Untuk pencetakan, harap konversi ke CMYK menggunakan Photoshop atau GIMP.', disclaimer: 'Menyadari bahwa dalam pertunjukan teater ulang tahun anggota AKB48, barang dukungan yang dibuat penggemar termasuk replika tiket teater fisik yang tidak dicetak ulang, saya secara spontan membuat situs ini agar penggemar bisa merancang tiket idaman mereka sendiri dan menyimpannya. Situs ini murni dibuat untuk hobi; harap jangan gunakan untuk tujuan komersial atau ilegal lainnya. Semua hak milik © AKB48 dan DH Co., Ltd. Saya tidak bertanggung jawab atas segala hal, mohon diperhatikan.', slideModeNote: 'Saat Mode Geser diaktifkan, Anda dapat menahan mouse (atau menekan dan menahan pada smartphone/tablet) untuk memindahkan teks di pratinjau secara bebas. Selain itu, tahan tombol Shift dan seret mouse (atau gunakan gerakan pinch-zoom standar pada smartphone/tablet) untuk memperbesar atau memperkecil teks.', downloadError: 'Unduhan gagal. Silakan coba lagi.', inputError: 'Nilai negatif atau tidak valid tidak diperbolehkan.', opacityError: 'Opasitas harus antara 0 dan 1.', qrFormatError: 'Format file tidak didukung. Pilih gambar.', qrLoadError: 'Gagal memuat gambar QR Code.', qrReadError: 'Gagal membaca file.', x: 'X', y: 'Y', spacing: 'Jarak Huruf', size: 'Ukuran', lineHeight: 'Jarak Baris', shadowX: 'Bayangan X', shadowY: 'Bayangan Y', shadowOpacity: 'Opasitas Bayangan'
+        }
+    };
+
+    // === 繪製函數 ===
+    const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left', altFont, dpiVal = 300) => {
+        const ptPx = dpiVal / 72;
+        ctx.fillStyle = color;
+        ctx.textAlign = align;
+        lines.forEach((l, i) => {
+            let cx = x, ly = y + i * height * ptPx;
+            l.split('').forEach(c => {
+                const isAlt = altFont && /[A-Za-z0-9①❘－]/.test(c);
+                ctx.font = `${size * ptPx}px ${isAlt ? altFont : font}`;
+                ctx.fillText(c, cx, ly);
+                cx += ctx.measureText(c).width + spacing * ptPx / 1000;
             });
+        });
+    };
+
+    const drawTicket = (dpiVal) => {
+        const bleed = $('bleedOption').checked;
+        const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
+        const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
+        const mmPx = dpiVal / 25.4;
+        canvas.width = w;
+        canvas.height = h;
+        canvas.style.width = `${w * previewScale}px`;
+        canvas.style.height = `${h * previewScale}px`;
+        ctx.clearRect(0, 0, w, h);
+
+        if (customImage && $('imageLayer').value === 'background') ctx.drawImage(customImage, bleed ? 3 * mmPx : 0, bleed ? 3 * mmPx : 0, w, h);
+        ctx.fillStyle = $('bgColor').value;
+        ctx.fillRect(0, 0, w, h);
+
+        const bg = { t: $('bgText').value || 'AKB48', x: parseFloat($('bgTextX').value) * mmPx + (bleed ? 3 * mmPx : 0), y: parseFloat($('bgTextY').value) * mmPx + (bleed ? 3 * mmPx : 0), s: parseFloat($('bgTextSpacing').value), lh: parseFloat($('bgTextLineHeight').value), sz: parseFloat($('bgTextSize').value) };
+        ctx.font = `${bg.sz * (dpiVal / 72)}px ${fonts.avant}`;
+        const cw = ctx.measureText(bg.t.charAt(0)).width, tw = ctx.measureText(bg.t).width, gx = tw + bg.s * (dpiVal / 72) / 1000, gy = bg.lh * (dpiVal / 72);
+        ctx.globalAlpha = parseFloat($('bgShadowOpacity').value);
+        ctx.fillStyle = $('bgShadowColor').value;
+        ctx.shadowColor = $('bgShadowColor').value;
+        ctx.shadowOffsetX = parseFloat($('bgShadowX').value) * mmPx;
+        ctx.shadowOffsetY = parseFloat($('bgShadowY').value) * mmPx;
+        for (let y = bg.y, r = 0; y < h; y += gy, r++) for (let x = bg.x + r * cw; x < w; x += gx) ctx.fillText(bg.t, x, y);
+        ctx.globalAlpha = 1;
+        ctx.shadowOffsetX = ctx.shadowOffsetY = 0;
+        ctx.fillStyle = $('bgTextColor').value;
+        for (let y = bg.y, r = 0; y < h; y += gy, r++) for (let x = bg.x + r * cw; x < w; x += gx) ctx.fillText(bg.t, x, y);
+
+        ctx.fillStyle = $('rect1Color').value;
+        ctx.fillRect(8 * mmPx + (bleed ? 3 * mmPx : 0), bleed ? 3 * mmPx : 0, 25 * mmPx, 35 * mmPx);
+        drawText([$('rect1Line1').value], parseFloat($('rect1Line1X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('rect1Line1Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.avant, parseFloat($('rect1Size').value), parseFloat($('rect1Spacing').value), 0, $('rect1TextColor').value, 'center', null, dpiVal);
+        drawText([$('rect1Line2').value], parseFloat($('rect1Line2X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('rect1Line2Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.avant, parseFloat($('rect1Line2Size').value), parseFloat($('rect1Line2Spacing').value), 0, $('rect1TextColor').value, 'center', null, dpiVal);
+
+        const tc = $('textColor').value;
+        drawText([$('text2').value], parseFloat($('text2X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text2Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text2Size').value), parseFloat($('text2Spacing').value), 0, tc, 'left', fonts.ar, dpiVal);
+        drawText([$('text3Line1').value], parseFloat($('text3Line1X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text3Line1Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text3Size').value), parseFloat($('text3Spacing').value), 0, tc, 'left', fonts.ar, dpiVal);
+        drawText([$('text3Line2').value], parseFloat($('text3Line2X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text3Line2Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text3Line2Size').value), parseFloat($('text3Line2Spacing').value), 0, tc, 'left', fonts.ar, dpiVal);
+        drawText([$('text4Line1').value, $('text4Line2').value], parseFloat($('text4Line1X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text4Line1Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text4Size').value), parseFloat($('text4Spacing').value), parseFloat($('text4LineHeight').value), tc, 'left', fonts.ar, dpiVal);
+        drawText([$('text5').value], parseFloat($('text5X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text5Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text5Size').value), parseFloat($('text5Spacing').value), 27, tc, 'left', fonts.ar, dpiVal);
+        drawText([$('text6').value], parseFloat($('text6X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text6Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text6Size').value), parseFloat($('text6Spacing').value), 27, tc, 'left', fonts.ar, dpiVal);
+
+        ctx.fillStyle = $('rect9Color').value;
+        ctx.fillRect(bleed ? 3 * mmPx : 0, 58 * mmPx + (bleed ? 3 * mmPx : 0), 150 * mmPx, 7 * mmPx);
+        const fc = $('footerTextColor').value;
+        drawText([$('text10').value], parseFloat($('text10X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text10Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text10Size').value), parseFloat($('text10Spacing').value), 0, fc, 'left', fonts.ar, dpiVal);
+        drawText([$('text11').value], parseFloat($('text11X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text11Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text11Size').value), parseFloat($('text11Spacing').value), 0, fc, 'left', fonts.ar, dpiVal);
+        drawText([$('text12').value], parseFloat($('text12X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text12Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text12Size').value), parseFloat($('text12Spacing').value), 0, fc, 'left', fonts.ar, dpiVal);
+
+        if ($('showQR').checked) {
+            ctx.fillStyle = $('qrSquareColor').value;
+            const qx = w - 8.5 * mmPx - 23 * mmPx + (bleed ? 3 * mmPx : 0), qy = 23 * mmPx + (bleed ? 3 * mmPx : 0), qs = 23 * mmPx;
+            ctx.fillRect(qx, qy, qs, qs);
+            if (qrImage) ctx.drawImage(qrImage, qx, qy, qs, qs);
+        }
+        if (customImage && $('imageLayer').value === 'foreground') ctx.drawImage(customImage, bleed ? 3 * mmPx : 0, bleed ? 3 * mmPx : 0, w, h);
+    };
+
+    // === 操作函數 ===
+    const setPreviewScale = s => { previewScale = s; drawTicket(300); };
+
+    const downloadTicket = dpiVal => {
+        try {
+            $('loading').style.display = 'block';
+            drawTicket(dpiVal);
+            setTimeout(() => {
+                const l = document.createElement('a');
+                l.download = `ticket_${dpiVal}dpi${$('bleedOption').checked ? '_with_bleed' : ''}.png`;
+                l.href = canvas.toDataURL('image/png', 1.0);
+                if (l.href === 'data:,') throw new Error('Canvas data is empty');
+                l.click();
+                drawTicket(300);
+                $('loading').style.display = 'none';
+            }, 100);
+        } catch (e) {
+            $('loading').style.display = 'none';
+            alert(langs[document.documentElement.lang]?.downloadError || 'ダウンロードに失敗しました。もう一度お試しください。');
+            console.error('Download failed:', e);
+        }
+    };
+
+    const debounce = (func, wait) => {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
         };
+    };
+    const debouncedDraw = debounce(() => drawTicket(300), 300);
 
-        const drawTicket = (dpiVal) => {
-            const bleed = $('bleedOption').checked;
-            const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
-            const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
-            const mmPx = dpiVal / 25.4;
-            canvas.width = w;
-            canvas.height = h;
-            canvas.style.width = `${w * previewScale}px`;
-            canvas.style.height = `${h * previewScale}px`;
-            ctx.clearRect(0, 0, w, h);
-
-            if (customImage && $('imageLayer').value === 'background') {
-                ctx.drawImage(customImage, bleed ? 3 * mmPx : 0, bleed ? 3 * mmPx : 0, w, h);
+    const validateInput = (input, min = 0, max = Infinity) => {
+        input.addEventListener('input', () => {
+            const val = parseFloat(input.value);
+            const errorMsg = $(`${input.id}-error`);
+            if (isNaN(val) || val < min || val > max) {
+                input.value = Math.max(min, Math.min(max, val || min));
+                errorMsg.textContent = max === 1 ? langs[document.documentElement.lang]?.opacityError : langs[document.documentElement.lang]?.inputError;
+                errorMsg.style.display = 'inline';
+            } else {
+                errorMsg.style.display = 'none';
             }
+            debouncedDraw();
+        });
+    };
 
-            ctx.fillStyle = $('bgColor').value;
-            ctx.fillRect(0, 0, w, h);
-            const bg = { t: $('bgText').value || 'AKB48', x: parseFloat($('bgTextX').value) * mmPx + (bleed ? 3 * mmPx : 0), y: parseFloat($('bgTextY').value) * mmPx + (bleed ? 3 * mmPx : 0), s: parseFloat($('bgTextSpacing').value), lh: parseFloat($('bgTextLineHeight').value), sz: parseFloat($('bgTextSize').value) };
-            ctx.font = `${bg.sz * (dpiVal / 72)}px ${fonts.avant}`;
-            const cw = ctx.measureText(bg.t.charAt(0)).width, tw = ctx.measureText(bg.t).width, gx = tw + bg.s * (dpiVal / 72) / 1000, gy = bg.lh * (dpiVal / 72);
-            ctx.globalAlpha = parseFloat($('bgShadowOpacity').value);
-            ctx.fillStyle = $('bgShadowColor').value;
-            ctx.shadowColor = $('bgShadowColor').value;
-            ctx.shadowOffsetX = parseFloat($('bgShadowX').value) * mmPx;
-            ctx.shadowOffsetY = parseFloat($('bgShadowY').value) * mmPx;
-            for (let y = bg.y, r = 0; y < h; y += gy, r++) for (let x = bg.x + r * cw; x < w; x += gx) ctx.fillText(bg.t, x, y);
-            ctx.globalAlpha = 1;
-            ctx.shadowOffsetX = ctx.shadowOffsetY = 0;
-            ctx.fillStyle = $('bgTextColor').value;
-            for (let y = bg.y, r = 0; y < h; y += gy, r++) for (let x = bg.x + r * cw; x < w; x += gx) ctx.fillText(bg.t, x, y);
-            ctx.fillStyle = $('rect1Color').value;
-            ctx.fillRect(8 * mmPx + (bleed ? 3 * mmPx : 0), bleed ? 3 * mmPx : 0, 25 * mmPx, 35 * mmPx);
-            drawText([$('rect1Line1').value], parseFloat($('rect1Line1X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('rect1Line1Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.avant, parseFloat($('rect1Size').value), parseFloat($('rect1Spacing').value), 0, $('rect1TextColor').value, 'center', null, dpiVal);
-            drawText([$('rect1Line2').value], parseFloat($('rect1Line2X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('rect1Line2Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.avant, parseFloat($('rect1Line2Size').value), parseFloat($('rect1Line2Spacing').value), 0, $('rect1TextColor').value, 'center', null, dpiVal);
-            const tc = $('textColor').value;
-            drawText([$('text2').value], parseFloat($('text2X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text2Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text2Size').value), parseFloat($('text2Spacing').value), 0, tc, 'left', fonts.ar, dpiVal);
-            drawText([$('text3Line1').value], parseFloat($('text3Line1X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text3Line1Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text3Size').value), parseFloat($('text3Spacing').value), 0, tc, 'left', fonts.ar, dpiVal);
-            drawText([$('text3Line2').value], parseFloat($('text3Line2X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text3Line2Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text3Line2Size').value), parseFloat($('text3Line2Spacing').value), 0, tc, 'left', fonts.ar, dpiVal);
-            drawText([$('text4Line1').value, $('text4Line2').value], parseFloat($('text4Line1X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text4Line1Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text4Size').value), parseFloat($('text4Spacing').value), parseFloat($('text4LineHeight').value), tc, 'left', fonts.ar, dpiVal);
-            drawText([$('text5').value], parseFloat($('text5X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text5Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text5Size').value), parseFloat($('text5Spacing').value), 27, tc, 'left', fonts.ar, dpiVal);
-            drawText([$('text6').value], parseFloat($('text6X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text6Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text6Size').value), parseFloat($('text6Spacing').value), 27, tc, 'left', fonts.ar, dpiVal);
-            ctx.fillStyle = $('rect9Color').value;
-            ctx.fillRect(bleed ? 3 * mmPx : 0, 58 * mmPx + (bleed ? 3 * mmPx : 0), 150 * mmPx, 7 * mmPx);
-            const fc = $('footerTextColor').value;
-            drawText([$('text10').value], parseFloat($('text10X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text10Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text10Size').value), parseFloat($('text10Spacing').value), 0, fc, 'left', fonts.ar, dpiVal);
-            drawText([$('text11').value], parseFloat($('text11X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text11Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text11Size').value), parseFloat($('text11Spacing').value), 0, fc, 'left', fonts.ar, dpiVal);
-            drawText([$('text12').value], parseFloat($('text12X').value) * mmPx + (bleed ? 3 * mmPx : 0), parseFloat($('text12Y').value) * mmPx + (bleed ? 3 * mmPx : 0), fonts.kozgo, parseFloat($('text12Size').value), parseFloat($('text12Spacing').value), 0, fc, 'left', fonts.ar, dpiVal);
-            if ($('showQR').checked) {
-                ctx.fillStyle = $('qrSquareColor').value;
-                const qx = w - 8.5 * mmPx - 23 * mmPx + (bleed ? 3 * mmPx : 0), qy = 23 * mmPx + (bleed ? 3 * mmPx : 0), qs = 23 * mmPx;
-                ctx.fillRect(qx, qy, qs, qs);
-                if (qrImage) ctx.drawImage(qrImage, qx, qy, qs, qs);
-            }
-            if (customImage && $('imageLayer').value === 'foreground') {
-                ctx.drawImage(customImage, bleed ? 3 * mmPx : 0, bleed ? 3 * mmPx : 0, w, h);
-            }
-        };
+    const generateQRCode = () => {
+        const text = $('qrCodeText').value;
+        if (!text) return;
+        const qrCanvas = document.createElement('canvas');
+        new QRCode(qrCanvas, {
+            text: text,
+            width: 300,
+            height: 300,
+            colorDark: '#000000',
+            colorLight: '#FFFFFF'
+        });
+        qrImage = new Image();
+        qrImage.src = qrCanvas.toDataURL('image/png');
+        qrImage.onload = () => debouncedDraw();
+    };
 
-        const setPreviewScale = s => { previewScale = s; drawTicket(300); };
-
-        const downloadTicket = dpiVal => {
-            try {
-                drawTicket(dpiVal);
-                setTimeout(() => {
-                    const l = document.createElement('a');
-                    l.download = `ticket_${dpiVal}dpi${$('bleedOption').checked ? '_with_bleed' : ''}.png`;
-                    l.href = canvas.toDataURL('image/png', 1.0);
-                    if (l.href === 'data:,') throw new Error('Canvas data is empty');
-                    l.click();
-                    drawTicket(300);
-                }, 100);
-            } catch (e) {
-                alert(langs[document.documentElement.lang]?.downloadError || 'ダウンロードに失敗しました。もう一度お試しください。');
-                console.error('Download failed:', e);
-            }
-        };
-
-        const debounce = (func, wait) => {
-            let timeout;
-            return (...args) => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func(...args), wait);
-            };
-        };
-        const debouncedDraw = debounce(() => drawTicket(300), 300);
-
-        const validateInput = (input, min = 0) => {
-            input.addEventListener('input', () => {
-                const val = parseFloat(input.value);
-                if (isNaN(val) || val < min) {
-                    input.value = min;
-                    alert(langs[document.documentElement.lang]?.inputError || '負の値または無効な値は使用できません。');
-                }
+    // === 事件監聽器 ===
+    $('qrCodeInput').addEventListener('change', e => {
+        const f = e.target.files[0];
+        if (!f) return;
+        if (!f.type.startsWith('image/')) {
+            alert(langs[document.documentElement.lang]?.qrFormatError || 'サポートされていないファイル形式です。画像を選択してください。');
+            e.target.value = '';
+            return;
+        }
+        const r = new FileReader();
+        r.onload = ev => {
+            qrImage = new Image();
+            qrImage.src = ev.target.result;
+            qrImage.onload = () => debouncedDraw();
+            qrImage.onerror = () => {
+                alert(langs[document.documentElement.lang]?.qrLoadError || 'QRコード画像の読み込みに失敗しました。');
+                qrImage = null;
                 debouncedDraw();
-            });
-        };
-
-        $('qrCodeInput').addEventListener('change', e => {
-            const f = e.target.files[0];
-            if (!f) return;
-            if (!f.type.startsWith('image/')) {
-                alert(langs[document.documentElement.lang]?.qrFormatError || 'サポートされていないファイル形式です。画像を選択してください。');
-                e.target.value = '';
-                return;
-            }
-            const r = new FileReader();
-            r.onload = ev => {
-                qrImage = new Image();
-                qrImage.src = ev.target.result;
-                qrImage.onload = () => debouncedDraw();
-                qrImage.onerror = () => {
-                    alert(langs[document.documentElement.lang]?.qrLoadError || 'QRコード画像の読み込みに失敗しました。');
-                    qrImage = null;
-                    debouncedDraw();
-                };
             };
-            r.onerror = () => alert(langs[document.documentElement.lang]?.qrReadError || 'ファイルの読み込みに失敗しました。');
-            r.readAsDataURL(f);
-        });
+        };
+        r.onerror = () => alert(langs[document.documentElement.lang]?.qrReadError || 'ファイルの読み込みに失敗しました。');
+        r.readAsDataURL(f);
+    });
 
-        $('customImageInput').addEventListener('change', e => {
-            const f = e.target.files[0];
-            if (!f || !f.type.startsWith('image/')) {
-                alert(langs[document.documentElement.lang]?.qrFormatError || 'サポートされていないファイル形式です。画像を選択してください。');
-                e.target.value = '';
-                return;
+    $('customImageInput').addEventListener('change', e => {
+        const f = e.target.files[0];
+        if (!f || !f.type.startsWith('image/')) {
+            alert(langs[document.documentElement.lang]?.qrFormatError || 'サポートされていないファイル形式です。画像を選択してください。');
+            e.target.value = '';
+            return;
+        }
+        const r = new FileReader();
+        r.onload = ev => {
+            customImage = new Image();
+            customImage.src = ev.target.result;
+            customImage.onload = () => debouncedDraw();
+        };
+        r.readAsDataURL(f);
+    });
+
+    document.querySelectorAll('.size-input, .position-input, .line-height-input').forEach(i => validateInput(i, 0));
+    document.querySelectorAll('.spacing-input, .shadow-input').forEach(i => validateInput(i, -Infinity));
+    document.querySelectorAll('.opacity-input').forEach(i => validateInput(i, 0, 1));
+    document.querySelectorAll('input:not(.opacity-input)').forEach(i => i.addEventListener('input', debouncedDraw));
+
+    const toggleAdvancedMode = () => {
+        document.querySelectorAll('.advanced-mode').forEach(g => g.classList.toggle('active'));
+        const b = $('advancedModeBtn'), l = document.documentElement.lang;
+        b.textContent = b.textContent === langs[l]?.advancedMode ? (l === 'ja' ? '詳細設定を閉じる' : 'Close Advanced Mode') : langs[l]?.advancedMode;
+    };
+
+    const toggleSlideMode = () => {
+        slideMode = !slideMode;
+        const btn = $('slideModeBtn'), note = $('slideModeNote');
+        btn.textContent = slideMode ? `${langs[document.documentElement.lang]?.slideMode} (ON)` : langs[document.documentElement.lang]?.slideMode;
+        note.style.display = slideMode ? 'block' : 'none';
+        if (!slideMode) selectedText = null;
+    };
+
+    const getTextElement = (x, y, dpiVal = 300) => {
+        const mmPx = dpiVal / 25.4;
+        const bleed = $('bleedOption').checked ? 3 * mmPx : 0;
+        const elements = [
+            { id: 'rect1Line1', x: parseFloat($('rect1Line1X').value) * mmPx + bleed, y: parseFloat($('rect1Line1Y').value) * mmPx + bleed, size: parseFloat($('rect1Size').value) },
+            { id: 'rect1Line2', x: parseFloat($('rect1Line2X').value) * mmPx + bleed, y: parseFloat($('rect1Line2Y').value) * mmPx + bleed, size: parseFloat($('rect1Line2Size').value) },
+            { id: 'text2', x: parseFloat($('text2X').value) * mmPx + bleed, y: parseFloat($('text2Y').value) * mmPx + bleed, size: parseFloat($('text2Size').value) },
+            { id: 'text3Line1', x: parseFloat($('text3Line1X').value) * mmPx + bleed, y: parseFloat($('text3Line1Y').value) * mmPx + bleed, size: parseFloat($('text3Size').value) },
+            { id: 'text3Line2', x: parseFloat($('text3Line2X').value) * mmPx + bleed, y: parseFloat($('text3Line2Y').value) * mmPx + bleed, size: parseFloat($('text3Line2Size').value) },
+            { id: 'text4Line1', x: parseFloat($('text4Line1X').value) * mmPx + bleed, y: parseFloat($('text4Line1Y').value) * mmPx + bleed, size: parseFloat($('text4Size').value) },
+            { id: 'text5', x: parseFloat($('text5X').value) * mmPx + bleed, y: parseFloat($('text5Y').value) * mmPx + bleed, size: parseFloat($('text5Size').value) },
+            { id: 'text6', x: parseFloat($('text6X').value) * mmPx + bleed, y: parseFloat($('text6Y').value) * mmPx + bleed, size: parseFloat($('text6Size').value) },
+            { id: 'text10', x: parseFloat($('text10X').value) * mmPx + bleed, y: parseFloat($('text10Y').value) * mmPx + bleed, size: parseFloat($('text10Size').value) },
+            { id: 'text11', x: parseFloat($('text11X').value) * mmPx + bleed, y: parseFloat($('text11Y').value) * mmPx + bleed, size: parseFloat($('text11Size').value) },
+            { id: 'text12', x: parseFloat($('text12X').value) * mmPx + bleed, y: parseFloat($('text12Y').value) * mmPx + bleed, size: parseFloat($('text12Size').value) }
+        ];
+        return elements.find(e => Math.abs(x - e.x) < 50 && Math.abs(y - e.y) < 50);
+    };
+
+    canvas.addEventListener('mousedown', e => {
+        if (!slideMode) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / previewScale;
+        const y = (e.clientY - rect.top) / previewScale;
+        selectedText = getTextElement(x, y);
+        if (selectedText) {
+            startX = x;
+            startY = y;
+        }
+    });
+
+    canvas.addEventListener('mousemove', e => {
+        if (!slideMode || !selectedText) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / previewScale;
+        const y = (e.clientY - rect.top) / previewScale;
+        const mmPx = 300 / 25.4;
+        if (e.shiftKey) {
+            const scaleFactor = (y - startY) * 0.1;
+            const sizeInput = $(selectedText.id + 'Size');
+            sizeInput.value = Math.max(1, parseFloat(sizeInput.value) + scaleFactor);
+        } else {
+            const dx = (x - startX) / mmPx;
+            const dy = (y - startY) / mmPx;
+            $(selectedText.id + 'X').value = parseFloat($(selectedText.id + 'X').value) + dx;
+            $(selectedText.id + 'Y').value = parseFloat($(selectedText.id + 'Y').value) + dy;
+        }
+        startX = x;
+        startY = y;
+        debouncedDraw();
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        if (slideMode) selectedText = null;
+    });
+
+    canvas.addEventListener('touchstart', e => {
+        if (!slideMode || e.touches.length > 2) return;
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = (touch.clientX - rect.left) / previewScale;
+        const y = (touch.clientY - rect.top) / previewScale;
+        selectedText = getTextElement(x, y);
+        if (selectedText) {
+            startX = x;
+            startY = y;
+        }
+        if (e.touches.length === 2) {
+            const t1 = e.touches[0], t2 = e.touches[1];
+            pinchDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+        }
+    });
+
+    canvas.addEventListener('touchmove', e => {
+        if (!slideMode || !selectedText) return;
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        if (e.touches.length === 1) {
+            const x = (e.touches[0].clientX - rect.left) / previewScale;
+            const y = (e.touches[0].clientY - rect.top) / previewScale;
+            const mmPx = 300 / 25.4;
+            const dx = (x - startX) / mmPx;
+            const dy = (y - startY) / mmPx;
+            $(selectedText.id + 'X').value = parseFloat($(selectedText.id + 'X').value) + dx;
+            $(selectedText.id + 'Y').value = parseFloat($(selectedText.id + 'Y').value) + dy;
+            startX = x;
+            startY = y;
+        } else if (e.touches.length === 2) {
+            const t1 = e.touches[0], t2 = e.touches[1];
+            const newDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+            const scaleFactor = (newDistance - pinchDistance) * 0.05;
+            const sizeInput = $(selectedText.id + 'Size');
+            sizeInput.value = Math.max(1, parseFloat(sizeInput.value) + scaleFactor);
+            pinchDistance = newDistance;
+        }
+        debouncedDraw();
+    });
+
+    canvas.addEventListener('touchend', () => {
+        if (slideMode) selectedText = null;
+    });
+
+    const changeLanguage = l => {
+        document.documentElement.lang = l;
+        document.title = langs[l]?.title || 'チケットメーカー';
+        $('canvasContainer').querySelector('h1').textContent = langs[l]?.preview || 'チケットプレビュー';
+        $('controlsContainer').querySelector('h1').textContent = langs[l]?.custom || 'オリジナルチケット';
+        document.querySelectorAll('[data-key]').forEach(e => {
+            const k = e.getAttribute('data-key'), t = langs[l]?.[k];
+            if (t) {
+                if (e.tagName === 'LABEL') e.childNodes[0].textContent = `${t}: `;
+                else if (e.tagName === 'BUTTON') e.textContent = t;
+                else if (e.classList.contains('note')) e.textContent = t;
             }
-            const r = new FileReader();
-            r.onload = ev => {
-                customImage = new Image();
-                customImage.src = ev.target.result;
-                customImage.onload = () => debouncedDraw();
-            };
-            r.readAsDataURL(f);
         });
-
-        document.querySelectorAll('.size-input, .position-input, .line-height-input').forEach(i => validateInput(i, 0));
-        document.querySelectorAll('.spacing-input, .shadow-input').forEach(i => validateInput(i, -Infinity));
-        document.querySelectorAll('.opacity-input').forEach(i => {
-            i.addEventListener('input', () => {
-                let val = parseFloat(i.value);
-                if (isNaN(val) || val < 0 || val > 1) {
-                    i.value = Math.max(0, Math.min(1, val));
-                    alert(langs[document.documentElement.lang]?.opacityError || '透明度は0から1の間で入力してください。');
-                }
-                debouncedDraw();
-            });
+        $('disclaimer').textContent = langs[l]?.disclaimer || langs.ja.disclaimer;
+        $('slideModeBtn').textContent = slideMode ? `${langs[l]?.slideMode} (ON)` : langs[l]?.slideMode;
+        document.querySelectorAll('input[type="text"], input[type="number"]').forEach(i => {
+            const label = i.parentElement.childNodes[0].textContent.trim().replace(': ', '');
+            i.setAttribute('aria-label', label);
         });
-        document.querySelectorAll('input:not(.opacity-input)').forEach(i => i.addEventListener('input', debouncedDraw));
+    };
 
-        const toggleAdvancedMode = () => {
-            document.querySelectorAll('.advanced-mode').forEach(g => g.classList.toggle('active'));
-            const b = $('advancedModeBtn'), l = document.documentElement.lang;
-            b.textContent = b.textContent === langs[l]?.advancedMode || '詳細設定' ? (l === 'ja' ? '詳細設定を閉じる' : l === 'zh-TW' ? '關閉進階模式' : 'Close Advanced Mode') : langs[l]?.advancedMode || '詳細設定';
-        };
-
-        const changeLanguage = l => {
-            document.documentElement.lang = l;
-            document.title = langs[l]?.title || 'チケットメーカー';
-            $('canvasContainer').querySelector('h1').textContent = langs[l]?.preview || 'チケットプレビュー';
-            $('controlsContainer').querySelector('h1').textContent = langs[l]?.custom || 'オリジナルチケット';
-            document.querySelectorAll('[data-key]').forEach(e => {
-                const k = e.getAttribute('data-key'), t = langs[l]?.[k];
-                if (t) e.tagName === 'LABEL' ? e.childNodes[0].textContent = `${t}: ` : e.tagName === 'BUTTON' ? e.textContent = t : e.classList.contains('note') && (e.textContent = t);
-            });
-            $('disclaimer').textContent = langs[l]?.disclaimer || langs.ja.disclaimer;
-            document.querySelectorAll('input[type="text"], input[type="number"]').forEach(i => {
-                const label = i.parentElement.childNodes[0].textContent.trim().replace(': ', '');
-                i.setAttribute('aria-label', label);
-            });
-        };
-
-        Promise.all([
-            document.fonts.load('47pt ITC Avant Garde Gothic Std Extra Light'),
-            document.fonts.load('14.2pt KozGoPr6N'),
-            document.fonts.load('10pt AR ADGothicJP')
-        ]).then(() => drawTicket(300));
-    </script>
+    // === 初始化 ===
+    Promise.all([
+        document.fonts.load('47pt ITC Avant Garde Gothic Std Extra Light'),
+        document.fonts.load('14.2pt KozGoPr6N'),
+        document.fonts.load('10pt AR ADGothicJP')
+    ]).then(() => drawTicket(300));
+</script>
 </body>
 </html>
