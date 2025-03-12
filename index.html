@@ -1,246 +1,248 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>チケットメーカー</title>
- <style>
- @font-face { font-family: 'ITC Avant Garde Gothic Std Extra Light'; src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2?v=1.0') format('woff2'); }
- @font-face { font-family: 'AR ADGothicJP'; src: url('fonts/jadhei01m.woff2?v=1.0') format('woff2'); }
- @font-face { font-family: 'KozGoPr6N'; src: url('fonts/KozGoPr6N-Medium.woff2?v=1.0') format('woff2'); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>チケットメーカー</title>
+    <style>
+        @font-face { font-family: 'ITC Avant Garde Gothic Std Extra Light'; src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2?v=1.0') format('woff2'); }
+        @font-face { font-family: 'AR ADGothicJP'; src: url('fonts/jadhei01m.woff2?v=1.0') format('woff2'); }
+        @font-face { font-family: 'KozGoPr6N'; src: url('fonts/KozGoPr6N-Medium.woff2?v=1.0') format('woff2'); }
 
- body { font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", sans-serif; margin: 0; padding: 20px; background: #FFF4F6; color: #F676A6; position: relative; }
- #mainContainer { display: flex; justify-content: space-between; }
- #canvasContainer { width: 50%; text-align: center; overflow: auto; }
- #ticketCanvas { border: 1px solid #ccc; max-width: 100%; height: auto; }
- #controlsContainer { width: 45%; overflow-y: auto; max-height: 90vh; }
+        body { font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", sans-serif; margin: 0; padding: 20px; background: #FFF4F6; color: #F676A6; position: relative; }
+        #mainContainer { display: flex; justify-content: space-between; }
+        #canvasContainer { width: 50%; text-align: center; overflow: auto; }
+        #ticketCanvas { border: 1px solid #ccc; max-width: 100%; height: auto; }
+        #controlsContainer { width: 45%; overflow-y: auto; max-height: 90vh; }
 
- .input-group { margin: 10px 0; }
- .note { color: #F676A6; font-size: 14px; }
- .position-input, .spacing-input, .size-input, .line-height-input, .shadow-input, .opacity-input { width: 50px; margin-left: 5px; display: none; }
- .advanced-mode.active .position-input, .advanced-mode.active .spacing-input, .advanced-mode.active .size-input, .advanced-mode.active .line-height-input, .advanced-mode.active .shadow-input, .advanced-mode.active .opacity-input { display: inline; }
- .advanced-label { display: none; }
- .advanced-mode.active .advanced-label { display: inline; }
- .advanced-mode { display: none; }
- .advanced-mode.active { display: block; }
- #previewSizeButtons { margin-top: 10px; }
- #previewSizeButtons button, .input-group button { margin: 0 5px 10px; padding: 8px 16px; border-radius: 20px; border: none; background: #F676A6; color: #FFF; cursor: pointer; }
- #previewSizeButtons button:hover, .input-group button:hover { background: #E55A8C; }
+        .input-group { margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
+        .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
+        .input-group input, .input-group select { margin-top: 5px; width: 100%; max-width: 300px; padding: 5px; }
+        .note { color: #F676A6; font-size: 14px; }
+        .position-input, .spacing-input, .size-input, .line-height-input, .shadow-input, .opacity-input { width: 50px; margin-left: 5px; display: none; }
+        .advanced-mode.active .position-input, .advanced-mode.active .spacing-input, .advanced-mode.active .size-input, .advanced-mode.active .line-height-input, .advanced-mode.active .shadow-input, .advanced-mode.active .opacity-input { display: inline; }
+        .advanced-label { display: none; }
+        .advanced-mode.active .advanced-label { display: inline; }
+        .advanced-mode { display: none; }
+        .advanced-mode.active { display: block; }
+        #previewSizeButtons { margin-top: 10px; }
+        #previewSizeButtons button, .input-group button { margin: 0 5px 10px; padding: 8px 16px; border-radius: 20px; border: none; background: #F676A6; color: #FFF; cursor: pointer; }
+        #previewSizeButtons button:hover, .input-group button:hover { background: #E55A8C; }
 
- .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
+        .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
 
- .ad-container { text-align: center; margin: 20px 0; }
- #languageSelector { position: absolute; top: 10px; right: 10px; color: #F676A6; }
- #disclaimer { font-size: 7pt; color: #F676A6; text-align: center; margin-top: 10px; }
- #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
+        .ad-container { text-align: center; margin: 20px 0; }
+        #languageSelector { position: absolute; top: 10px; right: 10px; color: #F676A6; padding: 5px; }
+        #disclaimer { font-size: 7pt; color: #F676A6; text-align: center; margin-top: 10px; }
+        #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
 
- @media (max-width: 768px) {
- #mainContainer { flex-direction: column; }
- #canvasContainer, #controlsContainer { width: 100%; }
- #canvasContainer { order: 2; }
- #controlsContainer { order: 1; }
- }
- @media (max-width: 1024px) and (orientation: landscape) {
- #canvasContainer { width: 60%; }
- #controlsContainer { width: 35%; }
- }
- </style>
- <link rel="preload" href="fonts/ITC Avant Garde Gothic Std Extra Light.woff2" as="font" type="font/woff2" crossorigin>
- <link rel="preload" href="fonts/jadhei01m.woff2" as="font" type="font/woff2" crossorigin>
- <link rel="preload" href="fonts/KozGoPr6N-Medium.woff2" as="font" type="font/woff2" crossorigin>
- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661724500759448" crossorigin="anonymous"></script>
- <script src="jquery.min.js"></script>
- <script src="qrcode.js"></script>
- <script src="script.js"></script>
+        @media (max-width: 768px) {
+            #mainContainer { flex-direction: column; }
+            #canvasContainer, #controlsContainer { width: 100%; }
+            #canvasContainer { order: 2; }
+            #controlsContainer { order: 1; }
+        }
+        @media (max-width: 1024px) and (orientation: landscape) {
+            #canvasContainer { width: 60%; }
+            #controlsContainer { width: 35%; }
+        }
+    </style>
+    <link rel="preload" href="fonts/ITC Avant Garde Gothic Std Extra Light.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/jadhei01m.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/KozGoPr6N-Medium.woff2" as="font" type="font/woff2" crossorigin>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661724500759448" crossorigin="anonymous"></script>
+    <script src="jquery.min.js" defer></script>
+    <script src="qrcode.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
- <div class="ad-container">
- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5661724500759448" data-ad-slot="5661724500759448" data-ad-format="auto" data-full-width-responsive="true"></ins>
- <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
- </div>
+    <div class="ad-container">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5661724500759448" data-ad-slot="5661724500759448" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
 
- <select id="languageSelector" onchange="changeLanguage(this.value)">
- <option value="ja" selected>日本語</option>
- <option value="zh-TW">中文（繁體）</option>
- <option value="zh-CN">中文（简体）</option>
- <option value="en">English</option>
- <option value="ko">한국어</option>
- <option value="th">ไทย</option>
- <option value="id">Bahasa Indonesia</option>
- </select>
+    <select id="languageSelector" onchange="changeLanguage(this.value)">
+        <option value="ja" selected>日本語</option>
+        <option value="zh-TW">中文（繁體）</option>
+        <option value="zh-CN">中文（简体）</option>
+        <option value="en">English</option>
+        <option value="ko">한국어</option>
+        <option value="th">ไทย</option>
+        <option value="id">Bahasa Indonesia</option>
+    </select>
 
- <div id="mainContainer">
- <div id="canvasContainer">
- <h1 data-key="preview">チケットプレビュー</h1>
- <canvas id="ticketCanvas" aria-label="Ticket preview canvas"></canvas>
- <div id="previewSizeButtons">
- <button onclick="setPreviewScale(0.5)">50%</button>
- <button onclick="setPreviewScale(1.0)">100%</button>
- <button onclick="setPreviewScale(1.5)">150%</button>
- <button onclick="setPreviewScale(2.0)">200%</button>
- </div>
- <p id="disclaimer" data-key="disclaimer">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。</p>
- </div>
+    <div id="mainContainer">
+        <div id="canvasContainer">
+            <h1 data-key="preview">チケットプレビュー</h1>
+            <canvas id="ticketCanvas" aria-label="Ticket preview canvas"></canvas>
+            <div id="previewSizeButtons">
+                <button onclick="setPreviewScale(0.5)">50%</button>
+                <button onclick="setPreviewScale(1.0)">100%</button>
+                <button onclick="setPreviewScale(1.5)">150%</button>
+                <button onclick="setPreviewScale(2.0)">200%</button>
+            </div>
+            <p id="disclaimer" data-key="disclaimer">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。</p>
+        </div>
 
- <div id="controlsContainer">
- <h1 data-key="custom">オリジナルチケット</h1>
+        <div id="controlsContainer">
+            <h1 data-key="custom">オリジナルチケット</h1>
 
- <div class="input-group">
- <label data-key="rect1Line1" for="rect1Line1">エリア1 テキスト (1行目): <input type="text" id="rect1Line1" value="AKB" aria-label="エリア1 テキスト 1行目"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="rect1Line1X" value="13.5" class="position-input" aria-label="エリア1 テキスト 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line1Y" value="12" class="position-input" aria-label="エリア1 テキスト 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Spacing" value="-7000" class="spacing-input" aria-label="エリア1 字間"><span class="error-msg" id="rect1Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Size" value="47" class="size-input" aria-label="エリア1 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Size-error"></span>
- </div>
- <label data-key="rect1Line2" for="rect1Line2">エリア1 テキスト (2行目): <input type="text" id="rect1Line2" value="48" aria-label="エリア1 テキスト 2行目"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="rect1Line2X" value="13.5" class="position-input" aria-label="エリア1 テキスト 2行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line2Y" value="24" class="position-input" aria-label="エリア1 テキスト 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Line2Spacing" value="-7000" class="spacing-input" aria-label="エリア1 2行目 字間"><span class="error-msg" id="rect1Line2Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Line2Size" value="47" class="size-input" aria-label="エリア1 2行目 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Line2Size-error"></span>
- </div>
- <label data-key="rect1Color" for="rect1Color">エリア1 背景色: <input type="color" id="rect1Color" value="#2086D1" aria-label="エリア1 背景色"></label>
- <label data-key="rect1TextColor" for="rect1TextColor">エリア1 文字色: <input type="color" id="rect1TextColor" value="#FFFFFF" aria-label="エリア1 文字色"></label>
- </div>
+            <div class="input-group">
+                <label data-key="rect1Line1" for="rect1Line1">エリア1 テキスト (1行目): <input type="text" id="rect1Line1" value="AKB" aria-label="エリア1 テキスト 1行目"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="rect1Line1X" value="13.5" class="position-input" aria-label="エリア1 テキスト 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line1Y" value="12" class="position-input" aria-label="エリア1 テキスト 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Spacing" value="-7000" class="spacing-input" aria-label="エリア1 字間"><span class="error-msg" id="rect1Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Size" value="47" class="size-input" aria-label="エリア1 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Size-error"></span>
+                </div>
+                <label data-key="rect1Line2" for="rect1Line2">エリア1 テキスト (2行目): <input type="text" id="rect1Line2" value="48" aria-label="エリア1 テキスト 2行目"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="rect1Line2X" value="13.5" class="position-input" aria-label="エリア1 テキスト 2行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line2Y" value="24" class="position-input" aria-label="エリア1 テキスト 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Line2Spacing" value="-7000" class="spacing-input" aria-label="エリア1 2行目 字間"><span class="error-msg" id="rect1Line2Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Line2Size" value="47" class="size-input" aria-label="エリア1 2行目 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Line2Size-error"></span>
+                </div>
+                <label data-key="rect1Color" for="rect1Color">エリア1 背景色: <input type="color" id="rect1Color" value="#2086D1" aria-label="エリア1 背景色"></label>
+                <label data-key="rect1TextColor" for="rect1TextColor">エリア1 文字色: <input type="color" id="rect1TextColor" value="#FFFFFF" aria-label="エリア1 文字色"></label>
+            </div>
 
- <div class="input-group">
- <label data-key="text2" for="text2">テキスト2: <input type="text" id="text2" value="「ここからだ」 公演" aria-label="テキスト2"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="text2X" value="37" class="position-input" aria-label="テキスト2 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text2X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text2Y" value="12" class="position-input" aria-label="テキスト2 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text2Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text2Spacing" value="2000" class="spacing-input" aria-label="テキスト2 字間"><span class="error-msg" id="text2Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text2Size" value="14.2" class="size-input" aria-label="テキスト2 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text2Size-error"></span>
- </div>
- <label data-key="text3Line1" for="text3Line1">テキスト3 (1行目): <input type="text" id="text3Line1" value="秋元康 生誕祭" aria-label="テキスト3 1行目"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="text3Line1X" value="35" class="position-input" aria-label="テキスト3 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line1X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text3Line1Y" value="19" class="position-input" aria-label="テキスト3 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line1Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text3Spacing" value="2000" class="spacing-input" aria-label="テキスト3 字間"><span class="error-msg" id="text3Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text3Size" value="14.2" class="size-input" aria-label="テキスト3 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text3Size-error"></span>
- </div>
- <label data-key="text3Line2" for="text3Line2">テキスト3 (2行目): <input type="text" id="text3Line2" value="AKB48劇場" aria-label="テキスト3 2行目"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="text3Line2X" value="35" class="position-input" aria-label="テキスト3 2行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line2X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text3Line2Y" value="25" class="position-input" aria-label="テキスト3 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line2Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text3Line2Spacing" value="2000" class="spacing-input" aria-label="テキスト3 2行目 字間"><span class="error-msg" id="text3Line2Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text3Line2Size" value="14.2" class="size-input" aria-label="テキスト3 2行目 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text3Line2Size-error"></span>
- </div>
- <label data-key="text4Line1" for="text4Line1">テキスト4 (1行目): <input type="text" id="text4Line1" value="＜日付＞2025年05月02日（金）" aria-label="テキスト4 1行目"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="text4Line1X" value="13" class="position-input" aria-label="テキスト4 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text4Line1Y" value="43" class="position-input" aria-label="テキスト4 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text4Spacing" value="1000" class="spacing-input" aria-label="テキスト4 字間"><span class="error-msg" id="text4Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text4Size" value="11" class="size-input" aria-label="テキスト4 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text4Size-error"></span>
- <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="text4LineHeight" value="14" class="line-height-input" aria-label="テキスト4 行間"><span class="advanced-label">pt</span><span class="error-msg" id="text4LineHeight-error"></span>
- </div>
- <label data-key="text4Line2" for="text4Line2">テキスト4 (2行目): <input type="text" id="text4Line2" value="OPEN：18時10分 START：18時30分 ￥3,400" aria-label="テキスト4 2行目"></label>
- <label data-key="text5" for="text5">テキスト5: <input type="text" id="text5" value="048番" aria-label="テキスト5"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="text5X" value="13" class="position-input" aria-label="テキスト5 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text5X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text5Y" value="55" class="position-input" aria-label="テキスト5 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text5Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text5Spacing" value="200" class="spacing-input" aria-label="テキスト5 字間"><span class="error-msg" id="text5Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text5Size" value="16" class="size-input" aria-label="テキスト5 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text5Size-error"></span>
- </div>
- <label data-key="text6" for="text6">テキスト6: <input type="text" id="text6" value="① ❘ 000－0000 ❘ ゴメン先生 様" aria-label="テキスト6"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="text6X" value="36" class="position-input" aria-label="テキスト6 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text6X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text6Y" value="55" class="position-input" aria-label="テキスト6 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text6Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text6Spacing" value="311" class="spacing-input" aria-label="テキスト6 字間"><span class="error-msg" id="text6Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text6Size" value="13" class="size-input" aria-label="テキスト6 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text6Size-error"></span>
- </div>
- <label data-key="textColor" for="textColor">文字色 (2-6): <input type="color" id="textColor" value="#000000" aria-label="文字色 (2-6)"></label>
- </div>
+            <div class="input-group">
+                <label data-key="text2" for="text2">テキスト2: <input type="text" id="text2" value="「ここからだ」 公演" aria-label="テキスト2"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="text2X" value="37" class="position-input" aria-label="テキスト2 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text2X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text2Y" value="12" class="position-input" aria-label="テキスト2 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text2Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text2Spacing" value="2000" class="spacing-input" aria-label="テキスト2 字間"><span class="error-msg" id="text2Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text2Size" value="14.2" class="size-input" aria-label="テキスト2 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text2Size-error"></span>
+                </div>
+                <label data-key="text3Line1" for="text3Line1">テキスト3 (1行目): <input type="text" id="text3Line1" value="秋元康 生誕祭" aria-label="テキスト3 1行目"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="text3Line1X" value="35" class="position-input" aria-label="テキスト3 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line1X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text3Line1Y" value="19" class="position-input" aria-label="テキスト3 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line1Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text3Spacing" value="2000" class="spacing-input" aria-label="テキスト3 字間"><span class="error-msg" id="text3Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text3Size" value="14.2" class="size-input" aria-label="テキスト3 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text3Size-error"></span>
+                </div>
+                <label data-key="text3Line2" for="text3Line2">テキスト3 (2行目): <input type="text" id="text3Line2" value="AKB48劇場" aria-label="テキスト3 2行目"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="text3Line2X" value="35" class="position-input" aria-label="テキスト3 2行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line2X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text3Line2Y" value="25" class="position-input" aria-label="テキスト3 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line2Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text3Line2Spacing" value="2000" class="spacing-input" aria-label="テキスト3 2行目 字間"><span class="error-msg" id="text3Line2Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text3Line2Size" value="14.2" class="size-input" aria-label="テキスト3 2行目 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text3Line2Size-error"></span>
+                </div>
+                <label data-key="text4Line1" for="text4Line1">テキスト4 (1行目): <input type="text" id="text4Line1" value="＜日付＞2025年05月02日（金）" aria-label="テキスト4 1行目"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="text4Line1X" value="13" class="position-input" aria-label="テキスト4 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text4Line1Y" value="43" class="position-input" aria-label="テキスト4 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text4Spacing" value="1000" class="spacing-input" aria-label="テキスト4 字間"><span class="error-msg" id="text4Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text4Size" value="11" class="size-input" aria-label="テキスト4 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text4Size-error"></span>
+                    <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="text4LineHeight" value="14" class="line-height-input" aria-label="テキスト4 行間"><span class="advanced-label">pt</span><span class="error-msg" id="text4LineHeight-error"></span>
+                </div>
+                <label data-key="text4Line2" for="text4Line2">テキスト4 (2行目): <input type="text" id="text4Line2" value="OPEN：18時10分       START：18時30分      ￥3,400" aria-label="テキスト4 2行目"></label>
+                <label data-key="text5" for="text5">テキスト5: <input type="text" id="text5" value="048番" aria-label="テキスト5"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="text5X" value="13" class="position-input" aria-label="テキスト5 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text5X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text5Y" value="55" class="position-input" aria-label="テキスト5 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text5Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text5Spacing" value="200" class="spacing-input" aria-label="テキスト5 字間"><span class="error-msg" id="text5Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text5Size" value="16" class="size-input" aria-label="テキスト5 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text5Size-error"></span>
+                </div>
+                <label data-key="text6" for="text6">テキスト6: <input type="text" id="text6" value="① ❘ 000－0000 ❘ ゴメン先生 様" aria-label="テキスト6"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="text6X" value="36" class="position-input" aria-label="テキスト6 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text6X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text6Y" value="55" class="position-input" aria-label="テキスト6 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text6Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text6Spacing" value="311" class="spacing-input" aria-label="テキスト6 字間"><span class="error-msg" id="text6Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text6Size" value="13" class="size-input" aria-label="テキスト6 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text6Size-error"></span>
+                </div>
+                <label data-key="textColor" for="textColor">文字色 (2-6): <input type="color" id="textColor" value="#000000" aria-label="文字色 (2-6)"></label>
+            </div>
 
- <div class="input-group">
- <label data-key="bgColor" for="bgColor">全体の背景色: <input type="color" id="bgColor" value="#E5EDF9" aria-label="全体の背景色"></label>
- <label data-key="bgText" for="bgText">背景テキスト: <input type="text" id="bgText" value="AKB48" aria-label="背景テキスト"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="bgTextX" value="-100" class="position-input" aria-label="背景テキスト X位置"><span class="advanced-label">mm</span><span class="error-msg" id="bgTextX-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="bgTextY" value="0" class="position-input" aria-label="背景テキスト Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="bgTextY-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="bgTextSpacing" value="-6000" class="spacing-input" aria-label="背景テキスト 字間"><span class="error-msg" id="bgTextSpacing-error"></span>
- <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="bgTextLineHeight" value="46" class="line-height-input" aria-label="背景テキスト 行間"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextLineHeight-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type ="number" id="bgTextSize" value="62" class="size-input" aria-label="背景テキスト 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextSize-error"></span>
- </div>
- <label data-key="bgTextColor" for="bgTextColor">背景文字色: <input type="color" id="bgTextColor" value="#FFFFFF" aria-label="背景文字色"></label>
- <label data-key="bgShadowColor" for="bgShadowColor">背景影の色: <input type="color" id="bgShadowColor" value="#5F96ED" aria-label="背景影の色"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="shadowX">シャドウX: </label><input type="number" id="bgShadowX" value="0.5" step="0.1" class="shadow-input" aria-label="背景影 X偏移"><span class="advanced-label">mm</span><span class="error-msg" id="bgShadowX-error"></span>
- <label class="advanced-label" data-key="shadowY">シャドウY: </label><input type="number" id="bgShadowY" value="-0.4" step="0.1" class="shadow-input" aria-label="背景影 Y偏移"><span class="advanced-label">mm</span><span class="error-msg" id="bgShadowY-error"></span>
- <label class="advanced-label" data-key="shadowOpacity">シャドウ透明度: </label><input type="number" id="bgShadowOpacity" value="0.2" min="0" max="1" step="0.1" class="opacity-input" aria-label="背景影 透明度"><span class="advanced-label">（0-1）</span><span class="error-msg" id="bgShadowOpacity-error"></span>
- </div>
- </div>
+            <div class="input-group">
+                <label data-key="bgColor" for="bgColor">全体の背景色: <input type="color" id="bgColor" value="#E5EDF9" aria-label="全体の背景色"></label>
+                <label data-key="bgText" for="bgText">背景テキスト: <input type="text" id="bgText" value="AKB48" aria-label="背景テキスト"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="bgTextX" value="-100" class="position-input" aria-label="背景テキスト X位置"><span class="advanced-label">mm</span><span class="error-msg" id="bgTextX-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="bgTextY" value="0" class="position-input" aria-label="背景テキスト Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="bgTextY-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="bgTextSpacing" value="-6000" class="spacing-input" aria-label="背景テキスト 字間"><span class="error-msg" id="bgTextSpacing-error"></span>
+                    <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="bgTextLineHeight" value="46" class="line-height-input" aria-label="背景テキスト 行間"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextLineHeight-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="bgTextSize" value="62" class="size-input" aria-label="背景テキスト 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextSize-error"></span>
+                </div>
+                <label data-key="bgTextColor" for="bgTextColor">背景文字色: <input type="color" id="bgTextColor" value="#FFFFFF" aria-label="背景文字色"></label>
+                <label data-key="bgShadowColor" for="bgShadowColor">背景影の色: <input type="color" id="bgShadowColor" value="#5F96ED" aria-label="背景影の色"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="shadowX">シャドウX: </label><input type="number" id="bgShadowX" value="0.5" step="0.1" class="shadow-input" aria-label="背景影 X偏移"><span class="advanced-label">mm</span><span class="error-msg" id="bgShadowX-error"></span>
+                    <label class="advanced-label" data-key="shadowY">シャドウY: </label><input type="number" id="bgShadowY" value="-0.4" step="0.1" class="shadow-input" aria-label="背景影 Y偏移"><span class="advanced-label">mm</span><span class="error-msg" id="bgShadowY-error"></span>
+                    <label class="advanced-label" data-key="shadowOpacity">シャドウ透明度: </label><input type="number" id="bgShadowOpacity" value="0.2" min="0" max="1" step="0.1" class="opacity-input" aria-label="背景影 透明度"><span class="advanced-label">（0-1）</span><span class="error-msg" id="bgShadowOpacity-error"></span>
+                </div>
+            </div>
 
- <div class="input-group">
- <label data-key="rect9Color" for="rect9Color">エリア9 背景色: <input type="color" id="rect9Color" value="#2086D1" aria-label="エリア9 背景色"></label>
- <label data-key="text10" for="text10">テキスト10: <input type="text" id="text10" value="<主催 ‧ お問い合せ>" aria-label="テキスト10"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="text10X" value="54" class="position-input" aria-label="テキスト10 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text10X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text10Y" value="62.5" class="position-input" aria-label="テキスト10 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text10Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text10Spacing" value="236" class="spacing-input" aria-label="テキスト10 字間"><span class="error-msg" id="text10Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text10Size" value="7" class="size-input" aria-label="テキスト10 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text10Size-error"></span>
- </div>
- <label data-key="text11" for="text11">テキスト11: <input type="text" id="text11" value="AKB48 Theater" aria-label="テキスト11"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="text11X" value="80.5" class="position-input" aria-label="テキスト11 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text11X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text11Y" value="63" class="position-input" aria-label="テキスト11 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text11Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text11Spacing" value="238" class="spacing-input" aria-label="テキスト11 字間"><span class="error-msg" id="text11Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text11Size" value="10" class="size-input" aria-label="テキスト11 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text11Size-error"></span>
- </div>
- <label data-key="text12" for="text12">テキスト12: <input type="text" id="text12" value="TEL:03-5298-8648" aria-label="テキスト12"></label>
- <div class="advanced-mode">
- <label class="advanced-label" data-key="x">X: </label><input type="number" id="text12X" value="108" class="position-input" aria-label="テキスト12 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text12X-error"></span>
- <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text12Y" value="63" class="position-input" aria-label="テキスト12 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text12Y-error"></span>
- <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text12Spacing" value="236" class="spacing-input" aria-label="テキスト12 字間"><span class="error-msg" id="text12Spacing-error"></span>
- <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text12Size" value="12.5" class="size-input" aria-label="テキスト12 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text12Size-error"></span>
- </div>
- <label data-key="footerTextColor" for="footerTextColor">文字色 (10-12): <input type="color" id="footerTextColor" value="#FFFFFF" aria-label="文字色 (10-12)"></label>
- </div>
+            <div class="input-group">
+                <label data-key="rect9Color" for="rect9Color">エリア9 背景色: <input type="color" id="rect9Color" value="#2086D1" aria-label="エリア9 背景色"></label>
+                <label data-key="text10" for="text10">テキスト10: <input type="text" id="text10" value="<主催 ‧ お問い合せ>" aria-label="テキスト10"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="text10X" value="54" class="position-input" aria-label="テキスト10 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text10X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text10Y" value="62.5" class="position-input" aria-label="テキスト10 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text10Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text10Spacing" value="236" class="spacing-input" aria-label="テキスト10 字間"><span class="error-msg" id="text10Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text10Size" value="7" class="size-input" aria-label="テキスト10 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text10Size-error"></span>
+                </div>
+                <label data-key="text11" for="text11">テキスト11: <input type="text" id="text11" value="AKB48 Theater" aria-label="テキスト11"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="text11X" value="80.5" class="position-input" aria-label="テキスト11 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text11X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text11Y" value="63" class="position-input" aria-label="テキスト11 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text11Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text11Spacing" value="238" class="spacing-input" aria-label="テキスト11 字間"><span class="error-msg" id="text11Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text11Size" value="10" class="size-input" aria-label="テキスト11 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text11Size-error"></span>
+                </div>
+                <label data-key="text12" for="text12">テキスト12: <input type="text" id="text12" value="TEL:03-5298-8648" aria-label="テキスト12"></label>
+                <div class="advanced-mode">
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="text12X" value="108" class="position-input" aria-label="テキスト12 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text12X-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text12Y" value="63" class="position-input" aria-label="テキスト12 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text12Y-error"></span>
+                    <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text12Spacing" value="236" class="spacing-input" aria-label="テキスト12 字間"><span class="error-msg" id="text12Spacing-error"></span>
+                    <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text12Size" value="12.5" class="size-input" aria-label="テキスト12 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text12Size-error"></span>
+                </div>
+                <label data-key="footerTextColor" for="footerTextColor">文字色 (10-12): <input type="color" id="footerTextColor" value="#FFFFFF" aria-label="文字色 (10-12)"></label>
+            </div>
 
- <div class="input-group">
- <label data-key="qrCodeInput" for="qrCodeInput">QRコード画像 (優先): <input type="file" id="qrCodeInput" accept="image/*" aria-label="QRコード画像"></label>
- <label data-key="qrCodeText" for="qrCodeText">URLをQRコードにします: <input type="text" id="qrCodeText" placeholder="URLまたはテキスト" aria-label="URLをQRコードにします"></label>
- <button onclick="generateQRCode()" data-key="generateQR" aria-label="作成する">作成する</button>
- <label data-key="showQR" for="showQR"><input type="checkbox" id="showQR" checked aria-label="QRコード枠を表示"> QRコード枠を表示</label>
- <label data-key="qrSquareColor" for="qrSquareColor">QR枠の色: <input type="color" id="qrSquareColor" value="#2086D1" aria-label="QR枠の色"></label>
- </div>
+            <div class="input-group">
+                <label data-key="qrCodeInput" for="qrCodeInput">QRコード画像 (優先): <input type="file" id="qrCodeInput" accept="image/*" aria-label="QRコード画像"></label>
+                <label data-key="qrCodeText" for="qrCodeText">URLをQRコードにします: <input type="text" id="qrCodeText" placeholder="URLまたはテキスト" aria-label="URLをQRコードにします"></label>
+                <button id="generateQRButton" data-key="generateQR" aria-label="作成する">作成する</button>
+                <label data-key="showQR" for="showQR"><input type="checkbox" id="showQR" checked aria-label="QRコード枠を表示"> QRコード枠を表示</label>
+                <label data-key="qrSquareColor" for="qrSquareColor">QR枠の色: <input type="color" id="qrSquareColor" value="#2086D1" aria-label="QR枠の色"></label>
+            </div>
 
- <div class="input-group advanced-mode">
- <label data-key="customImageInput" for="customImageInput">カスタム画像: <input type="file" id="customImageInput" accept="image/*" aria-label="カスタム画像"></label>
- <span class="note" data-key="recommendedSize">（推奨サイズ: 65mm x 150mm）</span>
- <label data-key="imageLayer" for="imageLayer">画像のレイヤー: 
- <select id="imageLayer" aria-label="画像のレイヤー">
- <option value="background">背景</option>
- <option value="foreground">前景</option>
- </select>
- </label>
- <label data-key="customFontRect1" for="customFontRect1">エリア1用カスタムフォント: <input type="file" id="customFontRect1" accept=".woff,.woff2,.ttf,.otf" aria-label="エリア1用カスタムフォント"></label>
- <label data-key="customFontText2_3" for="customFontText2_3">テキスト2-3用カスタムフォント: <input type="file" id="customFontText2_3" accept=".woff,.woff2,.ttf,.otf" aria-label="テキスト2-3用カスタムフォント"></label>
- <label data-key="customFontText4_6" for="customFontText4_6">テキスト4-6用カスタムフォント: <input type="file" id="customFontText4_6" accept=".woff,.woff2,.ttf,.otf" aria-label="テキスト4-6用カスタムフォント"></label>
- <label data-key="customFontText10_12" for="customFontText10_12">テキスト10-12用カスタムフォント: <input type="file" id="customFontText10_12" accept=".woff,.woff2,.ttf,.otf" aria-label="テキスト10-12用カスタムフォント"></label>
- </div>
+            <div class="input-group advanced-mode">
+                <label data-key="customImageInput" for="customImageInput">カスタム画像: <input type="file" id="customImageInput" accept="image/*" aria-label="カスタム画像"></label>
+                <span class="note" data-key="recommendedSize">（推奨サイズ: 65mm x 150mm）</span>
+                <label data-key="imageLayer" for="imageLayer">画像のレイヤー: 
+                    <select id="imageLayer" aria-label="画像のレイヤー">
+                        <option value="background">背景</option>
+                        <option value="foreground">前景</option>
+                    </select>
+                </label>
+                <label data-key="customFontRect1" for="customFontRect1">エリア1用カスタムフォント: <input type="file" id="customFontRect1" accept=".woff,.woff2,.ttf,.otf" aria-label="エリア1用カスタムフォント"></label>
+                <label data-key="customFontText2_3" for="customFontText2_3">テキスト2-3用カスタムフォント: <input type="file" id="customFontText2_3" accept=".woff,.woff2,.ttf,.otf" aria-label="テキスト2-3用カスタムフォント"></label>
+                <label data-key="customFontText4_6" for="customFontText4_6">テキスト4-6用カスタムフォント: <input type="file" id="customFontText4_6" accept=".woff,.woff2,.ttf,.otf" aria-label="テキスト4-6用カスタムフォント"></label>
+                <label data-key="customFontText10_12" for="customFontText10_12">テキスト10-12用カスタムフォント: <input type="file" id="customFontText10_12" accept=".woff,.woff2,.ttf,.otf" aria-label="テキスト10-12用カスタムフォント"></label>
+            </div>
 
- <div class="input-group">
- <label data-key="bleedOption" for="bleedOption"><input type="checkbox" id="bleedOption" aria-label="裁ち落とし付き"> 裁ち落とし付き (+3mm)</label>
- </div>
+            <div class="input-group">
+                <label data-key="bleedOption" for="bleedOption"><input type="checkbox" id="bleedOption" aria-label="裁ち落とし付き"> 裁ち落とし付き (+3mm)</label>
+            </div>
 
- <div class="input-group">
- <button onclick="downloadTicket(300)" data-key="download300" aria-label="ダウンロード 300 DPI">ダウンロード (300 DPI)</button>
- <button onclick="downloadTicket(70)" data-key="download70" aria-label="ダウンロード 70 DPI">ダウンロード (70 DPI)</button>
- <button id="advancedModeBtn" onclick="toggleAdvancedMode()" data-key="advancedMode" aria-label="詳細設定">詳細設定</button>
- <button onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-key="donate" aria-label="カンパ">カンパ</button>
- <button onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-key="reportBug" aria-label="報錯">報錯</button>
- </div>
- <p class="note">※paypay ID: gomensensei</p>
- <p class="note" data-key="note">※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。</p>
- </div>
- </div>
+            <div class="input-group">
+                <button id="download300Button" data-key="download300" aria-label="ダウンロード 300 DPI">ダウンロード (300 DPI)</button>
+                <button id="download70Button" data-key="download70" aria-label="ダウンロード 70 DPI">ダウンロード (70 DPI)</button>
+                <button id="advancedModeBtn" onclick="toggleAdvancedMode()" data-key="advancedMode" aria-label="詳細設定">詳細設定</button>
+                <button onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-key="donate" aria-label="カンパ">カンパ</button>
+                <button onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-key="reportBug" aria-label="報錯">報錯</button>
+            </div>
+            <p class="note">※paypay ID: gomensensei</p>
+            <p class="note" data-key="note">※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。</p>
+        </div>
+    </div>
 
- <div class="ad-container">
- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5661724500759448" data-ad-slot="5661724500759448" data-ad-format="auto" data-full-width-responsive="true"></ins>
- <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
- </div>
+    <div class="ad-container">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5661724500759448" data-ad-slot="5661724500759448" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
 
- <div id="loading">生成中...</div>
+    <div id="loading">生成中...</div>
 </body>
 </html>
