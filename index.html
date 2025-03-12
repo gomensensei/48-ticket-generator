@@ -15,7 +15,16 @@
         #ticketCanvas { border: 1px solid #ccc; max-width: 100%; height: auto; }
         #controlsContainer { width: 45%; overflow-y: auto; max-height: 90vh; }
 
-        .input-group { margin: 10px 0; }
+        .input-group { margin: 10px 0;display: flex; flex-direction: column; /* 垂直排列 */
+                     }
+        .input-group label, 
+        .input-group button, 
+        .input-group div { 
+    margin-bottom: 10px; /* 項目之間的間距 */
+            }
+            .advanced-mode { 
+    margin-left: 20px; /* 進階選項縮進 */
+}
         .note { color: #F676A6; font-size: 14px; }
         .position-input, .spacing-input, .size-input, .line-height-input, .shadow-input, .opacity-input { width: 50px; margin-left: 5px; display: none; }
         .advanced-mode.active .position-input, .advanced-mode.active .spacing-input, .advanced-mode.active .size-input, .advanced-mode.active .line-height-input, .advanced-mode.active .shadow-input, .advanced-mode.active .opacity-input { display: inline; }
@@ -49,7 +58,7 @@
     <link rel="preload" href="fonts/jadhei01m.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/KozGoPr6N-Medium.woff2" as="font" type="font/woff2" crossorigin>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661724500759448" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="qrcode.js"></script>
 </head>
 <body>
     <div class="ad-container">
