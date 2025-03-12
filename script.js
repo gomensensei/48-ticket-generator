@@ -48,6 +48,14 @@ const langs = {
     }
 };
 
+const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func(...args), delay);
+    };
+};
+
 const checkFontAvailability = async (fontName) => {
     await document.fonts.ready;
     return document.fonts.check(`1em ${fontName}`);
@@ -70,27 +78,7 @@ const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left
     });
 };
 
-const drawTicket = async (dpiVal) => {
-    if (!ctx) {
-        console.error('Cannot draw ticket: Canvas context is null');
-        return;
-    }
-    const isAvantLoaded = await checkFontAvailability('ITC Avant Garde Gothic Std Extra Light');
-    if (!isAvantLoaded) {
-        console.warn('Font "ITC Avant Garde Gothic Std Extra Light" not loaded, falling back to sans-serif.');
-        fonts.avant = 'sans-serif';
-    }
-
-    const bleed = $('bleedOption')?.checked || false;
-    const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
-    const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
-    const mmPx = dpiVal / 25.4;
-    canvas.width = w;
-    canvas.height = h;
-    canvas.style.width = `${w * previewScale}px`;
-    canvas.style.height = `${h * previewScale}px`;
-    ctx.clearRect(0, 0, w, h);
-
+const drawBackground = async (dpiVal, bleed, w, h, mmPx) => {
     ctx.fillStyle = $('bgColor')?.value || '#E5EDF9';
     ctx.fillRect(0, 0, w, h);
 
@@ -125,12 +113,16 @@ const drawTicket = async (dpiVal) => {
     for (let y = bg.y, r = 0; y < h; y += gy, r++) 
         for (let x = bg.x + r * cw; x < w; x += gx) 
             ctx.fillText(bg.t, x, y);
+};
 
+const drawArea1 = (dpiVal, bleed, mmPx) => {
     ctx.fillStyle = $('rect1Color')?.value || '#2086D1';
     ctx.fillRect(8 * mmPx + (bleed ? sizes.bleed * mmPx : 0), bleed ? sizes.bleed * mmPx : 0, 25 * mmPx, 35 * mmPx);
     drawText([$('rect1Line1')?.value || 'AKB'], parseFloat($('rect1Line1X')?.value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line1Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Size')?.value || 47), parseFloat($('rect1Spacing')?.value || -7000), 0, $('rect1TextColor')?.value || '#FFFFFF', 'center', null, dpiVal);
     drawText([$('rect1Line2')?.value || '48'], parseFloat($('rect1Line2X')?.value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line2Y')?.value || 24) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Line2Size')?.value || 47), parseFloat($('rect1Line2Spacing')?.value || -7000), 0, $('rect1TextColor')?.value || '#FFFFFF', 'center', null, dpiVal);
+};
 
+const drawText2To6 = (dpiVal, bleed, mmPx) => {
     const tc = $('textColor')?.value || '#000000';
     drawText([$('text2')?.value || '「ここからだ」 公演'], parseFloat($('text2X')?.value || 37) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text2Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text2Size')?.value || 14.2), parseFloat($('text2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
     drawText([$('text3Line1')?.value || '秋元康 生誕祭'], parseFloat($('text3Line1X')?.value || 35) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line1Y')?.value || 19) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Size')?.value || 14.2), parseFloat($('text3Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
@@ -138,14 +130,18 @@ const drawTicket = async (dpiVal) => {
     drawText([$('text4Line1')?.value || '＜日付＞2025年05月02日（金）', $('text4Line2')?.value || 'OPEN：18時10分       START：18時30分      ￥3,400'], parseFloat($('text4Line1X')?.value || 13) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text4Line1Y')?.value || 43) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text4Size')?.value || 11), parseFloat($('text4Spacing')?.value || 1000), parseFloat($('text4LineHeight')?.value || 14), tc, 'left', fonts.ar, dpiVal);
     drawText([$('text5')?.value || '048番'], parseFloat($('text5X')?.value || 13) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text5Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text5Size')?.value || 16), parseFloat($('text5Spacing')?.value || 200), 0, tc, 'left', fonts.ar, dpiVal);
     drawText([$('text6')?.value || '① ❘ 000－0000 ❘ ゴメン先生 様'], parseFloat($('text6X')?.value || 36) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text6Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text6Size')?.value || 13), parseFloat($('text6Spacing')?.value || 311), 0, tc, 'left', fonts.ar, dpiVal);
+};
 
+const drawArea9 = (dpiVal, bleed, mmPx) => {
     ctx.fillStyle = $('rect9Color')?.value || '#2086D1';
     ctx.fillRect(bleed ? sizes.bleed * mmPx : 0, 60 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 150 * mmPx, 5 * mmPx);
     const fc = $('footerTextColor')?.value || '#FFFFFF';
     drawText([$('text10')?.value || '<主催 ‧ お問い合せ>'], parseFloat($('text10X')?.value || 54) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text10Y')?.value || 62.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text10Size')?.value || 7), parseFloat($('text10Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal);
-    drawText([$('text11')?.value || 'AKB48 Theater'], parseFloat($('text11X')?.value || 80.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text11Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 ||Variable fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, fc, 'left', fonts.ar, dpiVal);
+    drawText([$('text11')?.value || 'AKB48 Theater'], parseFloat($('text11X')?.value || 80.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text11Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, fc, 'left', fonts.ar, dpiVal);
     drawText([$('text12')?.value || 'TEL:03-5298-8648'], parseFloat($('text12X')?.value || 108) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal);
+};
 
+const drawQRCode = (dpiVal, bleed, w, mmPx) => {
     if ($('showQR')?.checked && qrImage) {
         const qx = w - 8.5 * mmPx - 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
               qy = 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
@@ -154,94 +150,104 @@ const drawTicket = async (dpiVal) => {
         ctx.fillRect(qx, qy, qs, qs);
         ctx.drawImage(qrImage, qx, qy, qs, qs);
     }
+};
 
+const drawForegroundImage = (dpiVal, bleed, w, h, mmPx) => {
     if (customImage && $('imageLayer')?.value === 'foreground') {
         ctx.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
     }
 };
 
+const drawTicket = async (dpiVal) => {
+    if (!ctx) {
+        console.error('Cannot draw ticket: Canvas context is null');
+        return;
+    }
+    const isAvantLoaded = await checkFontAvailability('ITC Avant Garde Gothic Std Extra Light');
+    if (!isAvantLoaded) {
+        console.warn('Font "ITC Avant Garde Gothic Std Extra Light" not loaded, falling back to sans-serif.');
+        fonts.avant = 'sans-serif';
+    }
+
+    const bleed = $('bleedOption')?.checked || false;
+    const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
+    const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
+    const mmPx = dpiVal / 25.4;
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = `${w * previewScale}px`;
+    canvas.style.height = `${h * previewScale}px`;
+    ctx.clearRect(0, 0, w, h);
+
+    await drawBackground(dpiVal, bleed, w, h, mmPx);
+    drawArea1(dpiVal, bleed, mmPx);
+    drawText2To6(dpiVal, bleed, mmPx);
+    drawArea9(dpiVal, bleed, mmPx);
+    drawQRCode(dpiVal, bleed, w, mmPx);
+    drawForegroundImage(dpiVal, bleed, w, h, mmPx);
+};
+
+const debouncedDrawTicket = debounce((dpiVal) => drawTicket(dpiVal), 300);
+
 const setPreviewScale = (scale) => {
     console.log('Setting preview scale to:', scale);
     previewScale = scale;
-    if (ctx) drawTicket(70);
+    if (ctx) debouncedDrawTicket(70);
 };
 
-const downloadTicket = (dpiVal) => {
-    const loading = $('loading');
-    if (loading) loading.style.display = 'block';
-    drawTicket(dpiVal).then(() => {
-        const link = document.createElement('a');
-        link.download = `ticket-${dpiVal}dpi.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        if (loading) loading.style.display = 'none';
-    }).catch((err) => {
-        console.error('Download error:', err);
-        alert(langs[currentLang].downloadError);
-        if (loading) loading.style.display = 'none';
-    });
+const downloadTicket = async (dpiVal) => {
+    console.log(`Downloading ticket at ${dpiVal} DPI`);
+    await drawTicket(dpiVal);
+    const link = document.createElement('a');
+    link.download = `ticket_${dpiVal}dpi.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    console.log('Download triggered');
 };
 
 const generateQRCode = () => {
-    const text = $('qrCodeText')?.value.trim();
-    if (!text) {
-        alert(langs[currentLang].qrGenerateError);
-        return;
-    }
+    const text = $('qrCodeText')?.value;
+    if (!text) return;
+    console.log('Generating QR code for:', text);
     try {
-        qrImage = null;
         const qrCanvas = document.createElement('canvas');
-        new QRCode(qrCanvas, { 
-            text: text, 
-            width: 300, 
-            height: 300,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
+        QRCode.toCanvas(qrCanvas, text, { width: 300 }, (error) => {
+            if (error) {
+                console.error('QR Code generation error:', error);
+                alert(langs[currentLang].qrGenerateError);
+                return;
+            }
+            qrImage = new Image();
+            qrImage.src = qrCanvas.toDataURL('image/png');
+            qrImage.onload = () => {
+                console.log('QR code image loaded');
+                if (ctx) debouncedDrawTicket(70);
+            };
         });
-        qrImage = new Image();
-        qrImage.src = qrCanvas.toDataURL('image/png');
-        qrImage.onload = () => {
-            console.log('QR code generated and loaded.');
-            if (ctx) drawTicket(70);
-        };
-        qrImage.onerror = () => {
-            console.error('QR image load error');
-            alert(langs[currentLang].qrLoadError);
-        };
     } catch (e) {
-        console.error('QR generation error:', e);
+        console.error('QR code generation failed:', e);
         alert(langs[currentLang].qrGenerateError);
     }
 };
 
-const loadFont = (inputId, fontKey) => {
-    const input = $(inputId);
-    if (!input) return;
-    input.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            const font = new FontFace(fontKey, ev.target.result);
-            font.load().then((loadedFont) => {
-                document.fonts.add(loadedFont);
-                fonts[fontKey] = loadedFont.family;
-                if (ctx) drawTicket(70);
-            }).catch((err) => {
-                console.error('Font load error:', err);
-                alert(langs[currentLang].fontLoadError);
-            });
-        };
-        reader.onerror = () => alert(langs[currentLang].qrReadError);
-        reader.readAsArrayBuffer(file);
-    });
+const loadFont = (file, fontKey) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        const fontData = e.target.result;
+        try {
+            const font = new FontFace(fontKey, fontData);
+            await font.load();
+            document.fonts.add(font);
+            fonts[fontKey] = fontKey;
+            console.log(`Custom font ${fontKey} loaded`);
+            if (ctx) debouncedDrawTicket(70);
+        } catch (err) {
+            console.error(`Failed to load font ${fontKey}:`, err);
+            alert(langs[currentLang].fontLoadError);
+        }
+    };
+    reader.readAsArrayBuffer(file);
 };
-
-loadFont('customFontRect1', 'customRect1');
-loadFont('customFontText2_3', 'customText2_3');
-loadFont('customFontText4_6', 'customText4_6');
-loadFont('customFontText10_12', 'customText10_12');
 
 $('qrCodeInput')?.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -250,16 +256,22 @@ $('qrCodeInput')?.addEventListener('change', (e) => {
         return;
     }
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = (event) => {
         qrImage = new Image();
-        qrImage.src = ev.target.result;
+        qrImage.src = event.target.result;
         qrImage.onload = () => {
-            console.log('QR image uploaded and loaded.');
-            if (ctx) drawTicket(70);
+            console.log('QR code image uploaded');
+            if (ctx) debouncedDrawTicket(70);
         };
-        qrImage.onerror = () => alert(langs[currentLang].qrLoadError);
+        qrImage.onerror = () => {
+            console.error('Failed to load QR code image');
+            alert(langs[currentLang].qrLoadError);
+        };
     };
-    reader.onerror = () => alert(langs[currentLang].qrReadError);
+    reader.onerror = () => {
+        console.error('Failed to read QR code file');
+        alert(langs[currentLang].qrReadError);
+    };
     reader.readAsDataURL(file);
 });
 
@@ -270,43 +282,23 @@ $('customImageInput')?.addEventListener('change', (e) => {
         return;
     }
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = (event) => {
         customImage = new Image();
-        customImage.src = ev.target.result;
+        customImage.src = event.target.result;
         customImage.onload = () => {
-            console.log('Custom image loaded.');
-            if (ctx) drawTicket(70);
+            console.log('Custom image uploaded');
+            if (ctx) debouncedDrawTicket(70);
         };
-        customImage.onerror = () => alert(langs[currentLang].qrLoadError);
     };
-    reader.onerror = () => alert(langs[currentLang].qrReadError);
     reader.readAsDataURL(file);
 });
 
-const toggleAdvancedMode = () => {
-    console.log('Toggling advanced mode');
-    document.querySelectorAll('.advanced-mode').forEach(el => el.classList.toggle('active'));
-};
-
-const changeLanguage = (lang) => {
-    console.log('Changing language to:', lang);
-    currentLang = lang;
-    document.title = langs[lang].title;
-    document.querySelectorAll('[data-key]').forEach(el => {
-        const key = el.dataset.key;
-        if (langs[lang][key]) {
-            if (el.tagName === 'LABEL') {
-                const textNode = Array.from(el.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-                if (textNode) textNode.textContent = langs[lang][key] + ': ';
-            } else if (el.tagName === 'BUTTON') {
-                el.textContent = langs[lang][key];
-            } else {
-                el.textContent = langs[lang][key];
-            }
-        }
+['customFontRect1', 'customFontText2_3', 'customFontText4_6', 'customFontText10_12'].forEach(id => {
+    $(id)?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) loadFont(file, id.replace('customFont', 'custom'));
     });
-    if (ctx) drawTicket(70);
-};
+});
 
 document.querySelectorAll('input[type="number"]').forEach(input => {
     input.addEventListener('input', () => {
@@ -323,46 +315,42 @@ document.querySelectorAll('input[type="number"]').forEach(input => {
         } else {
             $(input.id + '-error').style.display = 'none';
         }
-        if (ctx) drawTicket(70);
+        if (ctx) debouncedDrawTicket(70);
     });
 });
 
 document.querySelectorAll('input:not([type="number"]), select').forEach(el => {
     el.addEventListener('input', () => {
         console.log(`Input/select changed: ${el.id} = ${el.value}`);
-        if (ctx) drawTicket(70);
+        if (ctx) debouncedDrawTicket(70);
     });
 });
 
-$('generateQRButton')?.addEventListener('click', () => {
-    console.log('Generate QR button clicked');
+$('generateQRButton')?.addEventListener('click', generateQRCode);
+$('download300Button')?.addEventListener('click', () => downloadTicket(300));
+$('download70Button')?.addEventListener('click', () => downloadTicket(70));
+
+const toggleAdvancedMode = () => {
+    console.log('Toggling advanced mode');
+    const advancedElements = document.querySelectorAll('.advanced-mode');
+    advancedElements.forEach(el => el.classList.toggle('active'));
+    const btn = $('advancedModeBtn');
+    btn.textContent = btn.textContent === langs[currentLang].advancedMode ? '簡易設定' : langs[currentLang].advancedMode;
+};
+
+const changeLanguage = (lang) => {
+    console.log('Changing language to:', lang);
+    currentLang = lang;
+    document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (langs[lang][key]) el.textContent = langs[lang][key];
+    });
+    if (ctx) debouncedDrawTicket(70);
+};
+
+window.onload = () => {
+    console.log('Page loaded');
+    $('qrCodeText').value = 'https://example.com';
     generateQRCode();
-});
-
-$('download300Button')?.addEventListener('click', () => {
-    console.log('Download 300 DPI clicked');
-    downloadTicket(300);
-});
-
-$('download70Button')?.addEventListener('click', () => {
-    console.log('Download 70 DPI clicked');
-    downloadTicket(70);
-});
-
-window.addEventListener('load', () => {
-    console.log('Page loaded, initializing ticket...');
-    const qrCodeText = $('qrCodeText');
-    if (qrCodeText) {
-        qrCodeText.value = 'https://example.com';
-        console.log('QR code text set to:', qrCodeText.value);
-        generateQRCode();
-    } else {
-        console.error('qrCodeText element not found');
-    }
-    if (ctx) {
-        console.log('Drawing ticket...');
-        drawTicket(70);
-    } else {
-        console.error('Cannot draw ticket: Canvas context is null');
-    }
-});
+    if (ctx) drawTicket(70);
+};
