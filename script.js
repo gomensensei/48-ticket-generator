@@ -7,9 +7,9 @@ const canvas = $('ticketCanvas');
 const ctx = canvas ? canvas.getContext('2d') : null;
 
 const fonts = {
-    avant: 'ITC Avant Garde Gothic Std Extra Light, sans-serif',
-    kozgo: 'KozGoPr6N, YuGothic, sans-serif',
-    ar: 'AR ADGothicJP, MS PGothic, sans-serif',
+    avant: 'ITC Avant Garde Gothic Std Extra Light',
+    kozgo: 'KozGoPr6N',
+    ar: 'AR ADGothicJP',
     customRect1: null,
     customText2_3: null,
     customText4_6: null,
@@ -54,11 +54,6 @@ const debounce = (func, delay) => {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => func(...args), delay);
     };
-};
-
-const checkFontAvailability = async (fontName) => {
-    await document.fonts.ready;
-    return document.fonts.check(`1em ${fontName}`);
 };
 
 const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left', altFont, dpiVal = 300) => {
@@ -163,12 +158,6 @@ const drawTicket = async (dpiVal) => {
         console.error('Cannot draw ticket: Canvas context is null');
         return;
     }
-    const isAvantLoaded = await checkFontAvailability('ITC Avant Garde Gothic Std Extra Light');
-    if (!isAvantLoaded) {
-        console.warn('Font "ITC Avant Garde Gothic Std Extra Light" not loaded, falling back to sans-serif.');
-        fonts.avant = 'sans-serif';
-    }
-
     const bleed = $('bleedOption')?.checked || false;
     const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
     const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
@@ -343,14 +332,25 @@ const changeLanguage = (lang) => {
     currentLang = lang;
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
-        if (langs[lang][key]) el.textContent = langs[lang][key];
+        if (langs[lang][key]) {
+            if (el.tagName === 'LABEL') {
+                const input = el.querySelector('input, select');
+                if (input) {
+                    el.childNodes[0].textContent = langs[lang][key] + ': ';
+                } else {
+                    el.textContent = langs[lang][key];
+                }
+            } else {
+                el.textContent = langs[lang][key];
+            }
+        }
     });
     if (ctx) debouncedDrawTicket(70);
 };
 
 window.onload = () => {
     console.log('Page loaded');
-    $('qrCodeText').value = 'https://example.com';
-    generateQRCode();
+    $('qrCodeText').value = 'https://x.com/';
+    setTimeout(generateQRCode, 500); // 延遲生成 QR 碼，確保 qrcode.js 載入
     if (ctx) drawTicket(70);
 };
