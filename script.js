@@ -38,7 +38,7 @@ const langs = {
 const checkFontAvailability = async (fontName) => {
     await document.fonts.ready;
     const isAvailable = document.fonts.check(`1em ${fontName}`);
-    console.log(`Font "${fontName}" availability: ${isAvailable}`);
+    console.log(`字體 "${fontName}" 是否可用: ${isAvailable}`);
     return isAvailable;
 };
 
@@ -108,12 +108,37 @@ const drawTicket = async (dpiVal) => {
     for (let y = bg.y, r = 0; y < h; y += gy, r++) 
         for (let x = bg.x + r * cw; x < w; x += gx) 
             ctx.fillText(bg.t, x, y);
+ctx.fillStyle = $('rect1Color').value;
+ctx.fillRect(8 * mmPx + (bleed ? sizes.bleed * mmPx : 0), bleed ? sizes.bleed * mmPx : 0, 25 * mmPx, 35 * mmPx);
 
-    ctx.fillStyle = $('rect1Color').value;
-    ctx.fillRect(8 * mmPx + (bleed ? sizes.bleed * mmPx : 0), bleed ? sizes.bleed * mmPx : 0, 25 * mmPx, 35 * mmPx);
-    drawText([$('rect1Line1').value], parseFloat($('rect1Line1X').value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line1Y').value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || (isAvantLoaded ? 'ITC Avant Garde Gothic Std Extra Light' : 'sans-serif'), parseFloat($('rect1Size').value || 47), parseFloat($('rect1Spacing').value || -7000), 0, $('rect1TextColor').value, 'center', null, dpiVal);
-    drawText([$('rect1Line2').value], parseFloat($('rect1Line2X').value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line2Y').value || 24) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || (isAvantLoaded ? 'ITC Avant Garde Gothic Std Extra Light' : 'sans-serif'), parseFloat($('rect1Line2Size').value || 47), parseFloat($('rect1Line2Spacing').value || -7000), 0, $('rect1TextColor').value, 'center', null, dpiVal);
-
+const rect1Font = fonts.customRect1 || (isAvantLoaded ? 'ITC Avant Garde Gothic Std Extra Light' : 'sans-serif');
+console.log(`矩形1使用的字體: ${rect1Font}`);
+drawText(
+    [$('rect1Line1').value],
+    parseFloat($('rect1Line1X').value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0),
+    parseFloat($('rect1Line1Y').value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0),
+    rect1Font,
+    parseFloat($('rect1Size').value || 47),
+    parseFloat($('rect1Spacing').value || -7000),
+    0,
+    $('rect1TextColor').value,
+    'center',
+    null,
+    dpiVal
+);
+drawText(
+    [$('rect1Line2').value],
+    parseFloat($('rect1Line2X').value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0),
+    parseFloat($('rect1Line2Y').value || 24) * mmPx + (bleed ? sizes.bleed * mmPx : 0),
+    rect1Font,
+    parseFloat($('rect1Line2Size').value || 47),
+    parseFloat($('rect1Line2Spacing').value || -7000),
+    0,
+    $('rect1TextColor').value,
+    'center',
+    null,
+    dpiVal
+);
     const tc = $('textColor').value;
     drawText([$('text2').value], parseFloat($('text2X').value || 37) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text2Y').value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text2Size').value || 14.2), parseFloat($('text2Spacing').value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
     drawText([$('text3Line1').value], parseFloat($('text3Line1X').value || 35) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line1Y').value || 19) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Size').value || 14.2), parseFloat($('text3Spacing').value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
@@ -144,6 +169,8 @@ const drawTicket = async (dpiVal) => {
         ctx.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
     }
 };
+const bgFont = fonts.customRect1 || (isAvantLoaded ? 'ITC Avant Garde Gothic Std Extra Light' : 'sans-serif');
+console.log(`背景字體: ${bgFont}, 文字: ${bg.t}, X: ${bg.x}, Y: ${bg.y}`);
 
 const setPreviewScale = (scale) => {
     previewScale = scale;
@@ -174,7 +201,10 @@ const generateQRCode = () => {
     }
     try {
         const qrCanvas = document.createElement('canvas');
-        if (!qrCodeInstance) {
+        if (qrCodeInstance) {
+            qrCodeInstance.clear();
+            qrCodeInstance.makeCode(text);
+        } else {
             qrCodeInstance = new QRCode(qrCanvas, {
                 text: text,
                 width: 300,
@@ -183,22 +213,19 @@ const generateQRCode = () => {
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
-        } else {
-            qrCodeInstance.clear();
-            qrCodeInstance.makeCode(text);
         }
         qrImage = new Image();
         qrImage.src = qrCanvas.toDataURL('image/png');
         qrImage.onload = () => {
-            console.log('QR code generated and loaded successfully.');
+            console.log('QR碼生成並加載成功');
             drawTicket(70);
         };
         qrImage.onerror = () => {
-            console.error('QR image load error');
+            console.error('QR圖像加載錯誤');
             alert(langs.ja.qrLoadError);
         };
     } catch (e) {
-        console.error('QR generation error:', e);
+        console.error('QR生成錯誤:', e);
         alert(langs.ja.qrGenerateError);
     }
 };
