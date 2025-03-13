@@ -31,7 +31,7 @@ const langs = {
         text2: '公演', text3Line1: '生誕祭 (1行目)', text3Line2: '生誕祭 (2行目)', text4Line1: '日付 (1行目)', text4Line2: '日付 (2行目)', text5: '番号', text6: '郵便番号', textColor: '文字色 (2-6)', 
         bgColor: '全体の背景色', bgText: '背景テキスト', bgTextColor: '背景文字色', bgShadowColor: '背景影の色', 
         rect9Color: 'ボーダー 背景色', text10: '他', text11: '場所', text12: '電話番号', footerTextColor: 'ボーダー文字色', 
-        qrCodeInput: 'QRコード画像 (優先)', qrCodeText: 'URLをQRコードにします', generateQR: '作成する', showQR: 'QRコード枠を表示', qrSquareColor: 'QR枠の色', 
+        qrCodeInput: 'QRコード画像', showQR: 'QRコード枠を表示', qrSquareColor: 'QR枠の色', 
         customImageInput: 'カスタム画像', recommendedSize: '（推奨サイズ: 65mm x 150mm）', imageLayer: '画像のレイヤー', 
         customFontRect1: 'ロゴ用カスタムフォント', customFontText2_3: '公演-生誕祭用カスタムフォント', customFontText4_6: '日付-番号-郵便番号用カスタムフォント', customFontText10_12: '他-場所-電話番号用カスタムフォント', 
         bleedOption: '裁ち落とし付き (+3mm)', download300: 'ダウンロード (300 DPI)', download70: 'ダウンロード (70 DPI)', advancedMode: '詳細設定', donate: 'カンパ', reportBug: '報錯', 
@@ -39,7 +39,7 @@ const langs = {
         disclaimer: 'AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。', 
         downloadError: 'ダウンロードに失敗しました。もう一度お試しください。', inputError: '負の値または無効な値は使用できません。', opacityError: '透明度は0から1の間で入力してください。', 
         qrFormatError: 'サポートされていないファイル形式です。画像を選択してください。', qrLoadError: 'QRコード画像の読み込みに失敗しました。', qrReadError: 'ファイルの読み込みに失敗しました。', 
-        fontLoadError: 'フォントの読み込みに失敗しました。デフォルトフォントを使用します。', qrGenerateError: 'QRコードの生成に失敗しました。', 
+        fontLoadError: 'フォントの読み込みに失敗しました。デフォルトフォントを使用します。', 
         x: 'X', y: 'Y', spacing: '字間', size: 'サイズ', lineHeight: '行間', shadowX: 'シャドウX', shadowY: 'シャドウY', shadowOpacity: 'シャドウ透明度'
     },
     'zh-TW': {
@@ -48,7 +48,7 @@ const langs = {
         text2: '演出', text3Line1: '生日祭 (第1行)', text3Line2: '生日祭 (第2行)', text4Line1: '日期 (第1行)', text4Line2: '日期 (第2行)', text5: '編號', text6: '郵遞區號', textColor: '文字色 (2-6)', 
         bgColor: '整體背景色', bgText: '背景文字', bgTextColor: '背景文字色', bgShadowColor: '背景陰影色', 
         rect9Color: '邊框 背景色', text10: '其他', text11: '場地', text12: '電話號碼', footerTextColor: '邊框文字色', 
-        qrCodeInput: 'QR碼圖片 (優先)', qrCodeText: '將URL轉為QR碼', generateQR: '生成', showQR: '顯示QR碼框架', qrSquareColor: 'QR框架顏色', 
+        qrCodeInput: 'QR碼圖片', showQR: '顯示QR碼框架', qrSquareColor: 'QR框架顏色', 
         customImageInput: '自訂圖片', recommendedSize: '（推薦尺寸: 65mm x 150mm）', imageLayer: '圖片層次', 
         customFontRect1: '標誌用自訂字體', customFontText2_3: '演出-生日祭用自訂字體', customFontText4_6: '日期-編號-郵遞區號用自訂字體', customFontText10_12: '其他-場地-電話號碼用自訂字體', 
         bleedOption: '含出血位 (+3mm)', download300: '下載 (300 DPI)', download70: '下載 (70 DPI)', advancedMode: '進階設定', donate: '捐款', reportBug: '回報錯誤', 
@@ -56,7 +56,7 @@ const langs = {
         disclaimer: '鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人感動，故製作此網站，讓粉絲可自製門票並保存。此網站純為興趣製作，請勿用於商業或非法用途。版權歸© AKB48及株式会社DH所有，製作者不承擔任何責任。', 
         downloadError: '下載失敗，請重試。', inputError: '不可使用負值或無效值。', opacityError: '透明度需在0到1之間。', 
         qrFormatError: '不支援的檔案格式，請選擇圖片。', qrLoadError: 'QR碼圖片載入失敗。', qrReadError: '檔案讀取失敗。', 
-        fontLoadError: '字體載入失敗，將使用預設字體。', qrGenerateError: 'QR碼生成失敗。', 
+        fontLoadError: '字體載入失敗，將使用預設字體。', 
         x: 'X', y: 'Y', spacing: '字距', size: '大小', lineHeight: '行距', shadowX: '陰影X', shadowY: '陰影Y', shadowOpacity: '陰影透明度'
     },
     'zh-CN': {
@@ -65,7 +65,7 @@ const langs = {
         text2: '演出', text3Line1: '生日祭 (第1行)', text3Line2: '生日祭 (第2行)', text4Line1: '日期 (第1行)', text4Line2: '日期 (第2行)', text5: '编号', text6: '邮递区号', textColor: '文字色 (2-6)', 
         bgColor: '整体背景色', bgText: '背景文本', bgTextColor: '背景文字色', bgShadowColor: '背景阴影色', 
         rect9Color: '边框 背景色', text10: '其他', text11: '场地', text12: '电话号码', footerTextColor: '边框文字色', 
-        qrCodeInput: 'QR码图片 (优先)', qrCodeText: '将URL转为QR码', generateQR: '生成', showQR: '显示QR码框架', qrSquareColor: 'QR框架颜色', 
+        qrCodeInput: 'QR码图片', showQR: '显示QR码框架', qrSquareColor: 'QR框架颜色', 
         customImageInput: '自定义图片', recommendedSize: '（推荐尺寸: 65mm x 150mm）', imageLayer: '图片层级', 
         customFontRect1: '标志用自定义字体', customFontText2_3: '演出-生日祭用自定义字体', customFontText4_6: '日期-编号-邮递区号用自定义字体', customFontText10_12: '其他-场地-电话号码用自定义字体', 
         bleedOption: '含出血位 (+3mm)', download300: '下载 (300 DPI)', download70: '下载 (70 DPI)', advancedMode: '高级设置', donate: '捐款', reportBug: '报告错误', 
@@ -73,7 +73,7 @@ const langs = {
         disclaimer: '鉴于AKB48成员诞辰祭剧场公演中，粉丝复刻的剧场门票令人感动，故制作此网站，让粉丝可自制门票并保存。此网站纯为兴趣制作，请勿用于商业或非法用途。版权归© AKB48及株式会社DH所有，制作者不承担任何责任。', 
         downloadError: '下载失败，请重试。', inputError: '不可使用负值或无效值。', opacityError: '透明度需在0到1之间。', 
         qrFormatError: '不支持的文件格式，请选择图片。', qrLoadError: 'QR码图片加载失败。', qrReadError: '文件读取失败。', 
-        fontLoadError: '字体加载失败，将使用默认字体。', qrGenerateError: 'QR码生成失败。', 
+        fontLoadError: '字体加载失败，将使用默认字体。', 
         x: 'X', y: 'Y', spacing: '字距', size: '大小', lineHeight: '行距', shadowX: '阴影X', shadowY: '阴影Y', shadowOpacity: '阴影透明度'
     },
     en: {
@@ -82,7 +82,7 @@ const langs = {
         text2: 'Performance', text3Line1: 'Birthday (Line 1)', text3Line2: 'Birthday (Line 2)', text4Line1: 'Date (Line 1)', text4Line2: 'Date (Line 2)', text5: 'Number', text6: 'Postal Code', textColor: 'Text Color (2-6)', 
         bgColor: 'Overall Background Color', bgText: 'Background Text', bgTextColor: 'Background Text Color', bgShadowColor: 'Background Shadow Color', 
         rect9Color: 'Border Background Color', text10: 'Other', text11: 'Venue', text12: 'Phone Number', footerTextColor: 'Border Text Color', 
-        qrCodeInput: 'QR Code Image (Priority)', qrCodeText: 'Convert URL to QR Code', generateQR: 'Generate', showQR: 'Show QR Code Frame', qrSquareColor: 'QR Frame Color', 
+        qrCodeInput: 'QR Code Image', showQR: 'Show QR Code Frame', qrSquareColor: 'QR Frame Color', 
         customImageInput: 'Custom Image', recommendedSize: '(Recommended Size: 65mm x 150mm)', imageLayer: 'Image Layer', 
         customFontRect1: 'Custom Font for Logo', customFontText2_3: 'Custom Font for Performance-Birthday', customFontText4_6: 'Custom Font for Date-Number-Postal Code', customFontText10_12: 'Custom Font for Other-Venue-Phone Number', 
         bleedOption: 'With Bleed (+3mm)', download300: 'Download (300 DPI)', download70: 'Download (70 DPI)', advancedMode: 'Advanced Settings', donate: 'Donate', reportBug: 'Report Bug', 
@@ -90,7 +90,7 @@ const langs = {
         disclaimer: 'Inspired by AKB48 member birthday theater performances, this site was created for fans to save custom tickets as a hobby. Commercial or illegal use is prohibited. Rights belong to © AKB48 and DH Co., Ltd. The creator assumes no responsibility.', 
         downloadError: 'Download failed. Please try again.', inputError: 'Negative or invalid values are not allowed.', opacityError: 'Opacity must be between 0 and 1.', 
         qrFormatError: 'Unsupported file format. Please select an image.', qrLoadError: 'Failed to load QR code image.', qrReadError: 'Failed to read file.', 
-        fontLoadError: 'Failed to load font. Using default font.', qrGenerateError: 'Failed to generate QR code.', 
+        fontLoadError: 'Failed to load font. Using default font.', 
         x: 'X', y: 'Y', spacing: 'Letter Spacing', size: 'Size', lineHeight: 'Line Height', shadowX: 'Shadow X', shadowY: 'Shadow Y', shadowOpacity: 'Shadow Opacity'
     },
     ko: {
@@ -99,7 +99,7 @@ const langs = {
         text2: '공연', text3Line1: '생일 축제 (1행)', text3Line2: '생일 축제 (2행)', text4Line1: '날짜 (1행)', text4Line2: '날짜 (2행)', text5: '번호', text6: '우편번호', textColor: '글자색 (2-6)', 
         bgColor: '전체 배경색', bgText: '배경 텍스트', bgTextColor: '배경 글자색', bgShadowColor: '배경 그림자 색상', 
         rect9Color: '테두리 배경색', text10: '기타', text11: '장소', text12: '전화번호', footerTextColor: '테두리 글자색', 
-        qrCodeInput: 'QR코드 이미지 (우선)', qrCodeText: 'URL을 QR코드로 변환', generateQR: '생성', showQR: 'QR코드 프레임 표시', qrSquareColor: 'QR 프레임 색상', 
+        qrCodeInput: 'QR코드 이미지', showQR: 'QR코드 프레임 표시', qrSquareColor: 'QR 프레임 색상', 
         customImageInput: '커스텀 이미지', recommendedSize: '(추천 크기: 65mm x 150mm)', imageLayer: '이미지 레이어', 
         customFontRect1: '로고용 커스텀 폰트', customFontText2_3: '공연-생일 축제용 커스텀 폰트', customFontText4_6: '날짜-번호-우편번호용 커스텀 폰트', customFontText10_12: '기타-장소-전화번호용 커스텀 폰트', 
         bleedOption: '블리드 포함 (+3mm)', download300: '다운로드 (300 DPI)', download70: '다운로드 (70 DPI)', advancedMode: '고급 설정', donate: '기부', reportBug: '버그 신고', 
@@ -107,7 +107,7 @@ const langs = {
         disclaimer: 'AKB48 멤버 생일 공연에서 팬들이 복각한 극장 티켓에 감동받아, 팬들이 취미로 티켓을 제작하고 저장할 수 있는 웹사이트를 만들었습니다. 상업적 또는 불법 사용은 금지됩니다. 권리는 © AKB48 및 DH 주식회사에 있으며, 제작자는 책임을 지지 않습니다.', 
         downloadError: '다운로드에 실패했습니다. 다시 시도하세요.', inputError: '음수 또는 유효하지 않은 값은 사용할 수 없습니다.', opacityError: '투명도는 0에서 1 사이로 입력하세요.', 
         qrFormatError: '지원되지 않는 파일 형식입니다. 이미지를 선택하세요.', qrLoadError: 'QR코드 이미지 로드에 실패했습니다.', qrReadError: '파일 읽기에 실패했습니다.', 
-        fontLoadError: '폰트 로드에 실패했습니다. 기본 폰트를 사용합니다.', qrGenerateError: 'QR코드 생성에 실패했습니다.', 
+        fontLoadError: '폰트 로드에 실패했습니다. 기본 폰트를 사용합니다.', 
         x: 'X', y: 'Y', spacing: '자간', size: '크기', lineHeight: '행간', shadowX: '그림자 X', shadowY: '그림자 Y', shadowOpacity: '그림자 투명도'
     },
     th: {
@@ -116,7 +116,7 @@ const langs = {
         text2: 'การแสดง', text3Line1: 'งานฉลองวันเกิด (บรรทัดที่ 1)', text3Line2: 'งานฉลองวันเกิด (บรรทัดที่ 2)', text4Line1: 'วันที่ (บรรทัดที่ 1)', text4Line2: 'วันที่ (บรรทัดที่ 2)', text5: 'หมายเลข', text6: 'รหัสไปรษณีย์', textColor: 'สีตัวอักษร (2-6)', 
         bgColor: 'สีพื้นหลังทั้งหมด', bgText: 'ข้อความพื้นหลัง', bgTextColor: 'สีข้อความพื้นหลัง', bgShadowColor: 'สีเงาพื้นหลัง', 
         rect9Color: 'สีพื้นหลังกรอบ', text10: 'อื่นๆ', text11: 'สถานที่', text12: 'หมายเลขโทรศัพท์', footerTextColor: 'สีตัวอักษรกรอบ', 
-        qrCodeInput: 'รูปภาพ QR โค้ด (ลำดับแรก)', qrCodeText: 'แปลง URL เป็น QR โค้ด', generateQR: 'สร้าง', showQR: 'แสดงกรอบ QR โค้ด', qrSquareColor: 'สีกรอบ QR', 
+        qrCodeInput: 'รูปภาพ QR โค้ด', showQR: 'แสดงกรอบ QR โค้ด', qrSquareColor: 'สีกรอบ QR', 
         customImageInput: 'รูปภาพที่กำหนดเอง', recommendedSize: '(ขนาดแนะนำ: 65 มม. x 150 มม.)', imageLayer: 'ชั้นของรูปภาพ', 
         customFontRect1: 'ฟอนต์ที่กำหนดเองสำหรับโลโก้', customFontText2_3: 'ฟอนต์ที่กำหนดเองสำหรับการแสดง-งานฉลองวันเกิด', customFontText4_6: 'ฟอนต์ที่กำหนดเองสำหรับวันที่-หมายเลข-รหัสไปรษณีย์', customFontText10_12: 'ฟอนต์ที่กำหนดเองสำหรับอื่นๆ-สถานที่-หมายเลขโทรศัพท์', 
         bleedOption: 'รวมระยะตัดขอบ (+3 มม.)', download300: 'ดาวน์โหลด (300 DPI)', download70: 'ดาวน์โหลด (70 DPI)', advancedMode: 'การตั้งค่าขั้นสูง', donate: 'บริจาค', reportBug: 'รายงานข้อผิดพลาด', 
@@ -124,8 +124,8 @@ const langs = {
         disclaimer: 'ได้รับแรงบันดาลใจจากตั๋วโรงละครที่แฟน ๆ สร้างขึ้นในงานฉลองวันเกิดของสมาชิก AKB48 เว็บไซต์นี้สร้างขึ้นเพื่อให้แฟน ๆ สามารถทำตั๋วเองและเก็บไว้เป็นงานอดิเรก ห้ามใช้เพื่อการค้าหรือผิดกฎหมาย สิทธิ์เป็นของ © AKB48 และบริษัท DH ผู้สร้างไม่รับผิดชอบใด ๆ', 
         downloadError: 'การดาวน์โหลดล้มเหลว กรุณาลองใหม่', inputError: 'ไม่สามารถใช้ค่าลบหรือค่าที่ไม่ถูกต้องได้', opacityError: 'ความโปร่งใสต้องอยู่ระหว่าง 0 ถึง 1', 
         qrFormatError: 'รูปแบบไฟล์ไม่รองรับ กรุณาเลือกภาพ', qrLoadError: 'โหลดภาพ QR โค้ดไม่สำเร็จ', qrReadError: 'อ่านไฟล์ไม่สำเร็จ', 
-        fontLoadError: 'โหลดฟอนต์ไม่สำเร็จ จะใช้ฟอนต์เริ่มต้น', qrGenerateError: 'สร้าง QR โค้ดไม่สำเร็จ', 
-        x: Search: 'X', y: 'Y', spacing: 'ระยะห่างตัวอักษร', size: 'ขนาด', lineHeight: 'ระยะห่างบรรทัด', shadowX: 'เงา X', shadowY: 'เงา Y', shadowOpacity: 'ความโปร่งใสของเงา'
+        fontLoadError: 'โหลดฟอนต์ไม่สำเร็จ จะใช้ฟอนต์เริ่มต้น', 
+        x: 'X', y: 'Y', spacing: 'ระยะห่างตัวอักษร', size: 'ขนาด', lineHeight: 'ระยะห่างบรรทัด', shadowX: 'เงา X', shadowY: 'เงา Y', shadowOpacity: 'ความโปร่งใสของเงา'
     },
     id: {
         title: 'Pembuat Tiket', preview: 'Pratinjau Tiket', custom: 'Tiket Kustom', 
@@ -133,7 +133,7 @@ const langs = {
         text2: 'Pertunjukan', text3Line1: 'Pesta Ulang Tahun (Baris 1)', text3Line2: 'Pesta Ulang Tahun (Baris 2)', text4Line1: 'Tanggal (Baris 1)', text4Line2: 'Tanggal (Baris 2)', text5: 'Nomor', text6: 'Kode Pos', textColor: 'Warna Teks (2-6)', 
         bgColor: 'Warna Latar Keseluruhan', bgText: 'Teks Latar', bgTextColor: 'Warna Teks Latar', bgShadowColor: 'Warna Bayangan Latar', 
         rect9Color: 'Warna Latar Batas', text10: 'Lainnya', text11: 'Tempat', text12: 'Nomor Telepon', footerTextColor: 'Warna Teks Batas', 
-        qrCodeInput: 'Gambar Kode QR (Prioritas)', qrCodeText: 'Ubah URL menjadi Kode QR', generateQR: 'Buat', showQR: 'Tampilkan Bingkai Kode QR', qrSquareColor: 'Warna Bingkai QR', 
+        qrCodeInput: 'Gambar Kode QR', showQR: 'Tampilkan Bingkai Kode QR', qrSquareColor: 'Warna Bingkai QR', 
         customImageInput: 'Gambar Kustom', recommendedSize: '(Ukuran Disarankan: 65mm x 150mm)', imageLayer: 'Lapisan Gambar', 
         customFontRect1: 'Font Kustom untuk Logo', customFontText2_3: 'Font Kustom untuk Pertunjukan-Pesta Ulang Tahun', customFontText4_6: 'Font Kustom untuk Tanggal-Nomor-Kode Pos', customFontText10_12: 'Font Kustom untuk Lainnya-Tempat-Nomor Telepon', 
         bleedOption: 'Dengan Bleed (+3mm)', download300: 'Unduh (300 DPI)', download70: 'Unduh (70 DPI)', advancedMode: 'Pengaturan Lanjutan', donate: 'Donasi', reportBug: 'Laporkan Bug', 
@@ -141,7 +141,7 @@ const langs = {
         disclaimer: 'Terinspirasi dari tiket teater yang dibuat ulang oleh penggemar dalam pertunjukan ulang tahun anggota AKB48, situs ini dibuat agar penggemar dapat membuat dan menyimpan tiket sebagai hobi. Penggunaan komersial atau ilegal dilarang. Hak cipta milik © AKB48 dan DH Co., Ltd. Pembuat tidak bertanggung jawab.', 
         downloadError: 'Gagal mengunduh. Silakan coba lagi.', inputError: 'Nilai negatif atau tidak valid tidak diperbolehkan.', opacityError: 'Opasitas harus antara 0 dan 1.', 
         qrFormatError: 'Format file tidak didukung. Pilih gambar.', qrLoadError: 'Gagal memuat gambar kode QR.', qrReadError: 'Gagal membaca file.', 
-        fontLoadError: 'Gagal memuat font. Menggunakan font default.', qrGenerateError: 'Gagal membuat kode QR.', 
+        fontLoadError: 'Gagal memuat font. Menggunakan font default.', 
         x: 'X', y: 'Y', spacing: 'Jarak Huruf', size: 'Ukuran', lineHeight: 'Jarak Baris', shadowX: 'Bayangan X', shadowY: 'Bayangan Y', shadowOpacity: 'Opasitas Bayangan'
     }
 };
@@ -235,13 +235,15 @@ const drawArea9 = (dpiVal, bleed, mmPx, context = ctx) => {
 };
 
 const drawQRCode = (dpiVal, bleed, w, mmPx, context = ctx) => {
-    if ($('showQR')?.checked && qrImage) {
+    if ($('showQR')?.checked) {
         const qx = w - 8.5 * mmPx - 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
               qy = 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
               qs = 23 * mmPx;
         context.fillStyle = $('qrSquareColor')?.value || '#2086D1';
         context.fillRect(qx, qy, qs, qs);
-        context.drawImage(qrImage, qx, qy, qs, qs);
+        if (qrImage) {
+            context.drawImage(qrImage, qx, qy, qs, qs);
+        }
     }
 };
 
@@ -332,40 +334,6 @@ const downloadTicket = async (dpiVal) => {
     $('loading').style.display = 'none';
 };
 
-const generateQRCode = () => {
-    const text = $('qrCodeText')?.value;
-    if (!text) {
-        console.log('No URL provided for QR code generation');
-        qrImage = null;
-        debouncedDrawTicket(70);
-        return;
-    }
-    console.log('Generating QR code for:', text);
-    qrImage = null; // Clear any previous QR image
-    const qrCanvas = document.createElement('canvas');
-    QRCode.toCanvas(qrCanvas, text, { width: 300, errorCorrectionLevel: 'H' }, (error) => {
-        if (error) {
-            console.error('QR Code generation error:', error);
-            alert(langs[currentLang].qrGenerateError);
-            qrImage = null;
-            debouncedDrawTicket(70);
-            return;
-        }
-        qrImage = new Image();
-        qrImage.src = qrCanvas.toDataURL('image/png');
-        qrImage.onload = () => {
-            console.log('QR code image loaded');
-            debouncedDrawTicket(70);
-        };
-        qrImage.onerror = () => {
-            console.error('QR code image failed to load');
-            alert(langs[currentLang].qrLoadError);
-            qrImage = null;
-            debouncedDrawTicket(70);
-        };
-    });
-};
-
 const loadFont = (file, fontKey) => {
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -436,7 +404,7 @@ const waitForFonts = async () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded');
-    $('languageSelector').addEventListener('change', (e) => changeLanguage(e.target.value));
+    $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
     $('qrCodeInput')?.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file || !file.type.startsWith('image/')) {
@@ -525,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    document.querySelectorAll('input:notReviewed: not([type="number"]), select').forEach(el => {
+    document.querySelectorAll('input:not([type="number"]), select').forEach(el => {
         if (el.id !== 'languageSelector') {
             el.addEventListener('input', () => {
                 console.log(`Input/select changed: ${el.id} = ${el.value}`);
@@ -534,7 +502,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    $('generateQRButton')?.addEventListener('click', generateQRCode);
     $('download300Button')?.addEventListener('click', () => downloadTicket(300));
     $('download70Button')?.addEventListener('click', () => downloadTicket(70));
     $('scale50Button')?.addEventListener('click', () => setPreviewScale(0.5));
@@ -549,8 +516,6 @@ window.onload = async () => {
     await waitForFonts();
     console.log('Fonts loaded, initializing ticket');
     changeLanguage('ja');
-    $('qrCodeText').value = 'https://x.com/';
-    generateQRCode();
     if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
         previewScale = Math.min(1.0, window.innerWidth / dpi[70].base.w * 0.8);
     } else {
