@@ -154,29 +154,29 @@ const debounce = (func, delay) => {
     };
 };
 
-const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left', altFont, dpiVal = 300) => {
-    if (!ctx) return;
+const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left', altFont, dpiVal = 300, context = ctx) => {
+    if (!context) return;
     const ptPx = dpiVal / 72;
-    ctx.fillStyle = color;
-    ctx.textAlign = align;
+    context.fillStyle = color;
+    context.textAlign = align;
     lines.forEach((l, i) => {
         let cx = x, ly = y + i * height * ptPx;
         if (!l) return;
         l.split('').forEach(c => {
             const isAlt = altFont && /[A-Za-z0-9①❘－]/.test(c);
-            ctx.font = `${size * ptPx}px ${isAlt ? altFont : font}`;
-            ctx.fillText(c, cx, ly);
-            cx += ctx.measureText(c).width + spacing * ptPx / 1000;
+            context.font = `${size * ptPx}px ${isAlt ? altFont : font}`;
+            context.fillText(c, cx, ly);
+            cx += context.measureText(c).width + spacing * ptPx / 1000;
         });
     });
 };
 
-const drawBackground = async (dpiVal, bleed, w, h, mmPx) => {
-    ctx.fillStyle = $('bgColor')?.value || '#E5EDF9';
-    ctx.fillRect(0, 0, w, h);
+const drawBackground = async (dpiVal, bleed, w, h, mmPx, context = ctx) => {
+    context.fillStyle = $('bgColor')?.value || '#E5EDF9';
+    context.fillRect(0, 0, w, h);
 
     if (customImage && $('imageLayer')?.value === 'background') {
-        ctx.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
+        context.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
     }
 
     const bg = { 
@@ -187,72 +187,72 @@ const drawBackground = async (dpiVal, bleed, w, h, mmPx) => {
         lh: parseFloat($('bgTextLineHeight')?.value || 46), 
         sz: parseFloat($('bgTextSize')?.value || 62) 
     };
-    ctx.font = `${bg.sz * (dpiVal / 72)}px ${fonts.customRect1 || fonts.avant}`;
-    const cw = ctx.measureText(bg.t.charAt(0)).width, 
-          tw = ctx.measureText(bg.t).width, 
+    context.font = `${bg.sz * (dpiVal / 72)}px ${fonts.customRect1 || fonts.avant}`;
+    const cw = context.measureText(bg.t.charAt(0)).width, 
+          tw = context.measureText(bg.t).width, 
           gx = tw + bg.s * (dpiVal / 72) / 1000, 
           gy = bg.lh * (dpiVal / 72);
-    ctx.globalAlpha = parseFloat($('bgShadowOpacity')?.value || 0.2);
-    ctx.fillStyle = $('bgShadowColor')?.value || '#5F96ED';
-    ctx.shadowColor = $('bgShadowColor')?.value || '#5F96ED';
-    ctx.shadowOffsetX = parseFloat($('bgShadowX')?.value || 0.5) * mmPx;
-    ctx.shadowOffsetY = parseFloat($('bgShadowY')?.value || -0.4) * mmPx;
+    context.globalAlpha = parseFloat($('bgShadowOpacity')?.value || 0.2);
+    context.fillStyle = $('bgShadowColor')?.value || '#5F96ED';
+    context.shadowColor = $('bgShadowColor')?.value || '#5F96ED';
+    context.shadowOffsetX = parseFloat($('bgShadowX')?.value || 0.5) * mmPx;
+    context.shadowOffsetY = parseFloat($('bgShadowY')?.value || -0.4) * mmPx;
     for (let y = bg.y, r = 0; y < h; y += gy, r++) 
         for (let x = bg.x + r * cw; x < w; x += gx) 
-            ctx.fillText(bg.t, x, y);
-    ctx.globalAlpha = 1;
-    ctx.shadowOffsetX = ctx.shadowOffsetY = 0;
-    ctx.fillStyle = $('bgTextColor')?.value || '#FFFFFF';
+            context.fillText(bg.t, x, y);
+    context.globalAlpha = 1;
+    context.shadowOffsetX = context.shadowOffsetY = 0;
+    context.fillStyle = $('bgTextColor')?.value || '#FFFFFF';
     for (let y = bg.y, r = 0; y < h; y += gy, r++) 
         for (let x = bg.x + r * cw; x < w; x += gx) 
-            ctx.fillText(bg.t, x, y);
+            context.fillText(bg.t, x, y);
 };
 
-const drawArea1 = (dpiVal, bleed, mmPx) => {
-    ctx.fillStyle = $('rect1Color')?.value || '#2086D1';
-    ctx.fillRect(8 * mmPx + (bleed ? sizes.bleed * mmPx : 0), bleed ? sizes.bleed * mmPx : 0, 25 * mmPx, 35 * mmPx);
-    drawText([$('rect1Line1')?.value || 'AKB'], parseFloat($('rect1Line1X')?.value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line1Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Size')?.value || 47), parseFloat($('rect1Spacing')?.value || -7000), 0, $('rect1TextColor')?.value || '#FFFFFF', 'center', null, dpiVal);
-    drawText([$('rect1Line2')?.value || '48'], parseFloat($('rect1Line2X')?.value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line2Y')?.value || 24) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Line2Size')?.value || 47), parseFloat($('rect1Line2Spacing')?.value || -7000), 0, $('rect1TextColor')?.value || '#FFFFFF', 'center', null, dpiVal);
+const drawArea1 = (dpiVal, bleed, mmPx, context = ctx) => {
+    context.fillStyle = $('rect1Color')?.value || '#2086D1';
+    context.fillRect(8 * mmPx + (bleed ? sizes.bleed * mmPx : 0), bleed ? sizes.bleed * mmPx : 0, 25 * mmPx, 35 * mmPx);
+    drawText([$('rect1Line1')?.value || 'AKB'], parseFloat($('rect1Line1X')?.value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line1Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Size')?.value || 47), parseFloat($('rect1Spacing')?.value || -7000), 0, $('rect1TextColor')?.value || '#FFFFFF', 'center', null, dpiVal, context);
+    drawText([$('rect1Line2')?.value || '48'], parseFloat($('rect1Line2X')?.value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line2Y')?.value || 24) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Line2Size')?.value || 47), parseFloat($('rect1Line2Spacing')?.value || -7000), 0, $('rect1TextColor')?.value || '#FFFFFF', 'center', null, dpiVal, context);
 };
 
-const drawText2To6 = (dpiVal, bleed, mmPx) => {
+const drawText2To6 = (dpiVal, bleed, mmPx, context = ctx) => {
     const tc = $('textColor')?.value || '#000000';
-    drawText([$('text2')?.value || '「ここからだ」 公演'], parseFloat($('text2X')?.value || 37) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text2Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text2Size')?.value || 14.2), parseFloat($('text2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
-    drawText([$('text3Line1')?.value || '秋元康 生誕祭'], parseFloat($('text3Line1X')?.value || 35) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line1Y')?.value || 19) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Size')?.value || 14.2), parseFloat($('text3Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
-    drawText([$('text3Line2')?.value || 'AKB48劇場'], parseFloat($('text3Line2X')?.value || 35) * mmPx + (bleed ? Sizes.bleed * mmPx : 0), parseFloat($('text3Line2Y')?.value || 25) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Line2Size')?.value || 14.2), parseFloat($('text3Line2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
-    drawText([$('text4Line1')?.value || '＜日付＞2025年05月02日（金）', $('text4Line2')?.value || 'OPEN：18時10分       START：18時30分      ￥3,400'], parseFloat($('text4Line1X')?.value || 13) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text4Line1Y')?.value || 43) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text4Size')?.value || 11), parseFloat($('text4Spacing')?.value || 1000), parseFloat($('text4LineHeight')?.value || 14), tc, 'left', fonts.ar, dpiVal);
-    drawText([$('text5')?.value || '048番'], parseFloat($('text5X')?.value || 13) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text5Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text5Size')?.value || 16), parseFloat($('text5Spacing')?.value || 200), 0, tc, 'left', fonts.ar, dpiVal);
-    drawText([$('text6')?.value || '① ❘ 000－0000 ❘ ゴメン先生 様'], parseFloat($('text6X')?.value || 36) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text6Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text6Size')?.value || 13), parseFloat($('text6Spacing')?.value || 311), 0, tc, 'left', fonts.ar, dpiVal);
+    drawText([$('text2')?.value || '「ここからだ」 公演'], parseFloat($('text2X')?.value || 37) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text2Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text2Size')?.value || 14.2), parseFloat($('text2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal, context);
+    drawText([$('text3Line1')?.value || '秋元康 生誕祭'], parseFloat($('text3Line1X')?.value || 35) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line1Y')?.value || 19) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Size')?.value || 14.2), parseFloat($('text3Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal, context);
+    drawText([$('text3Line2')?.value || 'AKB48劇場'], parseFloat($('text3Line2X')?.value || 35) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line2Y')?.value || 25) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Line2Size')?.value || 14.2), parseFloat($('text3Line2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal, context);
+    drawText([$('text4Line1')?.value || '＜日付＞2025年05月02日（金）', $('text4Line2')?.value || 'OPEN：18時10分       START：18時30分      ￥3,400'], parseFloat($('text4Line1X')?.value || 13) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text4Line1Y')?.value || 43) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text4Size')?.value || 11), parseFloat($('text4Spacing')?.value || 1000), parseFloat($('text4LineHeight')?.value || 14), tc, 'left', fonts.ar, dpiVal, context);
+    drawText([$('text5')?.value || '048番'], parseFloat($('text5X')?.value || 13) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text5Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text5Size')?.value || 16), parseFloat($('text5Spacing')?.value || 200), 0, tc, 'left', fonts.ar, dpiVal, context);
+    drawText([$('text6')?.value || '① ❘ 000－0000 ❘ ゴメン先生 様'], parseFloat($('text6X')?.value || 36) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text6Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text6Size')?.value || 13), parseFloat($('text6Spacing')?.value || 311), 0, tc, 'left', fonts.ar, dpiVal, context);
 };
 
-const drawArea9 = (dpiVal, bleed, mmPx) => {
-    ctx.fillStyle = $('rect9Color')?.value || '#2086D1';
-    ctx.fillRect(bleed ? sizes.bleed * mmPx : 0, 60 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 150 * mmPx, 5 * mmPx);
+const drawArea9 = (dpiVal, bleed, mmPx, context = ctx) => {
+    context.fillStyle = $('rect9Color')?.value || '#2086D1';
+    context.fillRect(bleed ? sizes.bleed * mmPx : 0, 60 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 150 * mmPx, 5 * mmPx);
     const fc = $('footerTextColor')?.value || '#FFFFFF';
-    drawText([$('text10')?.value || '<主催 ‧ お問い合せ>'], parseFloat($('text10X')?.value || 54) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text10Y')?.value || 62.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text10Size')?.value || 7), parseFloat($('text10Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal);
-    drawText([$('text11')?.value || 'AKB48 Theater'], parseFloat($('text11X')?.value || 80.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text11Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, fc, 'left', fonts.ar, dpiVal);
-    drawText([$('text12')?.value || 'TEL:03-5298-8648'], parseFloat($('text12X')?.value || 108) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal);
+    drawText([$('text10')?.value || '<主催 ‧ お問い合せ>'], parseFloat($('text10X')?.value || 54) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text10Y')?.value || 62.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text10Size')?.value || 7), parseFloat($('text10Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal, context);
+    drawText([$('text11')?.value || 'AKB48 Theater'], parseFloat($('text11X')?.value || 80.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text11Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, fc, 'left', fonts.ar, dpiVal, context);
+    drawText([$('text12')?.value || 'TEL:03-5298-8648'], parseFloat($('text12X')?.value || 108) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal, context);
 };
 
-const drawQRCode = (dpiVal, bleed, w, mmPx) => {
+const drawQRCode = (dpiVal, bleed, w, mmPx, context = ctx) => {
     if ($('showQR')?.checked && qrImage) {
         const qx = w - 8.5 * mmPx - 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
               qy = 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
               qs = 23 * mmPx;
-        ctx.fillStyle = $('qrSquareColor')?.value || '#2086D1';
-        ctx.fillRect(qx, qy, qs, qs);
-        ctx.drawImage(qrImage, qx, qy, qs, qs);
+        context.fillStyle = $('qrSquareColor')?.value || '#2086D1';
+        context.fillRect(qx, qy, qs, qs);
+        context.drawImage(qrImage, qx, qy, qs, qs);
     }
 };
 
-const drawForegroundImage = (dpiVal, bleed, w, h, mmPx) => {
+const drawForegroundImage = (dpiVal, bleed, w, h, mmPx, context = ctx) => {
     if (customImage && $('imageLayer')?.value === 'foreground') {
-        ctx.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
+        context.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
     }
 };
 
-const drawTicket = async (dpiVal) => {
-    if (!ctx) {
+const drawTicket = async (dpiVal, context = ctx) => {
+    if (!context) {
         console.error('Cannot draw ticket: Canvas context is null');
         return;
     }
@@ -260,18 +260,20 @@ const drawTicket = async (dpiVal) => {
     const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
     const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
     const mmPx = dpiVal / 25.4;
-    canvas.width = w;
-    canvas.height = h;
-    canvas.style.width = `${w * previewScale}px`;
-    canvas.style.height = `${h * previewScale}px`;
-    ctx.clearRect(0, 0, w, h);
+    context.canvas.width = w;
+    context.canvas.height = h;
+    if (context === ctx) {
+        canvas.style.width = `${w * previewScale}px`;
+        canvas.style.height = `${h * previewScale}px`;
+    }
+    context.clearRect(0, 0, w, h);
 
-    await drawBackground(dpiVal, bleed, w, h, mmPx);
-    drawArea1(dpiVal, bleed, mmPx);
-    drawText2To6(dpiVal, bleed, mmPx);
-    drawArea9(dpiVal, bleed, mmPx);
-    drawQRCode(dpiVal, bleed, w, mmPx);
-    drawForegroundImage(dpiVal, bleed, w, h, mmPx);
+    await drawBackground(dpiVal, bleed, w, h, mmPx, context);
+    drawArea1(dpiVal, bleed, mmPx, context);
+    drawText2To6(dpiVal, bleed, mmPx, context);
+    drawArea9(dpiVal, bleed, mmPx, context);
+    drawQRCode(dpiVal, bleed, w, mmPx, context);
+    drawForegroundImage(dpiVal, bleed, w, h, mmPx, context);
 };
 
 const debouncedDrawTicket = debounce((dpiVal) => drawTicket(dpiVal), 300);
@@ -294,12 +296,32 @@ const setPreviewScale = (scale) => {
 const downloadTicket = async (dpiVal) => {
     console.log(`Downloading ticket at ${dpiVal} DPI`);
     $('loading').style.display = 'block';
-    await drawTicket(dpiVal);
+
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    const bleed = $('bleedOption')?.checked || false;
+    const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
+    const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
+    const mmPx = dpiVal / 25.4;
+
+    tempCanvas.width = w;
+    tempCanvas.height = h;
+    tempCtx.clearRect(0, 0, w, h);
+
+    await drawBackground(dpiVal, bleed, w, h, mmPx, tempCtx);
+    drawArea1(dpiVal, bleed, mmPx, tempCtx);
+    drawText2To6(dpiVal, bleed, mmPx, tempCtx);
+    drawArea9(dpiVal, bleed, mmPx, tempCtx);
+    drawQRCode(dpiVal, bleed, w, mmPx, tempCtx);
+    drawForegroundImage(dpiVal, bleed, w, h, mmPx, tempCtx);
+
     const link = document.createElement('a');
     link.download = `ticket_${dpiVal}dpi.png`;
-    link.href = canvas.toDataURL('image/png');
+    link.href = tempCanvas.toDataURL('image/png');
     link.click();
     console.log('Download triggered');
+
+    debouncedDrawTicket(70);
     $('loading').style.display = 'none';
 };
 
@@ -388,6 +410,17 @@ const toggleAdvancedMode = () => {
     btn.textContent = btn.textContent === langs[currentLang].advancedMode ? '簡易設定' : langs[currentLang].advancedMode;
 };
 
+const waitForFonts = async () => {
+    const fontPromises = [
+        document.fonts.load(`400 47px ${fonts.avant}`),
+        document.fonts.load(`400 62px ${fonts.avant}`),
+        document.fonts.load(`400 14.2px ${fonts.kozgo}`),
+        document.fonts.load(`400 14.2px ${fonts.ar}`)
+    ];
+    await Promise.all(fontPromises);
+    console.log('All fonts loaded');
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded');
     $('languageSelector').addEventListener('change', (e) => changeLanguage(e.target.value));
@@ -395,6 +428,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = e.target.files[0];
         if (!file || !file.type.startsWith('image/')) {
             alert(langs[currentLang].qrFormatError);
+            qrImage = null;
+            debouncedDrawTicket(70);
             return;
         }
         const reader = new FileReader();
@@ -402,17 +437,21 @@ document.addEventListener('DOMContentLoaded', () => {
             qrImage = new Image();
             qrImage.src = event.target.result;
             qrImage.onload = () => {
-                console.log('QR code image uploaded');
+                console.log('QR code image uploaded successfully');
                 debouncedDrawTicket(70);
             };
             qrImage.onerror = () => {
                 console.error('Failed to load QR code image');
                 alert(langs[currentLang].qrLoadError);
+                qrImage = null;
+                debouncedDrawTicket(70);
             };
         };
         reader.onerror = () => {
             console.error('Failed to read QR code file');
             alert(langs[currentLang].qrReadError);
+            qrImage = null;
+            debouncedDrawTicket(70);
         };
         reader.readAsDataURL(file);
     });
@@ -490,30 +529,17 @@ document.addEventListener('DOMContentLoaded', () => {
     $('scale150Button')?.addEventListener('click', () => setPreviewScale(1.5));
     $('scale200Button')?.addEventListener('click', () => setPreviewScale(2.0));
     $('advancedModeBtn')?.addEventListener('click', toggleAdvancedMode);
-
-    // 初始化
-    $('qrCodeText').value = 'https://x.com/';
-    changeLanguage('ja');
-    generateQRCode();
-    if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
-        previewScale = window.innerWidth / dpi[70].base.w * 0.7;
-    }
-    drawTicket(70);
 });
-
-const waitForFonts = async () => {
-    const fontPromises = [
-        document.fonts.load(`400 47px ${fonts.avant}`),
-        document.fonts.load(`400 62px ${fonts.avant}`),
-        document.fonts.load(`400 14.2px ${fonts.kozgo}`),
-        document.fonts.load(`400 14.2px ${fonts.ar}`)
-    ];
-    await Promise.all(fontPromises);
-    console.log('All fonts loaded');
-};
 
 window.onload = async () => {
     console.log('Page loaded');
     await waitForFonts();
     console.log('Fonts loaded, initializing ticket');
+    changeLanguage('ja');
+    $('qrCodeText').value = 'https://x.com/';
+    generateQRCode();
+    if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
+        previewScale = window.innerWidth / dpi[70].base.w * 0.7;
+    }
+    await drawTicket(70);
 };
