@@ -27,10 +27,10 @@ let currentLang = 'ja';
 const langs = {
     ja: {
         title: 'チケットメーカー', preview: 'チケットプレビュー', custom: 'オリジナルチケット', 
-        rect1Line1: 'ロゴ テキスト (1行目)', rect1Line2: 'ロゴ テキスト (2行目)', rect1Color: 'ロゴ 背景色', rect1TextColor: 'ロゴ 文字色',
+        rect1Line1: 'ロゴ テキスト (1行目)', rect1Line2: 'ロゴ テキスト (2行目)', rect1Color: 'ロゴ 背景色', rect1TextColor: 'ロゴ 文字色', 
         text2: '公演', text3Line1: '生誕祭 (1行目)', text3Line2: '生誕祭 (2行目)', text4Line1: '日付 (1行目)', text4Line2: '日付 (2行目)', text5: '番号', text6: '郵便番号', textColor: '文字色 (2-6)', 
         bgColor: '全体の背景色', bgText: '背景テキスト', bgTextColor: '背景文字色', bgShadowColor: '背景影の色', 
-        rect9Color: 'ボーダー 背景色', text10: '他', text11: '場所', text12: '電話番号', footerTextColor: 'ボーダー文字色',
+        rect9Color: 'ボーダー 背景色', text10: '他', text11: '場所', text12: '電話番号', footerTextColor: 'ボーダー文字色', 
         qrCodeInput: 'QRコード画像 (優先)', qrCodeText: 'URLをQRコードにします', generateQR: '作成する', showQR: 'QRコード枠を表示', qrSquareColor: 'QR枠の色', 
         customImageInput: 'カスタム画像', recommendedSize: '（推奨サイズ: 65mm x 150mm）', imageLayer: '画像のレイヤー', 
         customFontRect1: 'ロゴ用カスタムフォント', customFontText2_3: '公演-生誕祭用カスタムフォント', customFontText4_6: '日付-番号-郵便番号用カスタムフォント', customFontText10_12: '他-場所-電話番号用カスタムフォント', 
@@ -44,13 +44,13 @@ const langs = {
     },
     'zh-TW': {
         title: '門票生成器', preview: '門票預覽', custom: '自訂門票', 
-        rect1Line1: '標誌 文字 (第1行)', rect1Line2: '標誌 文字 (第2行)', rect1Color: '標誌 背景色', rect1TextColor: '標誌 文字色',
-        text2: '公演', text3Line1: '生誕祭 (第1行)', text3Line2: '生誕祭 (第2行)', text4Line1: '日期 (第1行)', text4Line2: '日期 (第2行)', text5: '編號', text6: '郵遞區號', textColor: '文字色 (2-6)', 
+        rect1Line1: '標誌 文字 (第1行)', rect1Line2: '標誌 文字 (第2行)', rect1Color: '標誌 背景色', rect1TextColor: '標誌 文字色', 
+        text2: '演出', text3Line1: '生日祭 (第1行)', text3Line2: '生日祭 (第2行)', text4Line1: '日期 (第1行)', text4Line2: '日期 (第2行)', text5: '編號', text6: '郵遞區號', textColor: '文字色 (2-6)', 
         bgColor: '整體背景色', bgText: '背景文字', bgTextColor: '背景文字色', bgShadowColor: '背景陰影色', 
-        rect9Color: '邊框 背景色', text10: '其他', text11: '地點', text12: '電話號碼', footerTextColor: '邊框文字色',
+        rect9Color: '邊框 背景色', text10: '其他', text11: '場地', text12: '電話號碼', footerTextColor: '邊框文字色', 
         qrCodeInput: 'QR碼圖片 (優先)', qrCodeText: '將URL轉為QR碼', generateQR: '生成', showQR: '顯示QR碼框架', qrSquareColor: 'QR框架顏色', 
         customImageInput: '自訂圖片', recommendedSize: '（推薦尺寸: 65mm x 150mm）', imageLayer: '圖片層次', 
-        customFontRect1: '標誌用自訂字體', customFontText2_3: '公演-生誕祭用自訂字體', customFontText4_6: '日期-編號-郵遞區號用自訂字體', customFontText10_12: '其他-地點-電話號碼用自訂字體', 
+        customFontRect1: '標誌用自訂字體', customFontText2_3: '演出-生日祭用自訂字體', customFontText4_6: '日期-編號-郵遞區號用自訂字體', customFontText10_12: '其他-場地-電話號碼用自訂字體', 
         bleedOption: '含出血位 (+3mm)', download300: '下載 (300 DPI)', download70: '下載 (70 DPI)', advancedMode: '進階設定', donate: '捐款', reportBug: '回報錯誤', 
         note: '※下載的PNG為RGB格式。如需印刷用CMYK，請使用Photoshop或GIMP轉換。', 
         disclaimer: '鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人感動，故製作此網站，讓粉絲可自製門票並保存。此網站純為興趣製作，請勿用於商業或非法用途。版權歸© AKB48及株式会社DH所有，製作者不承擔任何責任。', 
@@ -61,13 +61,13 @@ const langs = {
     },
     'zh-CN': {
         title: '门票生成器', preview: '门票预览', custom: '自定义门票', 
-        rect1Line1: '标志 文本 (第1行)', rect1Line2: '标志 文本 (第2行)', rect1Color: '标志 背景色', rect1TextColor: '标志 文字色',
-        text2: '公演', text3Line1: '诞辰祭 (第1行)', text3Line2: '诞辰祭 (第2行)', text4Line1: '日期 (第1行)', text4Line2: '日期 (第2行)', text5: '编号', text6: '邮政编码', textColor: '文字色 (2-6)', 
+        rect1Line1: '标志 文本 (第1行)', rect1Line2: '标志 文本 (第2行)', rect1Color: '标志 背景色', rect1TextColor: '标志 文字色', 
+        text2: '演出', text3Line1: '生日祭 (第1行)', text3Line2: '生日祭 (第2行)', text4Line1: '日期 (第1行)', text4Line2: '日期 (第2行)', text5: '编号', text6: '邮递区号', textColor: '文字色 (2-6)', 
         bgColor: '整体背景色', bgText: '背景文本', bgTextColor: '背景文字色', bgShadowColor: '背景阴影色', 
-        rect9Color: '边框 背景色', text10: '其他', text11: '地点', text12: '电话号码', footerTextColor: '边框文字色',
+        rect9Color: '边框 背景色', text10: '其他', text11: '场地', text12: '电话号码', footerTextColor: '边框文字色', 
         qrCodeInput: 'QR码图片 (优先)', qrCodeText: '将URL转为QR码', generateQR: '生成', showQR: '显示QR码框架', qrSquareColor: 'QR框架颜色', 
         customImageInput: '自定义图片', recommendedSize: '（推荐尺寸: 65mm x 150mm）', imageLayer: '图片层级', 
-        customFontRect1: '标志用自定义字体', customFontText2_3: '公演-诞辰祭用自定义字体', customFontText4_6: '日期-编号-邮政编码用自定义字体', customFontText10_12: '其他-地点-电话号码用自定义字体', 
+        customFontRect1: '标志用自定义字体', customFontText2_3: '演出-生日祭用自定义字体', customFontText4_6: '日期-编号-邮递区号用自定义字体', customFontText10_12: '其他-场地-电话号码用自定义字体', 
         bleedOption: '含出血位 (+3mm)', download300: '下载 (300 DPI)', download70: '下载 (70 DPI)', advancedMode: '高级设置', donate: '捐款', reportBug: '报告错误', 
         note: '※下载的PNG为RGB格式。如需印刷用CMYK，请使用Photoshop或GIMP转换。', 
         disclaimer: '鉴于AKB48成员诞辰祭剧场公演中，粉丝复刻的剧场门票令人感动，故制作此网站，让粉丝可自制门票并保存。此网站纯为兴趣制作，请勿用于商业或非法用途。版权归© AKB48及株式会社DH所有，制作者不承担任何责任。', 
@@ -78,13 +78,13 @@ const langs = {
     },
     en: {
         title: 'Ticket Maker', preview: 'Ticket Preview', custom: 'Custom Ticket', 
-        rect1Line1: 'Logo Text (Line 1)', rect1Line2: 'Logo Text (Line 2)', rect1Color: 'Logo Background Color', rect1TextColor: 'Logo Text Color',
-        text2: 'Performance', text3Line1: 'Birthday Celebration (Line 1)', text3Line2: 'Birthday Celebration (Line 2)', text4Line1: 'Date (Line 1)', text4Line2: 'Date (Line 2)', text5: 'Number', text6: 'Postal Code', textColor: 'Text Color (2-6)', 
+        rect1Line1: 'Logo Text (Line 1)', rect1Line2: 'Logo Text (Line 2)', rect1Color: 'Logo Background Color', rect1TextColor: 'Logo Text Color', 
+        text2: 'Performance', text3Line1: 'Birthday (Line 1)', text3Line2: 'Birthday (Line 2)', text4Line1: 'Date (Line 1)', text4Line2: 'Date (Line 2)', text5: 'Number', text6: 'Postal Code', textColor: 'Text Color (2-6)', 
         bgColor: 'Overall Background Color', bgText: 'Background Text', bgTextColor: 'Background Text Color', bgShadowColor: 'Background Shadow Color', 
-        rect9Color: 'Border Background Color', text10: 'Others', text11: 'Venue', text12: 'Phone Number', footerTextColor: 'Border Text Color',
+        rect9Color: 'Border Background Color', text10: 'Other', text11: 'Venue', text12: 'Phone Number', footerTextColor: 'Border Text Color', 
         qrCodeInput: 'QR Code Image (Priority)', qrCodeText: 'Convert URL to QR Code', generateQR: 'Generate', showQR: 'Show QR Code Frame', qrSquareColor: 'QR Frame Color', 
         customImageInput: 'Custom Image', recommendedSize: '(Recommended Size: 65mm x 150mm)', imageLayer: 'Image Layer', 
-        customFontRect1: 'Custom Font for Logo', customFontText2_3: 'Custom Font for Performance-Birthday', customFontText4_6: 'Custom Font for Date-Number-Postal Code', customFontText10_12: 'Custom Font for Others-Venue-Phone Number', 
+        customFontRect1: 'Custom Font for Logo', customFontText2_3: 'Custom Font for Performance-Birthday', customFontText4_6: 'Custom Font for Date-Number-Postal Code', customFontText10_12: 'Custom Font for Other-Venue-Phone Number', 
         bleedOption: 'With Bleed (+3mm)', download300: 'Download (300 DPI)', download70: 'Download (70 DPI)', advancedMode: 'Advanced Settings', donate: 'Donate', reportBug: 'Report Bug', 
         note: '※Downloaded PNG is in RGB. Use Photoshop or GIMP to convert to CMYK for printing.', 
         disclaimer: 'Inspired by AKB48 member birthday theater performances, this site was created for fans to save custom tickets as a hobby. Commercial or illegal use is prohibited. Rights belong to © AKB48 and DH Co., Ltd. The creator assumes no responsibility.', 
@@ -95,13 +95,13 @@ const langs = {
     },
     ko: {
         title: '티켓 메이커', preview: '티켓 미리보기', custom: '커스텀 티켓', 
-        rect1Line1: '로고 텍스트 (1행)', rect1Line2: '로고 텍스트 (2행)', rect1Color: '로고 배경색', rect1TextColor: '로고 글자색',
-        text2: '공연', text3Line1: '생일 축하 (1행)', text3Line2: '생일 축하 (2행)', text4Line1: '날짜 (1행)', text4Line2: '날짜 (2행)', text5: '번호', text6: '우편번호', textColor: '글자색 (2-6)', 
+        rect1Line1: '로고 텍스트 (1행)', rect1Line2: '로고 텍스트 (2행)', rect1Color: '로고 배경색', rect1TextColor: '로고 글자색', 
+        text2: '공연', text3Line1: '생일 축제 (1행)', text3Line2: '생일 축제 (2행)', text4Line1: '날짜 (1행)', text4Line2: '날짜 (2행)', text5: '번호', text6: '우편번호', textColor: '글자색 (2-6)', 
         bgColor: '전체 배경색', bgText: '배경 텍스트', bgTextColor: '배경 글자색', bgShadowColor: '배경 그림자 색상', 
-        rect9Color: '테두리 배경색', text10: '기타', text11: '장소', text12: '전화번호', footerTextColor: '테두리 글자색',
+        rect9Color: '테두리 배경색', text10: '기타', text11: '장소', text12: '전화번호', footerTextColor: '테두리 글자색', 
         qrCodeInput: 'QR코드 이미지 (우선)', qrCodeText: 'URL을 QR코드로 변환', generateQR: '생성', showQR: 'QR코드 프레임 표시', qrSquareColor: 'QR 프레임 색상', 
         customImageInput: '커스텀 이미지', recommendedSize: '(추천 크기: 65mm x 150mm)', imageLayer: '이미지 레이어', 
-        customFontRect1: '로고용 커스텀 폰트', customFontText2_3: '공연-생일 축하용 커스텀 폰트', customFontText4_6: '날짜-번호-우편번호용 커스텀 폰트', customFontText10_12: '기타-장소-전화번호용 커스텀 폰트', 
+        customFontRect1: '로고용 커스텀 폰트', customFontText2_3: '공연-생일 축제용 커스텀 폰트', customFontText4_6: '날짜-번호-우편번호용 커스텀 폰트', customFontText10_12: '기타-장소-전화번호용 커스텀 폰트', 
         bleedOption: '블리드 포함 (+3mm)', download300: '다운로드 (300 DPI)', download70: '다운로드 (70 DPI)', advancedMode: '고급 설정', donate: '기부', reportBug: '버그 신고', 
         note: '※다운로드한 PNG는 RGB입니다. 인쇄용 CMYK로 변환하려면 Photoshop 또는 GIMP를 사용하세요.', 
         disclaimer: 'AKB48 멤버 생일 공연에서 팬들이 복각한 극장 티켓에 감동받아, 팬들이 취미로 티켓을 제작하고 저장할 수 있는 웹사이트를 만들었습니다. 상업적 또는 불법 사용은 금지됩니다. 권리는 © AKB48 및 DH 주식회사에 있으며, 제작자는 책임을 지지 않습니다.', 
@@ -112,10 +112,10 @@ const langs = {
     },
     th: {
         title: 'เครื่องทำตั๋ว', preview: 'ตัวอย่างตั๋ว', custom: 'ตั๋วที่กำหนดเอง', 
-        rect1Line1: 'ข้อความโลโก้ (บรรทัดที่ 1)', rect1Line2: 'ข้อความโลโก้ (บรรทัดที่ 2)', rect1Color: 'สีพื้นหลังโลโก้', rect1TextColor: 'สีตัวอักษรโลโก้',
+        rect1Line1: 'ข้อความโลโก้ (บรรทัดที่ 1)', rect1Line2: 'ข้อความโลโก้ (บรรทัดที่ 2)', rect1Color: 'สีพื้นหลังโลโก้', rect1TextColor: 'สีตัวอักษรโลโก้', 
         text2: 'การแสดง', text3Line1: 'งานฉลองวันเกิด (บรรทัดที่ 1)', text3Line2: 'งานฉลองวันเกิด (บรรทัดที่ 2)', text4Line1: 'วันที่ (บรรทัดที่ 1)', text4Line2: 'วันที่ (บรรทัดที่ 2)', text5: 'หมายเลข', text6: 'รหัสไปรษณีย์', textColor: 'สีตัวอักษร (2-6)', 
         bgColor: 'สีพื้นหลังทั้งหมด', bgText: 'ข้อความพื้นหลัง', bgTextColor: 'สีข้อความพื้นหลัง', bgShadowColor: 'สีเงาพื้นหลัง', 
-        rect9Color: 'สีพื้นหลังขอบ', text10: 'อื่นๆ', text11: 'สถานที่', text12: 'หมายเลขโทรศัพท์', footerTextColor: 'สีตัวอักษรขอบ',
+        rect9Color: 'สีพื้นหลังกรอบ', text10: 'อื่นๆ', text11: 'สถานที่', text12: 'หมายเลขโทรศัพท์', footerTextColor: 'สีตัวอักษรกรอบ', 
         qrCodeInput: 'รูปภาพ QR โค้ด (ลำดับแรก)', qrCodeText: 'แปลง URL เป็น QR โค้ด', generateQR: 'สร้าง', showQR: 'แสดงกรอบ QR โค้ด', qrSquareColor: 'สีกรอบ QR', 
         customImageInput: 'รูปภาพที่กำหนดเอง', recommendedSize: '(ขนาดแนะนำ: 65 มม. x 150 มม.)', imageLayer: 'ชั้นของรูปภาพ', 
         customFontRect1: 'ฟอนต์ที่กำหนดเองสำหรับโลโก้', customFontText2_3: 'ฟอนต์ที่กำหนดเองสำหรับการแสดง-งานฉลองวันเกิด', customFontText4_6: 'ฟอนต์ที่กำหนดเองสำหรับวันที่-หมายเลข-รหัสไปรษณีย์', customFontText10_12: 'ฟอนต์ที่กำหนดเองสำหรับอื่นๆ-สถานที่-หมายเลขโทรศัพท์', 
@@ -129,13 +129,13 @@ const langs = {
     },
     id: {
         title: 'Pembuat Tiket', preview: 'Pratinjau Tiket', custom: 'Tiket Kustom', 
-        rect1Line1: 'Teks Logo (Baris 1)', rect1Line2: 'Teks Logo (Baris 2)', rect1Color: 'Warna Latar Logo', rect1TextColor: 'Warna Teks Logo',
-        text2: 'Pertunjukan', text3Line1: 'Perayaan Ulang Tahun (Baris 1)', text3Line2: 'Perayaan Ulang Tahun (Baris 2)', text4Line1: 'Tanggal (Baris 1)', text4Line2: 'Tanggal (Baris 2)', text5: 'Nomor', text6: 'Kode Pos', textColor: 'Warna Teks (2-6)', 
+        rect1Line1: 'Teks Logo (Baris 1)', rect1Line2: 'Teks Logo (Baris 2)', rect1Color: 'Warna Latar Logo', rect1TextColor: 'Warna Teks Logo', 
+        text2: 'Pertunjukan', text3Line1: 'Pesta Ulang Tahun (Baris 1)', text3Line2: 'Pesta Ulang Tahun (Baris 2)', text4Line1: 'Tanggal (Baris 1)', text4Line2: 'Tanggal (Baris 2)', text5: 'Nomor', text6: 'Kode Pos', textColor: 'Warna Teks (2-6)', 
         bgColor: 'Warna Latar Keseluruhan', bgText: 'Teks Latar', bgTextColor: 'Warna Teks Latar', bgShadowColor: 'Warna Bayangan Latar', 
-        rect9Color: 'Warna Latar Batas', text10: 'Lainnya', text11: 'Tempat', text12: 'Nomor Telepon', footerTextColor: 'Warna Teks Batas',
+        rect9Color: 'Warna Latar Batas', text10: 'Lainnya', text11: 'Tempat', text12: 'Nomor Telepon', footerTextColor: 'Warna Teks Batas', 
         qrCodeInput: 'Gambar Kode QR (Prioritas)', qrCodeText: 'Ubah URL menjadi Kode QR', generateQR: 'Buat', showQR: 'Tampilkan Bingkai Kode QR', qrSquareColor: 'Warna Bingkai QR', 
         customImageInput: 'Gambar Kustom', recommendedSize: '(Ukuran Disarankan: 65mm x 150mm)', imageLayer: 'Lapisan Gambar', 
-        customFontRect1: 'Font Kustom untuk Logo', customFontText2_3: 'Font Kustom untuk Pertunjukan-Perayaan', customFontText4_6: 'Font Kustom untuk Tanggal-Nomor-Kode Pos', customFontText10_12: 'Font Kustom untuk Lainnya-Tempat-Nomor Telepon', 
+        customFontRect1: 'Font Kustom untuk Logo', customFontText2_3: 'Font Kustom untuk Pertunjukan-Pesta Ulang Tahun', customFontText4_6: 'Font Kustom untuk Tanggal-Nomor-Kode Pos', customFontText10_12: 'Font Kustom untuk Lainnya-Tempat-Nomor Telepon', 
         bleedOption: 'Dengan Bleed (+3mm)', download300: 'Unduh (300 DPI)', download70: 'Unduh (70 DPI)', advancedMode: 'Pengaturan Lanjutan', donate: 'Donasi', reportBug: 'Laporkan Bug', 
         note: '※PNG yang diunduh dalam format RGB. Gunakan Photoshop atau GIMP untuk mengonversi ke CMYK untuk pencetakan.', 
         disclaimer: 'Terinspirasi dari tiket teater yang dibuat ulang oleh penggemar dalam pertunjukan ulang tahun anggota AKB48, situs ini dibuat agar penggemar dapat membuat dan menyimpan tiket sebagai hobi. Penggunaan komersial atau ilegal dilarang. Hak cipta milik © AKB48 dan DH Co., Ltd. Pembuat tidak bertanggung jawab.', 
@@ -219,7 +219,7 @@ const drawText2To6 = (dpiVal, bleed, mmPx) => {
     const tc = $('textColor')?.value || '#000000';
     drawText([$('text2')?.value || '「ここからだ」 公演'], parseFloat($('text2X')?.value || 37) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text2Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text2Size')?.value || 14.2), parseFloat($('text2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
     drawText([$('text3Line1')?.value || '秋元康 生誕祭'], parseFloat($('text3Line1X')?.value || 35) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line1Y')?.value || 19) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Size')?.value || 14.2), parseFloat($('text3Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
-    drawText([$('text3Line2')?.value || 'AKB48劇場'], parseFloat($('text3Line2X')?.value || 35) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line2Y')?.value || 25) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Line2Size')?.value || 14.2), parseFloat($('text3Line2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
+    drawText([$('text3Line2')?.value || 'AKB48劇場'], parseFloat($('text3Line2X')?.value || 35) * mmPx + (bleed ? Sizes.bleed * mmPx : 0), parseFloat($('text3Line2Y')?.value || 25) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Line2Size')?.value || 14.2), parseFloat($('text3Line2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal);
     drawText([$('text4Line1')?.value || '＜日付＞2025年05月02日（金）', $('text4Line2')?.value || 'OPEN：18時10分       START：18時30分      ￥3,400'], parseFloat($('text4Line1X')?.value || 13) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text4Line1Y')?.value || 43) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text4Size')?.value || 11), parseFloat($('text4Spacing')?.value || 1000), parseFloat($('text4LineHeight')?.value || 14), tc, 'left', fonts.ar, dpiVal);
     drawText([$('text5')?.value || '048番'], parseFloat($('text5X')?.value || 13) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text5Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text5Size')?.value || 16), parseFloat($('text5Spacing')?.value || 200), 0, tc, 'left', fonts.ar, dpiVal);
     drawText([$('text6')?.value || '① ❘ 000－0000 ❘ ゴメン先生 様'], parseFloat($('text6X')?.value || 36) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text6Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text6Size')?.value || 13), parseFloat($('text6Spacing')?.value || 311), 0, tc, 'left', fonts.ar, dpiVal);
@@ -227,127 +227,293 @@ const drawText2To6 = (dpiVal, bleed, mmPx) => {
 
 const drawArea9 = (dpiVal, bleed, mmPx) => {
     ctx.fillStyle = $('rect9Color')?.value || '#2086D1';
-    ctx.fillRect(bleed ? sizes.bleed * mmPx : 0, 60 * mmPx + (bleed ? sizes.bleed * mmPx : 0), dpiVal === 300 ? dpi[300].base.w : dpi[70].base.w, 5 * mmPx);
-    const ftc = $('footerTextColor')?.value || '#FFFFFF';
-    drawText([$('text10')?.value || '<主催 ‧ お問い合せ>'], parseFloat($('text10X')?.value || 54) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text10Y')?.value || 62.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text10Size')?.value || 7), parseFloat($('text10Spacing')?.value || 236), 0, ftc, 'left', fonts.ar, dpiVal);
-    drawText([$('text11')?.value || 'AKB48 Theater'], parseFloat($('text11X')?.value || 80.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text11Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, ftc, 'left', fonts.ar, dpiVal);
-    drawText([$('text12')?.value || 'TEL:03-5298-8648'], parseFloat($('text12X')?.value || 108) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, ftc, 'left', fonts.ar, dpiVal);
+    ctx.fillRect(bleed ? sizes.bleed * mmPx : 0, 60 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 150 * mmPx, 5 * mmPx);
+    const fc = $('footerTextColor')?.value || '#FFFFFF';
+    drawText([$('text10')?.value || '<主催 ‧ お問い合せ>'], parseFloat($('text10X')?.value || 54) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text10Y')?.value || 62.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text10Size')?.value || 7), parseFloat($('text10Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal);
+    drawText([$('text11')?.value || 'AKB48 Theater'], parseFloat($('text11X')?.value || 80.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text11Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, fc, 'left', fonts.ar, dpiVal);
+    drawText([$('text12')?.value || 'TEL:03-5298-8648'], parseFloat($('text12X')?.value || 108) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal);
 };
 
-const drawQR = (dpiVal, bleed, mmPx) => {
+const drawQRCode = (dpiVal, bleed, w, mmPx) => {
     if ($('showQR')?.checked && qrImage) {
+        const qx = w - 8.5 * mmPx - 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
+              qy = 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
+              qs = 23 * mmPx;
         ctx.fillStyle = $('qrSquareColor')?.value || '#2086D1';
-        ctx.fillRect(121 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 5 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 25 * mmPx, 25 * mmPx);
-        ctx.drawImage(qrImage, 123 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 7 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 21 * mmPx, 21 * mmPx);
+        ctx.fillRect(qx, qy, qs, qs);
+        ctx.drawImage(qrImage, qx, qy, qs, qs);
     }
 };
 
-const drawTicket = async (dpiVal = 70, download = false) => {
-    if (!canvas || !ctx) return console.error('Canvas or context not available');
-    console.log('Drawing ticket with DPI:', dpiVal);
-    const bleed = $('bleedOption')?.checked && download;
+const drawForegroundImage = (dpiVal, bleed, w, h, mmPx) => {
+    if (customImage && $('imageLayer')?.value === 'foreground') {
+        ctx.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
+    }
+};
+
+const drawTicket = async (dpiVal) => {
+    if (!ctx) {
+        console.error('Cannot draw ticket: Canvas context is null');
+        return;
+    }
+    const bleed = $('bleedOption')?.checked || false;
     const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
     const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
     const mmPx = dpiVal / 25.4;
-
     canvas.width = w;
     canvas.height = h;
-    if (!download) {
-        canvas.style.width = `${w * previewScale}px`;
-        canvas.style.height = `${h * previewScale}px`;
-    }
+    canvas.style.width = `${w * previewScale}px`;
+    canvas.style.height = `${h * previewScale}px`;
+    ctx.clearRect(0, 0, w, h);
 
     await drawBackground(dpiVal, bleed, w, h, mmPx);
     drawArea1(dpiVal, bleed, mmPx);
     drawText2To6(dpiVal, bleed, mmPx);
     drawArea9(dpiVal, bleed, mmPx);
-    drawQR(dpiVal, bleed, mmPx);
-    if (customImage && $('imageLayer')?.value === 'foreground') {
-        ctx.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
-    }
-    console.log('Ticket drawing complete');
+    drawQRCode(dpiVal, bleed, w, mmPx);
+    drawForegroundImage(dpiVal, bleed, w, h, mmPx);
 };
 
-const setPreviewScale = scale => {
+const debouncedDrawTicket = debounce((dpiVal) => drawTicket(dpiVal), 300);
+
+const setPreviewScale = (scale) => {
+    console.log('Setting preview scale to:', scale);
     previewScale = scale;
-    drawTicket(70);
+    if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
+        previewScale = Math.min(scale, window.innerWidth / dpi[70].base.w * 0.7);
+    }
+    if (ctx) {
+        const w = dpi[70].base.w;
+        const h = dpi[70].base.h;
+        canvas.style.width = `${w * previewScale}px`;
+        canvas.style.height = `${h * previewScale}px`;
+        debouncedDrawTicket(70);
+    }
 };
 
-const downloadTicket = async dpiVal => {
-    await drawTicket(dpiVal, true);
+const downloadTicket = async (dpiVal) => {
+    console.log(`Downloading ticket at ${dpiVal} DPI`);
+    $('loading').style.display = 'block';
+    await drawTicket(dpiVal);
     const link = document.createElement('a');
     link.download = `ticket_${dpiVal}dpi.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
-    drawTicket(70);
+    console.log('Download triggered');
+    $('loading').style.display = 'none';
 };
 
 const generateQRCode = () => {
     const text = $('qrCodeText')?.value;
-    if (!text) return;
+    if (!text) {
+        console.log('No URL provided for QR code generation');
+        qrImage = null;
+        debouncedDrawTicket(70);
+        return;
+    }
+    console.log('Generating QR code for:', text);
     const qrCanvas = document.createElement('canvas');
-    new QRCode(qrCanvas, { text, width: 300, height: 300 });
-    qrImage = new Image();
-    qrImage.src = qrCanvas.toDataURL('image/png');
-    qrImage.onload = () => drawTicket();
+    QRCode.toCanvas(qrCanvas, text, { width: 300, errorCorrectionLevel: 'H' }, (error) => {
+        if (error) {
+            console.error('QR Code generation error:', error);
+            alert(langs[currentLang].qrGenerateError);
+            qrImage = null;
+            debouncedDrawTicket(70);
+            return;
+        }
+        qrImage = new Image();
+        qrImage.src = qrCanvas.toDataURL('image/png');
+        qrImage.onload = () => {
+            console.log('QR code image loaded');
+            debouncedDrawTicket(70);
+        };
+        qrImage.onerror = () => {
+            console.error('QR code image failed to load');
+            alert(langs[currentLang].qrLoadError);
+            qrImage = null;
+            debouncedDrawTicket(70);
+        };
+    });
 };
 
-const loadImage = (input, callback) => {
-    const file = input.files[0];
-    if (!file) return;
-    const img = new Image();
-    img.onload = () => callback(img);
-    img.src = URL.createObjectURL(file);
-};
-
-const loadFont = (input, fontName) => {
-    const file = input.files[0];
-    if (!file) return;
+const loadFont = (file, fontKey) => {
     const reader = new FileReader();
-    reader.onload = e => {
-        const font = new FontFace(fontName, e.target.result);
-        font.load().then(loadedFont => {
-            document.fonts.add(loadedFont);
-            fonts[fontName] = fontName;
-            drawTicket();
-        }).catch(() => console.error(langs[currentLang].fontLoadError));
+    reader.onload = async (e) => {
+        const fontData = e.target.result;
+        try {
+            const font = new FontFace(fontKey, fontData);
+            await font.load();
+            document.fonts.add(font);
+            fonts[fontKey] = fontKey;
+            console.log(`Custom font ${fontKey} loaded`);
+            debouncedDrawTicket(70);
+        } catch (err) {
+            console.error(`Failed to load font ${fontKey}:`, err);
+            alert(langs[currentLang].fontLoadError);
+        }
+    };
+    reader.onerror = () => {
+        console.error('Font file read error');
+        alert(langs[currentLang].qrReadError);
     };
     reader.readAsArrayBuffer(file);
 };
 
-const changeLanguage = lang => {
+const changeLanguage = (lang) => {
+    console.log('Changing language to:', lang);
     currentLang = lang;
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
-        if (langs[lang][key]) el.textContent = langs[lang][key];
+        if (langs[lang][key]) {
+            if (el.tagName === 'LABEL') {
+                const input = el.querySelector('input, select');
+                if (input) {
+                    el.childNodes[0].textContent = langs[lang][key] + ': ';
+                } else {
+                    el.textContent = langs[lang][key];
+                }
+            } else {
+                el.textContent = langs[lang][key];
+            }
+        }
     });
-    document.title = langs[lang].title;
-    drawTicket();
+    debouncedDrawTicket(70);
 };
 
 const toggleAdvancedMode = () => {
-    document.querySelectorAll('.advanced-mode').forEach(el => el.classList.toggle('active'));
+    console.log('Toggling advanced mode');
+    const advancedElements = document.querySelectorAll('.advanced-mode');
+    advancedElements.forEach(el => el.classList.toggle('active'));
+    const btn = $('advancedModeBtn');
+    btn.textContent = btn.textContent === langs[currentLang].advancedMode ? '簡易設定' : langs[currentLang].advancedMode;
 };
 
-window.onload = () => {
-    console.log('Window loaded, initializing...');
-    if (!canvas || !ctx) console.error('Canvas initialization failed');
-    drawTicket();
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded');
+    $('languageSelector').addEventListener('change', (e) => changeLanguage(e.target.value));
+    $('qrCodeInput')?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith('image/')) {
+            alert(langs[currentLang].qrFormatError);
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            qrImage = new Image();
+            qrImage.src = event.target.result;
+            qrImage.onload = () => {
+                console.log('QR code image uploaded');
+                debouncedDrawTicket(70);
+            };
+            qrImage.onerror = () => {
+                console.error('Failed to load QR code image');
+                alert(langs[currentLang].qrLoadError);
+            };
+        };
+        reader.onerror = () => {
+            console.error('Failed to read QR code file');
+            alert(langs[currentLang].qrReadError);
+        };
+        reader.readAsDataURL(file);
+    });
 
+    $('customImageInput')?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith('image/')) {
+            alert(langs[currentLang].qrFormatError);
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            customImage = new Image();
+            customImage.src = event.target.result;
+            customImage.onload = () => {
+                console.log('Custom image uploaded');
+                debouncedDrawTicket(70);
+            };
+            customImage.onerror = () => {
+                console.error('Failed to load custom image');
+                alert(langs[currentLang].qrLoadError);
+            };
+        };
+        reader.onerror = () => {
+            console.error('Failed to read custom image file');
+            alert(langs[currentLang].qrReadError);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    ['customFontRect1', 'customFontText2_3', 'customFontText4_6', 'customFontText10_12'].forEach(id => {
+        $(id)?.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) loadFont(file, id.replace('customFont', 'custom'));
+        });
+    });
+
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('input', () => {
+            console.log(`Input changed: ${input.id} = ${input.value}`);
+            const val = parseFloat(input.value);
+            if (isNaN(val)) {
+                $(input.id + '-error').textContent = langs[currentLang].inputError;
+                $(input.id + '-error').style.display = 'inline';
+                input.value = 0;
+            } else if (input.classList.contains('opacity-input') && (val < 0 || val > 1)) {
+                $(input.id + '-error').textContent = langs[currentLang].opacityError;
+                $(input.id + '-error').style.display = 'inline';
+                input.value = Math.max(0, Math.min(1, val));
+            } else if (val < 0) {
+                $(input.id + '-error').textContent = langs[currentLang].inputError;
+                $(input.id + '-error').style.display = 'inline';
+                input.value = 0;
+            } else {
+                $(input.id + '-error').style.display = 'none';
+            }
+            debouncedDrawTicket(70);
+        });
+    });
+
+    document.querySelectorAll('input:not([type="number"]), select').forEach(el => {
+        if (el.id !== 'languageSelector') {
+            el.addEventListener('input', () => {
+                console.log(`Input/select changed: ${el.id} = ${el.value}`);
+                debouncedDrawTicket(70);
+            });
+        }
+    });
+
+    $('generateQRButton')?.addEventListener('click', generateQRCode);
+    $('download300Button')?.addEventListener('click', () => downloadTicket(300));
+    $('download70Button')?.addEventListener('click', () => downloadTicket(70));
     $('scale50Button')?.addEventListener('click', () => setPreviewScale(0.5));
     $('scale100Button')?.addEventListener('click', () => setPreviewScale(1.0));
     $('scale150Button')?.addEventListener('click', () => setPreviewScale(1.5));
     $('scale200Button')?.addEventListener('click', () => setPreviewScale(2.0));
-    $('download300Button')?.addEventListener('click', () => downloadTicket(300));
-    $('download70Button')?.addEventListener('click', () => downloadTicket(70));
-    $('generateQRButton')?.addEventListener('click', generateQRCode);
-    $('qrCodeInput')?.addEventListener('change', () => loadImage($('qrCodeInput'), img => { qrImage = img; drawTicket(); }));
-    $('customImageInput')?.addEventListener('change', () => loadImage($('customImageInput'), img => { customImage = img; drawTicket(); }));
-    $('customFontRect1')?.addEventListener('change', () => loadFont($('customFontRect1'), 'customRect1'));
-    $('customFontText2_3')?.addEventListener('change', () => loadFont($('customFontText2_3'), 'customText2_3'));
-    $('customFontText4_6')?.addEventListener('change', () => loadFont($('customFontText4_6'), 'customText4_6'));
-    $('customFontText10_12')?.addEventListener('change', () => loadFont($('customFontText10_12'), 'customText10_12'));
+    $('advancedModeBtn')?.addEventListener('click', toggleAdvancedMode);
 
-    document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', debounce(drawTicket, 300)));
-    console.log('Event listeners added');
+    // 初始化
+    $('qrCodeText').value = 'https://x.com/';
+    changeLanguage('ja');
+    generateQRCode();
+    if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
+        previewScale = window.innerWidth / dpi[70].base.w * 0.7;
+    }
+    drawTicket(70);
+});
+
+const waitForFonts = async () => {
+    const fontPromises = [
+        document.fonts.load(`400 47px ${fonts.avant}`),
+        document.fonts.load(`400 62px ${fonts.avant}`),
+        document.fonts.load(`400 14.2px ${fonts.kozgo}`),
+        document.fonts.load(`400 14.2px ${fonts.ar}`)
+    ];
+    await Promise.all(fontPromises);
+    console.log('All fonts loaded');
+};
+
+window.onload = async () => {
+    console.log('Page loaded');
+    await waitForFonts();
+    console.log('Fonts loaded, initializing ticket');
 };
