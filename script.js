@@ -363,7 +363,10 @@ const changeLanguage = (lang) => {
             if (el.tagName === 'LABEL') {
                 const input = el.querySelector('input, select');
                 if (input) {
-                    el.childNodes[0].textContent = langs[lang][key] + ': ';
+                    const textNode = Array.from(el.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+                    if (textNode) {
+                        textNode.textContent = langs[lang][key] + ' ';
+                    }
                 } else {
                     el.textContent = langs[lang][key];
                 }
