@@ -21,14 +21,14 @@
         .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
         .input-group input, .input-group select { margin-top: 5px; width: 100%; max-width: 300px; padding: 5px; }
         .note { color: #F676A6; font-size: 14px; }
-        .position-input, .spacing-input, .size-input, .line-height-input, .shadow-input, .opacity-input { width: 50px; margin-left: 5px; display: none; }
-        .advanced-mode.active .position-input, .advanced-mode.active .spacing-input, .advanced-mode.active .size-input, .advanced-mode.active .line-height-input, .advanced-mode.active .shadow-input, .advanced-mode.active .opacity-input { display: inline; }
+        .position-input, .spacing-input, .size-input, .line-height-input, .shadow-input, .opacity-input, .scale-input { width: 50px; margin-left: 5px; display: none; }
+        .advanced-mode.active .position-input, .advanced-mode.active .spacing-input, .advanced-mode.active .size-input, .advanced-mode.active .line-height-input, .advanced-mode.active .shadow-input, .advanced-mode.active .opacity-input, .advanced-mode.active .scale-input { display: inline; }
         .advanced-label { display: none; }
         .advanced-mode.active .advanced-label { display: inline; }
         .advanced-mode { display: none; }
         .advanced-mode.active { display: block; }
-        .custom-font-input { display: none; }
-        .advanced-mode.active .custom-font-input { display: flex; }
+        .custom-font-input, .custom-image-input { display: none; }
+        .advanced-mode.active .custom-font-input, .advanced-mode.active .custom-image-input { display: flex; }
         #previewSizeButtons { margin-top: 10px; }
         #previewSizeButtons button, .input-group button { margin: 0 5px 10px; padding: 8px 16px; border-radius: 20px; border: none; background: #F676A6; color: #FFF; cursor: pointer; }
         #previewSizeButtons button:hover, .input-group button:hover { background: #E55A8C; }
@@ -153,7 +153,7 @@
                 <label data-key="rect1Line1" for="rect1Line1">ロゴ テキスト (1行目): <input type="text" id="rect1Line1" value="AKB" aria-label="ロゴ テキスト 1行目"></label>
                 <div class="advanced-mode">
                     <label class="advanced-label" data-key="x">X: </label><input type="number" id="rect1Line1X" value="13.5" class="position-input" aria-label="ロゴ テキスト 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1X-error"></span>
-                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line1Y" value="12" class="position-input" aria-label="ロゴ テキスト 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1Y-error"></span>
+                    <label class="advanced-label" data-key="y"> FernandezY: </label><input type="number" id="rect1Line1Y" value="12" class="position-input" aria-label="ロゴ テキスト 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Spacing" value="-7000" class="spacing-input" aria-label="ロゴ 字間"><span class="error-msg" id="rect1Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Size" value="47" class="size-input" aria-label="ロゴ 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Size-error"></span>
                 </div>
@@ -228,6 +228,17 @@
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="bgTextSpacing" value="-6000" class="spacing-input" aria-label="背景テキスト 字間"><span class="error-msg" id="bgTextSpacing-error"></span>
                     <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="bgTextLineHeight" value="46" class="line-height-input" aria-label="背景テキスト 行間"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextLineHeight-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="bgTextSize" value="62" class="size-input" aria-label="背景テキスト 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextSize-error"></span>
+                    <label class="custom-image-input" data-key="customImageInput" for="customImageInput">カスタム背景画像: <input type="file" id="customImageInput" accept="image/*" aria-label="カスタム背景画像"></label>
+                    <span class="note" data-key="recommendedSize">（推奨サイズ: 65mm x 150mm）</span>
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="customImageX" value="0" class="position-input" aria-label="カスタム背景画像 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="customImageX-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="customImageY" value="0" class="position-input" aria-label="カスタム背景画像 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="customImageY-error"></span>
+                    <label class="advanced-label" data-key="scale">縮放: </label><input type="number" id="customImageScale" value="1" step="0.1" min="0.1" class="scale-input" aria-label="カスタム背景画像 縮放"><span class="advanced-label">（0.1-∞）</span><span class="error-msg" id="customImageScale-error"></span>
+                    <label data-key="imageLayer" for="imageLayer">画像のレイヤー: 
+                        <select id="imageLayer" aria-label="画像のレイヤー">
+                            <option value="background">背景</option>
+                            <option value="foreground">前景</option>
+                        </select>
+                    </label>
                 </div>
                 <label data-key="bgTextColor" for="bgTextColor">背景文字色: <input type="color" id="bgTextColor" value="#FFFFFF" aria-label="背景文字色"></label>
                 <label data-key="bgShadowColor" for="bgShadowColor">背景影の色: <input type="color" id="bgShadowColor" value="#5F96ED" aria-label="背景影の色"></label>
@@ -269,19 +280,6 @@
                 <label data-key="qrCodeInput" for="qrCodeInput">QRコード画像: <input type="file" id="qrCodeInput" accept="image/*" aria-label="QRコード画像"></label>
                 <label data-key="showQR" for="showQR"><input type="checkbox" id="showQR" checked aria-label="QRコード枠を表示"> QRコード枠を表示</label>
                 <label data-key="qrSquareColor" for="qrSquareColor">QR枠の色: <input type="color" id="qrSquareColor" value="#2086D1" aria-label="QR枠の色"></label>
-            </div>
-
-            <div class="input-group">
-                <label data-key="customImageInput" for="customImageInput">カスタム画像: <input type="file" id="customImageInput" accept="image/*" aria-label="カスタム画像"></label>
-                <div class="advanced-mode">
-                    <span class="note" data-key="recommendedSize">（推奨サイズ: 65mm x 150mm）</span>
-                    <label data-key="imageLayer" for="imageLayer">画像のレイヤー: 
-                        <select id="imageLayer" aria-label="画像のレイヤー">
-                            <option value="background">背景</option>
-                            <option value="foreground">前景</option>
-                        </select>
-                    </label>
-                </div>
             </div>
 
             <div class="input-group">
