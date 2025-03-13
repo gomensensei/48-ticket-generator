@@ -27,6 +27,8 @@
         .advanced-mode.active .advanced-label { display: inline; }
         .advanced-mode { display: none; }
         .advanced-mode.active { display: block; }
+        .custom-font-input { display: none; }
+        .advanced-mode.active .custom-font-input { display: flex; }
         #previewSizeButtons { margin-top: 10px; }
         #previewSizeButtons button, .input-group button { margin: 0 5px 10px; padding: 8px 16px; border-radius: 20px; border: none; background: #F676A6; color: #FFF; cursor: pointer; }
         #previewSizeButtons button:hover, .input-group button:hover { background: #E55A8C; }
@@ -161,6 +163,7 @@
                     <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line2Y" value="24" class="position-input" aria-label="ロゴ テキスト 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Line2Spacing" value="-7000" class="spacing-input" aria-label="ロゴ 2行目 字間"><span class="error-msg" id="rect1Line2Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Line2Size" value="47" class="size-input" aria-label="ロゴ 2行目 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Line2Size-error"></span>
+                    <label class="custom-font-input" data-key="customFontRect1" for="customFontRect1">ロゴ用カスタムフォント: <input type="file" id="customFontRect1" accept=".woff,.woff2,.ttf,.otf" aria-label="ロゴ用カスタムフォント"></label>
                 </div>
                 <label data-key="rect1Color" for="rect1Color">ロゴ 背景色: <input type="color" id="rect1Color" value="#2086D1" aria-label="ロゴ 背景色"></label>
                 <label data-key="rect1TextColor" for="rect1TextColor">ロゴ 文字色: <input type="color" id="rect1TextColor" value="#FFFFFF" aria-label="ロゴ 文字色"></label>
@@ -187,6 +190,7 @@
                     <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text3Line2Y" value="25" class="position-input" aria-label="生誕祭 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line2Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text3Line2Spacing" value="2000" class="spacing-input" aria-label="生誕祭 2行目 字間"><span class="error-msg" id="text3Line2Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text3Line2Size" value="14.2" class="size-input" aria-label="生誕祭 2行目 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text3Line2Size-error"></span>
+                    <label class="custom-font-input" data-key="customFontText2_3" for="customFontText2_3">公演-生誕祭用カスタムフォント: <input type="file" id="customFontText2_3" accept=".woff,.woff2,.ttf,.otf" aria-label="公演-生誕祭用カスタムフォント"></label>
                 </div>
                 <label data-key="text4Line1" for="text4Line1">日付 (1行目): <input type="text" id="text4Line1" value="＜日付＞2025年05月02日（金）" aria-label="日付 1行目"></label>
                 <div class="advanced-mode">
@@ -210,6 +214,7 @@
                     <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text6Y" value="55" class="position-input" aria-label="郵便番号 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text6Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text6Spacing" value="311" class="spacing-input" aria-label="郵便番号 字間"><span class="error-msg" id="text6Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text6Size" value="13" class="size-input" aria-label="郵便番号 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text6Size-error"></span>
+                    <label class="custom-font-input" data-key="customFontText4_6" for="customFontText4_6">日付-番号-郵便番号用カスタムフォント: <input type="file" id="customFontText4_6" accept=".woff,.woff2,.ttf,.otf" aria-label="日付-番号-郵便番号用カスタムフォント"></label>
                 </div>
                 <label data-key="textColor" for="textColor">文字色 (2-6): <input type="color" id="textColor" value="#000000" aria-label="文字色 (2-6)"></label>
             </div>
@@ -255,6 +260,7 @@
                     <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text12Y" value="64" class="position-input" aria-label="電話番号 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text12Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text12Spacing" value="236" class="spacing-input" aria-label="電話番号 字間"><span class="error-msg" id="text12Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text12Size" value="12.5" class="size-input" aria-label="電話番号 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text12Size-error"></span>
+                    <label class="custom-font-input" data-key="customFontText10_12" for="customFontText10_12">他-場所-電話番号用カスタムフォント: <input type="file" id="customFontText10_12" accept=".woff,.woff2,.ttf,.otf" aria-label="他-場所-電話番号用カスタムフォント"></label>
                 </div>
                 <label data-key="footerTextColor" for="footerTextColor">ボーダー文字色: <input type="color" id="footerTextColor" value="#FFFFFF" aria-label="ボーダー文字色"></label>
             </div>
@@ -265,19 +271,17 @@
                 <label data-key="qrSquareColor" for="qrSquareColor">QR枠の色: <input type="color" id="qrSquareColor" value="#2086D1" aria-label="QR枠の色"></label>
             </div>
 
-            <div class="input-group advanced-mode">
+            <div class="input-group">
                 <label data-key="customImageInput" for="customImageInput">カスタム画像: <input type="file" id="customImageInput" accept="image/*" aria-label="カスタム画像"></label>
-                <span class="note" data-key="recommendedSize">（推奨サイズ: 65mm x 150mm）</span>
-                <label data-key="imageLayer" for="imageLayer">画像のレイヤー: 
-                    <select id="imageLayer" aria-label="画像のレイヤー">
-                        <option value="background">背景</option>
-                        <option value="foreground">前景</option>
-                    </select>
-                </label>
-                <label data-key="customFontRect1" for="customFontRect1">ロゴ用カスタムフォント: <input type="file" id="customFontRect1" accept=".woff,.woff2,.ttf,.otf" aria-label="ロゴ用カスタムフォント"></label>
-                <label data-key="customFontText2_3" for="customFontText2_3">公演-生誕祭用カスタムフォント: <input type="file" id="customFontText2_3" accept=".woff,.woff2,.ttf,.otf" aria-label="公演-生誕祭用カスタムフォント"></label>
-                <label data-key="customFontText4_6" for="customFontText4_6">日付-番号-郵便番号用カスタムフォント: <input type="file" id="customFontText4_6" accept=".woff,.woff2,.ttf,.otf" aria-label="日付-番号-郵便番号用カスタムフォント"></label>
-                <label data-key="customFontText10_12" for="customFontText10_12">他-場所-電話番号用カスタムフォント: <input type="file" id="customFontText10_12" accept=".woff,.woff2,.ttf,.otf" aria-label="他-場所-電話番号用カスタムフォント"></label>
+                <div class="advanced-mode">
+                    <span class="note" data-key="recommendedSize">（推奨サイズ: 65mm x 150mm）</span>
+                    <label data-key="imageLayer" for="imageLayer">画像のレイヤー: 
+                        <select id="imageLayer" aria-label="画像のレイヤー">
+                            <option value="background">背景</option>
+                            <option value="foreground">前景</option>
+                        </select>
+                    </label>
+                </div>
             </div>
 
             <div class="input-group">
