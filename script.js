@@ -227,308 +227,127 @@ const drawText2To6 = (dpiVal, bleed, mmPx) => {
 
 const drawArea9 = (dpiVal, bleed, mmPx) => {
     ctx.fillStyle = $('rect9Color')?.value || '#2086D1';
-    ctx.fillRect(bleed ? sizes.bleed * mmPx : 0, 60 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 150 * mmPx, 5 * mmPx);
-    const fc = $('footerTextColor')?.value || '#FFFFFF';
-    drawText([$('text10')?.value || '<主催 ‧ お問い合せ>'], parseFloat($('text10X')?.value || 54) * mmPx + (principle('rect9Color')?.value || '#2086D1', dpiVal, bleed, mmPx);
-    const fc = $('footerTextColor')?.value || '#FFFFFF';
-    drawText([$('text10')?.value || '<主催 ‧ お問い合せ>'], parseFloat($('text10X')?.value || 54) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text10Y')?.value || 62.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text10Size')?.value || 7), parseFloat($('text10Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal);
-    drawText([$('text11')?.value || 'AKB48 Theater'], parseFloat($('text11X')?.value || 80.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text11Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, fc, 'left', fonts.ar, dpiVal);
-    drawText([$('text12')?.value || 'TEL:03-5298-8648'], parseFloat($('text12X')?.value || 108) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal);
+    ctx.fillRect(bleed ? sizes.bleed * mmPx : 0, 60 * mmPx + (bleed ? sizes.bleed * mmPx : 0), dpiVal === 300 ? dpi[300].base.w : dpi[70].base.w, 5 * mmPx);
+    const ftc = $('footerTextColor')?.value || '#FFFFFF';
+    drawText([$('text10')?.value || '<主催 ‧ お問い合せ>'], parseFloat($('text10X')?.value || 54) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text10Y')?.value || 62.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text10Size')?.value || 7), parseFloat($('text10Spacing')?.value || 236), 0, ftc, 'left', fonts.ar, dpiVal);
+    drawText([$('text11')?.value || 'AKB48 Theater'], parseFloat($('text11X')?.value || 80.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text11Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, ftc, 'left', fonts.ar, dpiVal);
+    drawText([$('text12')?.value || 'TEL:03-5298-8648'], parseFloat($('text12X')?.value || 108) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y')?.value || 63) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, ftc, 'left', fonts.ar, dpiVal);
 };
 
-const drawQRCode = (dpiVal, bleed, w, mmPx) => {
+const drawQR = (dpiVal, bleed, mmPx) => {
     if ($('showQR')?.checked && qrImage) {
-        const qx = w - 8.5 * mmPx - 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
-              qy = 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
-              qs = 23 * mmPx;
         ctx.fillStyle = $('qrSquareColor')?.value || '#2086D1';
-        ctx.fillRect(qx, qy, qs, qs);
-        ctx.drawImage(qrImage, qx, qy, qs, qs);
+        ctx.fillRect(121 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 5 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 25 * mmPx, 25 * mmPx);
+        ctx.drawImage(qrImage, 123 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 7 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 21 * mmPx, 21 * mmPx);
     }
 };
 
-const drawForegroundImage = (dpiVal, bleed, w, h, mmPx) => {
-    if (customImage && $('imageLayer')?.value === 'foreground') {
-        ctx.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
-    }
-};
-
-const drawTicket = async (dpiVal) => {
-    if (!ctx) {
-        console.error('Cannot draw ticket: Canvas context is null');
-        return;
-    }
-    const bleed = $('bleedOption')?.checked || false;
+const drawTicket = async (dpiVal = 70, download = false) => {
+    if (!canvas || !ctx) return console.error('Canvas or context not available');
+    console.log('Drawing ticket with DPI:', dpiVal);
+    const bleed = $('bleedOption')?.checked && download;
     const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
     const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
     const mmPx = dpiVal / 25.4;
+
     canvas.width = w;
     canvas.height = h;
-    canvas.style.width = `${w * previewScale}px`;
-    canvas.style.height = `${h * previewScale}px`;
-    ctx.clearRect(0, 0, w, h);
+    if (!download) {
+        canvas.style.width = `${w * previewScale}px`;
+        canvas.style.height = `${h * previewScale}px`;
+    }
 
     await drawBackground(dpiVal, bleed, w, h, mmPx);
     drawArea1(dpiVal, bleed, mmPx);
     drawText2To6(dpiVal, bleed, mmPx);
     drawArea9(dpiVal, bleed, mmPx);
-    drawQRCode(dpiVal, bleed, w, mmPx);
-    drawForegroundImage(dpiVal, bleed, w, h, mmPx);
+    drawQR(dpiVal, bleed, mmPx);
+    if (customImage && $('imageLayer')?.value === 'foreground') {
+        ctx.drawImage(customImage, bleed ? sizes.bleed * mmPx : 0, bleed ? sizes.bleed * mmPx : 0, w - (bleed ? 2 * sizes.bleed * mmPx : 0), h - (bleed ? 2 * sizes.bleed * mmPx : 0));
+    }
+    console.log('Ticket drawing complete');
 };
 
-const debouncedDrawTicket = debounce((dpiVal) => drawTicket(dpiVal), 300);
-
-const setPreviewScale = (scale) => {
-    console.log('Setting preview scale to:', scale);
+const setPreviewScale = scale => {
     previewScale = scale;
-    if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
-        previewScale = Math.min(scale, window.innerWidth / dpi[70].base.w * 0.7);
-    }
-    if (ctx) {
-        const w = dpi[70].base.w;
-        const h = dpi[70].base.h;
-        canvas.style.width = `${w * previewScale}px`;
-        canvas.style.height = `${h * previewScale}px`;
-        debouncedDrawTicket(70);
-    }
+    drawTicket(70);
 };
 
-const downloadTicket = async (dpiVal) => {
-    console.log(`Downloading ticket at ${dpiVal} DPI`);
-    await drawTicket(dpiVal);
+const downloadTicket = async dpiVal => {
+    await drawTicket(dpiVal, true);
     const link = document.createElement('a');
     link.download = `ticket_${dpiVal}dpi.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
-    console.log('Download triggered');
+    drawTicket(70);
 };
 
 const generateQRCode = () => {
     const text = $('qrCodeText')?.value;
-    if (!text) {
-        console.log('No URL provided for QR code generation');
-        return;
-    }
-    console.log('Generating QR code for:', text);
-    try {
-        const qrCanvas = document.createElement('canvas');
-        QRCode.toCanvas(qrCanvas, text, { width: 300, errorCorrectionLevel: 'H' }, (error) => {
-            if (error) {
-                console.error('QR Code generation error:', error);
-                alert(langs[currentLang].qrGenerateError);
-                return;
-            }
-            qrImage = new Image();
-            qrImage.src = qrCanvas.toDataURL('image/png');
-            qrImage.onload = () => {
-                console.log('QR code image loaded');
-                if (ctx) debouncedDrawTicket(70);
-            };
-            qrImage.onerror = () => {
-                console.error('QR code image failed to load');
-                alert(langs[currentLang].qrLoadError);
-            };
-        });
-    } catch (e) {
-        console.error('QR code generation failed:', e);
-        alert(langs[currentLang].qrGenerateError);
-    }
+    if (!text) return;
+    const qrCanvas = document.createElement('canvas');
+    new QRCode(qrCanvas, { text, width: 300, height: 300 });
+    qrImage = new Image();
+    qrImage.src = qrCanvas.toDataURL('image/png');
+    qrImage.onload = () => drawTicket();
 };
 
-const loadFont = (file, fontKey) => {
+const loadImage = (input, callback) => {
+    const file = input.files[0];
+    if (!file) return;
+    const img = new Image();
+    img.onload = () => callback(img);
+    img.src = URL.createObjectURL(file);
+};
+
+const loadFont = (input, fontName) => {
+    const file = input.files[0];
+    if (!file) return;
     const reader = new FileReader();
-    reader.onload = async (e) => {
-        const fontData = e.target.result;
-        try {
-            const font = new FontFace(fontKey, fontData);
-            await font.load();
-            document.fonts.add(font);
-            fonts[fontKey] = fontKey;
-            console.log(`Custom font ${fontKey} loaded`);
-            if (ctx) debouncedDrawTicket(70);
-        } catch (err) {
-            console.error(`Failed to load font ${fontKey}:`, err);
-            alert(langs[currentLang].fontLoadError);
-        }
-    };
-    reader.onerror = () => {
-        console.error('Font file read error');
-        alert(langs[currentLang].qrReadError);
+    reader.onload = e => {
+        const font = new FontFace(fontName, e.target.result);
+        font.load().then(loadedFont => {
+            document.fonts.add(loadedFont);
+            fonts[fontName] = fontName;
+            drawTicket();
+        }).catch(() => console.error(langs[currentLang].fontLoadError));
     };
     reader.readAsArrayBuffer(file);
 };
 
-$('qrCodeInput')?.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file || !file.type.startsWith('image/')) {
-        alert(langs[currentLang].qrFormatError);
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        qrImage = new Image();
-        qrImage.src = event.target.result;
-        qrImage.onload = () => {
-            console.log('QR code image uploaded');
-            if (ctx) debouncedDrawTicket(70);
-        };
-        qrImage.onerror = () => {
-            console.error('Failed to load QR code image');
-            alert(langs[currentLang].qrLoadError);
-        };
-    };
-    reader.onerror = () => {
-        console.error('Failed to read QR code file');
-        alert(langs[currentLang].qrReadError);
-    };
-    reader.readAsDataURL(file);
-});
-
-$('customImageInput')?.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file || !file.type.startsWith('image/')) {
-        alert(langs[currentLang].qrFormatError);
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        customImage = new Image();
-        customImage.src = event.target.result;
-        customImage.onload = () => {
-            console.log('Custom image uploaded');
-            if (ctx) debouncedDrawTicket(70);
-        };
-        customImage.onerror = () => {
-            console.error('Failed to load custom image');
-            alert(langs[currentLang].qrLoadError);
-        };
-    };
-    reader.onerror = () => {
-        console.error('Failed to read custom image file');
-        alert(langs[currentLang].qrReadError);
-    };
-    reader.readAsDataURL(file);
-});
-
-['customFontRect1', 'customFontText2_3', 'customFontText4_6', 'customFontText10_12'].forEach(id => {
-    $(id)?.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) loadFont(file, id.replace('customFont', 'custom'));
-    });
-});
-
-document.querySelectorAll('input[type="number"]').forEach(input => {
-    input.addEventListener('input', () => {
-        console.log(`Input changed: ${input.id} = ${input.value}`);
-        const val = parseFloat(input.value);
-        if (isNaN(val)) {
-            $(input.id + '-error').textContent = langs[currentLang].inputError;
-            $(input.id + '-error').style.display = 'inline';
-            input.value = 0;
-        } else if (input.classList.contains('opacity-input') && (val < 0 || val > 1)) {
-            $(input.id + '-error').textContent = langs[currentLang].opacityError;
-            $(input.id + '-error').style.display = 'inline';
-            input.value = Math.max(0, Math.min(1, val));
-        } else if (val < 0) {
-            $(input.id + '-error').textContent = langs[currentLang].inputError;
-            $(input.id + '-error').style.display = 'inline';
-            input.value = 0;
-        } else {
-            $(input.id + '-error').style.display = 'none';
-        }
-        if (ctx) debouncedDrawTicket(70);
-    });
-});
-
-document.querySelectorAll('input:not([type="number"]), select').forEach(el => {
-    el.addEventListener('input', () => {
-        console.log(`Input/select changed: ${el.id} = ${el.value}`);
-        if (ctx) debouncedDrawTicket(70);
-    });
-});
-
-$('generateQRButton')?.addEventListener('click', generateQRCode);
-$('download300Button')?.addEventListener('click', () => downloadTicket(300));
-$('download70Button')?.addEventListener('click', () => downloadTicket(70));
-$('scale50Button')?.addEventListener('click', () => setPreviewScale(0.5));
-$('scale100Button')?.addEventListener('click', () => setPreviewScale(1.0));
-$('scale150Button')?.addEventListener('click', () => setPreviewScale(1.5));
-$('scale200Button')?.addEventListener('click', () => setPreviewScale(2.0));
-
-const toggleAdvancedMode = () => {
-    console.log('Toggling advanced mode');
-    const advancedElements = document.querySelectorAll('.advanced-mode');
-    advancedElements.forEach(el => el.classList.toggle('active'));
-    const btn = $('advancedModeBtn');
-    btn.textContent = btn.textContent === langs[currentLang].advancedMode ? '簡易設定' : langs[currentLang].advancedMode;
-};
-
-const changeLanguage = (lang) => {
-    console.log('Changing language to:', lang);
+const changeLanguage = lang => {
     currentLang = lang;
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
-        if (langs[lang][key]) {
-            if (el.tagName === 'LABEL') {
-                const input = el.querySelector('input, select');
-                if (input) {
-                    el.childNodes[0].textContent = langs[lang][key] + ': ';
-                } else {
-                    el.textContent = langs[lang][key];
-                }
-            } else {
-                el.textContent = langs[lang][key];
-            }
-        }
+        if (langs[lang][key]) el.textContent = langs[lang][key];
     });
-    if (ctx) debouncedDrawTicket(70);
+    document.title = langs[lang].title;
+    drawTicket();
 };
 
-const waitForFonts = async () => {
-    const fontPromises = [
-        document.fonts.load(`400 47px ${fonts.avant}`),
-        document.fonts.load(`400 62px ${fonts.avant}`),
-        document.fonts.load(`400 14.2px ${fonts.kozgo}`),
-        document.fonts.load(`400 14.2px ${fonts.ar}`)
-    ];
-    await Promise.all(fontPromises);
-    console.log('All fonts loaded');
+const toggleAdvancedMode = () => {
+    document.querySelectorAll('.advanced-mode').forEach(el => el.classList.toggle('active'));
 };
 
-const waitForQRCode = () => {
-    return new Promise((resolve, reject) => {
-        const script = document.querySelector('script[src*="qrcode.min.js"]');
-        if (typeof QRCode !== 'undefined') {
-            resolve();
-        } else if (script) {
-            script.onload = () => resolve();
-            script.onerror = () => reject(new Error('QRCode library failed to load'));
-        } else {
-            reject(new Error('QRCode script not found'));
-        }
-    });
-};
+window.onload = () => {
+    console.log('Window loaded, initializing...');
+    if (!canvas || !ctx) console.error('Canvas initialization failed');
+    drawTicket();
 
-window.onload = async () => {
-    console.log('Page loaded');
-    if (!$('qrCodeText')) console.error('qrCodeText element not found');
-    $('qrCodeText').value = 'https://x.com/';
+    $('scale50Button')?.addEventListener('click', () => setPreviewScale(0.5));
+    $('scale100Button')?.addEventListener('click', () => setPreviewScale(1.0));
+    $('scale150Button')?.addEventListener('click', () => setPreviewScale(1.5));
+    $('scale200Button')?.addEventListener('click', () => setPreviewScale(2.0));
+    $('download300Button')?.addEventListener('click', () => downloadTicket(300));
+    $('download70Button')?.addEventListener('click', () => downloadTicket(70));
+    $('generateQRButton')?.addEventListener('click', generateQRCode);
+    $('qrCodeInput')?.addEventListener('change', () => loadImage($('qrCodeInput'), img => { qrImage = img; drawTicket(); }));
+    $('customImageInput')?.addEventListener('change', () => loadImage($('customImageInput'), img => { customImage = img; drawTicket(); }));
+    $('customFontRect1')?.addEventListener('change', () => loadFont($('customFontRect1'), 'customRect1'));
+    $('customFontText2_3')?.addEventListener('change', () => loadFont($('customFontText2_3'), 'customText2_3'));
+    $('customFontText4_6')?.addEventListener('change', () => loadFont($('customFontText4_6'), 'customText4_6'));
+    $('customFontText10_12')?.addEventListener('change', () => loadFont($('customFontText10_12'), 'customText10_12'));
 
-    try {
-        await waitForFonts();
-        await waitForQRCode();
-        generateQRCode();
-    } catch (e) {
-        console.error('Initialization error:', e);
-        alert('Failed to initialize QR code generation. Please refresh the page.');
-    }
-
-    if (ctx) {
-        if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
-            previewScale = window.innerWidth / dpi[70].base.w * 0.7;
-        } else {
-            previewScale = 1.0;
-        }
-        drawTicket(70);
-    }
+    document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', debounce(drawTicket, 300)));
+    console.log('Event listeners added');
 };
