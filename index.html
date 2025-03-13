@@ -39,8 +39,9 @@
         @media (max-width: 768px) {
             #mainContainer { flex-direction: column; }
             #canvasContainer, #controlsContainer { width: 100%; }
-            #canvasContainer { order: 2; }
-            #controlsContainer { order: 1; }
+            #canvasContainer { order: 1; } /* 預覽在上方 */
+            #controlsContainer { order: 2; }
+            #ticketCanvas { max-width: 80%; } /* 縮小預覽 */
         }
         @media (max-width: 1024px) and (orientation: landscape) {
             #canvasContainer { width: 60%; }
@@ -73,10 +74,10 @@
             <h1 data-key="preview">チケットプレビュー</h1>
             <canvas id="ticketCanvas" aria-label="Ticket preview canvas"></canvas>
             <div id="previewSizeButtons">
-                <button onclick="setPreviewScale(0.5)">50%</button>
-                <button onclick="setPreviewScale(1.0)">100%</button>
-                <button onclick="setPreviewScale(1.5)">150%</button>
-                <button onclick="setPreviewScale(2.0)">200%</button>
+                <button id="scale50Button" onclick="setPreviewScale(0.5)">50%</button>
+                <button id="scale100Button" onclick="setPreviewScale(1.0)">100%</button>
+                <button id="scale150Button" onclick="setPreviewScale(1.5)">150%</button>
+                <button id="scale200Button" onclick="setPreviewScale(2.0)">200%</button>
             </div>
             <p id="disclaimer" data-key="disclaimer">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。</p>
         </div>
