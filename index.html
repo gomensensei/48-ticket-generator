@@ -21,14 +21,12 @@
         .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
         .input-group input, .input-group select { margin-top: 5px; width: 100%; max-width: 300px; padding: 5px; }
         .note { color: #F676A6; font-size: 14px; }
-        .position-input, .spacing-input, .size-input, .line-height-input, .shadow-input, .opacity-input, .scale-input { width: 50px; margin-left: 5px; display: none; }
-        .advanced-mode.active .position-input, .advanced-mode.active .spacing-input, .advanced-mode.active .size-input, .advanced-mode.active .line-height-input, .advanced-mode.active .shadow-input, .advanced-mode.active .opacity-input, .advanced-mode.active .scale-input { display: inline; }
+        .position-input, .spacing-input, .size-input, .line-height-input, .shadow-input, .opacity-input { width: 50px; margin-left: 5px; display: none; }
+        .advanced-mode.active .position-input, .advanced-mode.active .spacing-input, .advanced-mode.active .size-input, .advanced-mode.active .line-height-input, .advanced-mode.active .shadow-input, .advanced-mode.active .opacity-input { display: inline; }
         .advanced-label { display: none; }
         .advanced-mode.active .advanced-label { display: inline; }
         .advanced-mode { display: none; }
         .advanced-mode.active { display: block; }
-        .custom-font-input, .custom-image-input { display: none; }
-        .advanced-mode.active .custom-font-input, .advanced-mode.active .custom-image-input { display: flex; }
         #previewSizeButtons { margin-top: 10px; }
         #previewSizeButtons button, .input-group button { margin: 0 5px 10px; padding: 8px 16px; border-radius: 20px; border: none; background: #F676A6; color: #FFF; cursor: pointer; }
         #previewSizeButtons button:hover, .input-group button:hover { background: #E55A8C; }
@@ -40,9 +38,7 @@
         #disclaimer { font-size: 7pt; color: #F676A6; text-align: center; margin-top: 10px; }
         #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
 
-        .button-note-group { margin-top: 10px; }
-
-        @media (min-width: 769px) {
+        @media (min-width: 769 beechpx) {
             #mainContainer { 
                 flex-direction: row; 
                 justify-content: space-between; 
@@ -52,27 +48,29 @@
             #canvasContainer, #controlsContainer { 
                 width: 48%; 
             }
-            #canvasContainer {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
             .divider { 
                 width: 5px; 
                 height: auto; 
                 background: #F676A6; 
             }
-            .button-note-group {
-                width: 100%;
-                text-align: center;
+            #downloadGroup {
+                margin-top: 10px;
             }
-            .input-group {
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            .input-group button {
+            #downloadGroup button {
                 margin: 0 5px 10px;
+                padding: 8px 16px;
+                border-radius: 20px;
+                border: none;
+                background: #F676A6;
+                color: #FFF;
+                cursor: pointer;
+            }
+            #downloadGroup button:hover {
+                background: #E55A8C;
+            }
+            #downloadGroup .note {
+                color: #F676A6;
+                font-size: 14px;
             }
         }
         @media (max-width: 768px) {
@@ -92,15 +90,7 @@
             }
             #controlsContainer { order: 3; }
             #ticketCanvas { max-width: 80%; }
-            .button-note-group {
-                width: 100%;
-                text-align: center;
-            }
-            .input-group {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
+            #downloadGroup { display: none; }
         }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661724500759448" crossorigin="anonymous"></script>
@@ -133,14 +123,12 @@
                 <button id="scale200Button">200%</button>
             </div>
             <p id="disclaimer" data-key="disclaimer">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。</p>
-            <div class="button-note-group">
-                <div class="input-group">
-                    <button id="download300Button" data-key="download300">ダウンロード (300 DPI)</button>
-                    <button id="download70Button" data-key="download70">ダウンロード (70 DPI)</button>
-                    <button id="advancedModeBtn" data-key="advancedMode">詳細設定</button>
-                    <button onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-key="donate">カンパ</button>
-                    <button onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-key="reportBug">報錯</button>
-                </div>
+            <div class="download-group" id="downloadGroup">
+                <button id="download300Button" data-key="download300">ダウンロード (300 DPI)</button>
+                <button id="download70Button" data-key="download70">ダウンロード (70 DPI)</button>
+                <button id="advancedModeBtn" data-key="advancedMode">詳細設定</button>
+                <button onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-key="donate">カンパ</button>
+                <button onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-key="reportBug">報錯</button>
                 <p class="note">※paypay ID: gomensensei</p>
                 <p class="note" data-key="note">※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。</p>
             </div>
@@ -153,7 +141,7 @@
                 <label data-key="rect1Line1" for="rect1Line1">ロゴ テキスト (1行目): <input type="text" id="rect1Line1" value="AKB" aria-label="ロゴ テキスト 1行目"></label>
                 <div class="advanced-mode">
                     <label class="advanced-label" data-key="x">X: </label><input type="number" id="rect1Line1X" value="13.5" class="position-input" aria-label="ロゴ テキスト 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1X-error"></span>
-                    <label class="advanced-label" data-key="y"> FernandezY: </label><input type="number" id="rect1Line1Y" value="12" class="position-input" aria-label="ロゴ テキスト 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1Y-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line1Y" value="12" class="position-input" aria-label="ロゴ テキスト 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Spacing" value="-7000" class="spacing-input" aria-label="ロゴ 字間"><span class="error-msg" id="rect1Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Size" value="47" class="size-input" aria-label="ロゴ 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Size-error"></span>
                 </div>
@@ -163,7 +151,6 @@
                     <label class="advanced-label" data-key="y">Y: </label><input type="number" id="rect1Line2Y" value="24" class="position-input" aria-label="ロゴ テキスト 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="rect1Line2Spacing" value="-7000" class="spacing-input" aria-label="ロゴ 2行目 字間"><span class="error-msg" id="rect1Line2Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="rect1Line2Size" value="47" class="size-input" aria-label="ロゴ 2行目 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Line2Size-error"></span>
-                    <label class="custom-font-input" data-key="customFontRect1" for="customFontRect1">ロゴ用カスタムフォント: <input type="file" id="customFontRect1" accept=".woff,.woff2,.ttf,.otf" aria-label="ロゴ用カスタムフォント"></label>
                 </div>
                 <label data-key="rect1Color" for="rect1Color">ロゴ 背景色: <input type="color" id="rect1Color" value="#2086D1" aria-label="ロゴ 背景色"></label>
                 <label data-key="rect1TextColor" for="rect1TextColor">ロゴ 文字色: <input type="color" id="rect1TextColor" value="#FFFFFF" aria-label="ロゴ 文字色"></label>
@@ -190,7 +177,6 @@
                     <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text3Line2Y" value="25" class="position-input" aria-label="生誕祭 2行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line2Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text3Line2Spacing" value="2000" class="spacing-input" aria-label="生誕祭 2行目 字間"><span class="error-msg" id="text3Line2Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text3Line2Size" value="14.2" class="size-input" aria-label="生誕祭 2行目 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text3Line2Size-error"></span>
-                    <label class="custom-font-input" data-key="customFontText2_3" for="customFontText2_3">公演-生誕祭用カスタムフォント: <input type="file" id="customFontText2_3" accept=".woff,.woff2,.ttf,.otf" aria-label="公演-生誕祭用カスタムフォント"></label>
                 </div>
                 <label data-key="text4Line1" for="text4Line1">日付 (1行目): <input type="text" id="text4Line1" value="＜日付＞2025年05月02日（金）" aria-label="日付 1行目"></label>
                 <div class="advanced-mode">
@@ -214,7 +200,6 @@
                     <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text6Y" value="55" class="position-input" aria-label="郵便番号 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text6Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text6Spacing" value="311" class="spacing-input" aria-label="郵便番号 字間"><span class="error-msg" id="text6Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text6Size" value="13" class="size-input" aria-label="郵便番号 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text6Size-error"></span>
-                    <label class="custom-font-input" data-key="customFontText4_6" for="customFontText4_6">日付-番号-郵便番号用カスタムフォント: <input type="file" id="customFontText4_6" accept=".woff,.woff2,.ttf,.otf" aria-label="日付-番号-郵便番号用カスタムフォント"></label>
                 </div>
                 <label data-key="textColor" for="textColor">文字色 (2-6): <input type="color" id="textColor" value="#000000" aria-label="文字色 (2-6)"></label>
             </div>
@@ -228,17 +213,6 @@
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="bgTextSpacing" value="-6000" class="spacing-input" aria-label="背景テキスト 字間"><span class="error-msg" id="bgTextSpacing-error"></span>
                     <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="bgTextLineHeight" value="46" class="line-height-input" aria-label="背景テキスト 行間"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextLineHeight-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="bgTextSize" value="62" class="size-input" aria-label="背景テキスト 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextSize-error"></span>
-                    <label class="custom-image-input" data-key="customImageInput" for="customImageInput">カスタム背景画像: <input type="file" id="customImageInput" accept="image/*" aria-label="カスタム背景画像"></label>
-                    <span class="note" data-key="recommendedSize">（推奨サイズ: 65mm x 150mm）</span>
-                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="customImageX" value="0" class="position-input" aria-label="カスタム背景画像 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="customImageX-error"></span>
-                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="customImageY" value="0" class="position-input" aria-label="カスタム背景画像 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="customImageY-error"></span>
-                    <label class="advanced-label" data-key="scale">縮放: </label><input type="number" id="customImageScale" value="1" step="0.1" min="0.1" class="scale-input" aria-label="カスタム背景画像 縮放"><span class="advanced-label">（0.1-∞）</span><span class="error-msg" id="customImageScale-error"></span>
-                    <label data-key="imageLayer" for="imageLayer">画像のレイヤー: 
-                        <select id="imageLayer" aria-label="画像のレイヤー">
-                            <option value="background">背景</option>
-                            <option value="foreground">前景</option>
-                        </select>
-                    </label>
                 </div>
                 <label data-key="bgTextColor" for="bgTextColor">背景文字色: <input type="color" id="bgTextColor" value="#FFFFFF" aria-label="背景文字色"></label>
                 <label data-key="bgShadowColor" for="bgShadowColor">背景影の色: <input type="color" id="bgShadowColor" value="#5F96ED" aria-label="背景影の色"></label>
@@ -271,7 +245,6 @@
                     <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text12Y" value="64" class="position-input" aria-label="電話番号 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text12Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text12Spacing" value="236" class="spacing-input" aria-label="電話番号 字間"><span class="error-msg" id="text12Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text12Size" value="12.5" class="size-input" aria-label="電話番号 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text12Size-error"></span>
-                    <label class="custom-font-input" data-key="customFontText10_12" for="customFontText10_12">他-場所-電話番号用カスタムフォント: <input type="file" id="customFontText10_12" accept=".woff,.woff2,.ttf,.otf" aria-label="他-場所-電話番号用カスタムフォント"></label>
                 </div>
                 <label data-key="footerTextColor" for="footerTextColor">ボーダー文字色: <input type="color" id="footerTextColor" value="#FFFFFF" aria-label="ボーダー文字色"></label>
             </div>
@@ -280,11 +253,32 @@
                 <label data-key="qrCodeInput" for="qrCodeInput">QRコード画像: <input type="file" id="qrCodeInput" accept="image/*" aria-label="QRコード画像"></label>
                 <label data-key="showQR" for="showQR"><input type="checkbox" id="showQR" checked aria-label="QRコード枠を表示"> QRコード枠を表示</label>
                 <label data-key="qrSquareColor" for="qrSquareColor">QR枠の色: <input type="color" id="qrSquareColor" value="#2086D1" aria-label="QR枠の色"></label>
+                <div class="advanced-mode">
+                    <label data-key="customFontRect1" for="customFontRect1">ロゴ用カスタムフォント: <input type="file" id="customFontRect1" accept=".woff,.woff2,.ttf,.otf" aria-label="ロゴ用カスタムフォント"></label>
+                    <label data-key="customFontText2_3" for="customFontText2_3">公演-生誕祭用カスタムフォント: <input type="file" id="customFontText2_3" accept=".woff,.woff2,.ttf,.otf" aria-label="公演-生誕祭用カスタムフォント"></label>
+                    <label data-key="customFontText4_6" for="customFontText4_6">日付-番号-郵便番号用カスタムフォント: <input type="file" id="customFontText4_6" accept=".woff,.woff2,.ttf,.otf" aria-label="日付-番号-郵便番号用カスタムフォント"></label>
+                    <label data-key="customFontText10_12" for="customFontText10_12">他-場所-電話番号用カスタムフォント: <input type="file" id="customFontText10_12" accept=".woff,.woff2,.ttf,.otf" aria-label="他-場所-電話番号用カスタムフォント"></label>
+                    <label data-key="customBgImageInput" for="customImageInput">カスタム背景画像: <input type="file" id="customImageInput" accept="image/*" aria-label="カスタム背景画像"></label>
+                    <span class="note" data-key="recommendedSize">（推奨サイズ: 65mm x 150mm）</span>
+                    <label class="advanced-label" data-key="x">X: </label><input type="number" id="customImageX" value="0" class="position-input" aria-label="カスタム背景画像 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="customImageX-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="customImageY" value="0" class="position-input" aria-label="カスタム背景画像 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="customImageY-error"></span>
+                    <label class="advanced-label" data-key="scale">縮放: </label><input type="number" id="customImageScale" value="1" step="0.1" min="0.1" class="size-input" aria-label="カスタム背景画像 縮放"><span class="advanced-label">倍</span><span class="error-msg" id="customImageScale-error"></span>
+                </div>
             </div>
 
             <div class="input-group">
                 <label data-key="bleedOption" for="bleedOption"><input type="checkbox" id="bleedOption" aria-label="裁ち落とし付き"> 裁ち落とし付き (+3mm)</label>
             </div>
+
+            <div class="input-group">
+                <button id="download300Button" data-key="download300">ダウンロード (300 DPI)</button>
+                <button id="download70Button" data-key="download70">ダウンロード (70 DPI)</button>
+                <button id="advancedModeBtn" data-key="advancedMode">詳細設定</button>
+                <button onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-key="donate">カンパ</button>
+                <button onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-key="reportBug">報錯</button>
+            </div>
+            <p class="note">※paypay ID: gomensensei</p>
+            <p class="note" data-key="note">※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。</p>
         </div>
     </div>
 
