@@ -4,17 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>チケットメーカー</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+KR&family=Noto+Sans+Thai&display=swap" rel="stylesheet">
     <style>
         @font-face { font-family: 'ITC Avant Garde Gothic Std Extra Light'; src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2') format('woff2'); }
         @font-face { font-family: 'AR ADGothicJP'; src: url('fonts/jadhei01m.woff2') format('woff2'); }
         @font-face { font-family: 'KozGoPr6N'; src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2'); }
 
-        body { font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", sans-serif; margin: 0; padding: 20px; background: #FFF4F6; color: #F676A6; position: relative; }
+        body { font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", "Noto Sans", "Noto Sans KR", "Noto Sans Thai", sans-serif; margin: 0; padding: 20px; background: #FFF4F6; color: #F676A6; position: relative; }
         #mainContainer { display: flex; justify-content: space-between; flex-wrap: wrap; }
         #canvasContainer { width: 50%; text-align: center; overflow: auto; }
         #ticketCanvas { border: 1px solid #ccc; max-width: 100%; height: auto; }
         #controlsContainer { width: 45%; overflow-y: auto; max-height: 90vh; }
-        hr.divider { border: 0; height: 5px; background: #F676A6; margin: 20px 0; width: 100%; display: block; }
+        .divider { background: #F676A6; }
 
         .input-group { margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
         .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
@@ -37,23 +38,26 @@
         #disclaimer { font-size: 7pt; color: #F676A6; text-align: center; margin-top: 10px; }
         #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
 
+        @media (min-width: 769px) {
+            .divider { width: 5px; height: 100%; margin: 0 20px; }
+            #canvasContainer, #controlsContainer { display: inline-block; vertical-align: top; }
+        }
         @media (max-width: 768px) {
             #mainContainer { flex-direction: column; }
             #canvasContainer, #controlsContainer { width: 100%; }
             #canvasContainer { order: 1; }
-            hr.divider { order: 2; margin: 10px 0; }
+            .divider { order: 2; width: 100%; height: 5px; margin: 10px 0; }
             #controlsContainer { order: 3; }
             #ticketCanvas { max-width: 80%; }
         }
         @media (max-width: 1024px) and (orientation: landscape) {
             #canvasContainer { width: 60%; }
             #controlsContainer { width: 35%; }
-            hr.divider { width: 100%; }
+            .divider { width: 5px; height: 100%; margin: 0 20px; }
         }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661724500759448" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+    <script src="https://unpkg.com/qrcode@1.5.1/lib/qrcode.min.js" defer></script>
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -62,7 +66,7 @@
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
-    <select id="languageSelector" onchange="changeLanguage(this.value)">
+    <select id="languageSelector">
         <option value="ja" selected>日本語</option>
         <option value="zh-TW">中文（繁體）</option>
         <option value="zh-CN">中文（简体）</option>
@@ -84,7 +88,7 @@
             </div>
             <p id="disclaimer" data-key="disclaimer">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。</p>
         </div>
-        <hr class="divider">
+        <div class="divider"></div>
         <div id="controlsContainer">
             <h1 data-key="custom">オリジナルチケット</h1>
 
@@ -132,7 +136,7 @@
                 <label data-key="text4Line1" for="text4Line1">日付 (1行目): <input type="text" id="text4Line1" value="＜日付＞2025年05月02日（金）" aria-label="日付 1行目"></label>
                 <div class="advanced-mode">
                     <label class="advanced-label" data-key="x">X: </label><input type="number" id="text4Line1X" value="13" class="position-input" aria-label="日付 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1X-error"></span>
-                    <label class="advanced-label" data-key="y">Y: встретить<input type="number" id="text4Line1Y" value="43" class="position-input" aria-label="日付 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1Y-error"></span>
+                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text4Line1Y" value="43" class="position-input" aria-label="日付 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text4Spacing" value="1000" class="spacing-input" aria-label="日付 字間"><span class="error-msg" id="text4Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text4Size" value="11" class="size-input" aria-label="日付 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text4Size-error"></span>
                     <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="text4LineHeight" value="14" class="line-height-input" aria-label="日付 行間"><span class="advanced-label">pt</span><span class="error-msg" id="text4LineHeight-error"></span>
@@ -230,7 +234,7 @@
             <div class="input-group">
                 <button id="download300Button" data-key="download300">ダウンロード (300 DPI)</button>
                 <button id="download70Button" data-key="download70">ダウンロード (70 DPI)</button>
-                <button id="advancedModeBtn" onclick="toggleAdvancedMode()" data-key="advancedMode">詳細設定</button>
+                <button id="advancedModeBtn" data-key="advancedMode">詳細設定</button>
                 <button onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-key="donate">カンパ</button>
                 <button onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-key="reportBug">報錯</button>
             </div>
