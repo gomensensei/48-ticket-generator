@@ -10,11 +10,11 @@
         @font-face { font-family: 'KozGoPr6N'; src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2'); }
 
         body { font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", sans-serif; margin: 0; padding: 20px; background: #FFF4F6; color: #F676A6; position: relative; }
-        #mainContainer { display: flex; justify-content: space-between; }
+        #mainContainer { display: flex; justify-content: space-between; flex-wrap: wrap; }
         #canvasContainer { width: 50%; text-align: center; overflow: auto; }
         #ticketCanvas { border: 1px solid #ccc; max-width: 100%; height: auto; }
         #controlsContainer { width: 45%; overflow-y: auto; max-height: 90vh; }
-        hr.divider { border: 0; height: 5px; background: #F676A6; margin: 20px 0; }
+        hr.divider { border: 0; height: 5px; background: #F676A6; margin: 20px 0; width: 100%; display: block; }
 
         .input-group { margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
         .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
@@ -32,7 +32,7 @@
 
         .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
 
-        .ad-container { text-align: center; margin: 20px 0; }
+        .ad-container { text-align: center; margin: 20px 0; width: 100%; }
         #languageSelector { position: absolute; top: 10px; right: 10px; color: #F676A6; padding: 5px; }
         #disclaimer { font-size: 7pt; color: #F676A6; text-align: center; margin-top: 10px; }
         #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
@@ -41,13 +41,14 @@
             #mainContainer { flex-direction: column; }
             #canvasContainer, #controlsContainer { width: 100%; }
             #canvasContainer { order: 1; }
-            #controlsContainer { order: 2; }
+            hr.divider { order: 2; margin: 10px 0; }
+            #controlsContainer { order: 3; }
             #ticketCanvas { max-width: 80%; }
-            hr.divider { margin: 10px 0; }
         }
         @media (max-width: 1024px) and (orientation: landscape) {
             #canvasContainer { width: 60%; }
             #controlsContainer { width: 35%; }
+            hr.divider { width: 100%; }
         }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661724500759448" crossorigin="anonymous"></script>
@@ -76,10 +77,10 @@
             <h1 data-key="preview">チケットプレビュー</h1>
             <canvas id="ticketCanvas" aria-label="Ticket preview canvas"></canvas>
             <div id="previewSizeButtons">
-                <button id="scale50Button" onclick="setPreviewScale(0.5)">50%</button>
-                <button id="scale100Button" onclick="setPreviewScale(1.0)">100%</button>
-                <button id="scale150Button" onclick="setPreviewScale(1.5)">150%</button>
-                <button id="scale200Button" onclick="setPreviewScale(2.0)">200%</button>
+                <button id="scale50Button">50%</button>
+                <button id="scale100Button">100%</button>
+                <button id="scale150Button">150%</button>
+                <button id="scale200Button">200%</button>
             </div>
             <p id="disclaimer" data-key="disclaimer">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。</p>
         </div>
@@ -131,7 +132,7 @@
                 <label data-key="text4Line1" for="text4Line1">日付 (1行目): <input type="text" id="text4Line1" value="＜日付＞2025年05月02日（金）" aria-label="日付 1行目"></label>
                 <div class="advanced-mode">
                     <label class="advanced-label" data-key="x">X: </label><input type="number" id="text4Line1X" value="13" class="position-input" aria-label="日付 1行目 X位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1X-error"></span>
-                    <label class="advanced-label" data-key="y">Y: </label><input type="number" id="text4Line1Y" value="43" class="position-input" aria-label="日付 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1Y-error"></span>
+                    <label class="advanced-label" data-key="y">Y: встретить<input type="number" id="text4Line1Y" value="43" class="position-input" aria-label="日付 1行目 Y位置"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1Y-error"></span>
                     <label class="advanced-label" data-key="spacing">字間: </label><input type="number" id="text4Spacing" value="1000" class="spacing-input" aria-label="日付 字間"><span class="error-msg" id="text4Spacing-error"></span>
                     <label class="advanced-label" data-key="size">サイズ: </label><input type="number" id="text4Size" value="11" class="size-input" aria-label="日付 文字サイズ"><span class="advanced-label">pt</span><span class="error-msg" id="text4Size-error"></span>
                     <label class="advanced-label" data-key="lineHeight">行間: </label><input type="number" id="text4LineHeight" value="14" class="line-height-input" aria-label="日付 行間"><span class="advanced-label">pt</span><span class="error-msg" id="text4LineHeight-error"></span>
@@ -202,7 +203,7 @@
             <div class="input-group">
                 <label data-key="qrCodeInput" for="qrCodeInput">QRコード画像 (優先): <input type="file" id="qrCodeInput" accept="image/*" aria-label="QRコード画像"></label>
                 <label data-key="qrCodeText" for="qrCodeText">URLをQRコードにします: <input type="text" id="qrCodeText" placeholder="URLまたはテキスト" aria-label="URLをQRコードにします"></label>
-                <button id="generateQRButton" data-key="generateQR" aria-label="作成する">作成する</button>
+                <button id="generateQRButton" data-key="generateQR">作成する</button>
                 <label data-key="showQR" for="showQR"><input type="checkbox" id="showQR" checked aria-label="QRコード枠を表示"> QRコード枠を表示</label>
                 <label data-key="qrSquareColor" for="qrSquareColor">QR枠の色: <input type="color" id="qrSquareColor" value="#2086D1" aria-label="QR枠の色"></label>
             </div>
@@ -227,11 +228,11 @@
             </div>
 
             <div class="input-group">
-                <button id="download300Button" data-key="download300" aria-label="ダウンロード 300 DPI">ダウンロード (300 DPI)</button>
-                <button id="download70Button" data-key="download70" aria-label="ダウンロード 70 DPI">ダウンロード (70 DPI)</button>
-                <button id="advancedModeBtn" onclick="toggleAdvancedMode()" data-key="advancedMode" aria-label="詳細設定">詳細設定</button>
-                <button onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-key="donate" aria-label="カンパ">カンパ</button>
-                <button onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-key="reportBug" aria-label="報錯">報錯</button>
+                <button id="download300Button" data-key="download300">ダウンロード (300 DPI)</button>
+                <button id="download70Button" data-key="download70">ダウンロード (70 DPI)</button>
+                <button id="advancedModeBtn" onclick="toggleAdvancedMode()" data-key="advancedMode">詳細設定</button>
+                <button onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-key="donate">カンパ</button>
+                <button onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-key="reportBug">報錯</button>
             </div>
             <p class="note">※paypay ID: gomensensei</p>
             <p class="note" data-key="note">※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。</p>
