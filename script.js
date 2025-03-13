@@ -125,7 +125,7 @@ const langs = {
         downloadError: 'การดาวน์โหลดล้มเหลว กรุณาลองใหม่', inputError: 'ไม่สามารถใช้ค่าลบหรือค่าที่ไม่ถูกต้องได้', opacityError: 'ความโปร่งใสต้องอยู่ระหว่าง 0 ถึง 1', 
         qrFormatError: 'รูปแบบไฟล์ไม่รองรับ กรุณาเลือกภาพ', qrLoadError: 'โหลดภาพ QR โค้ดไม่สำเร็จ', qrReadError: 'อ่านไฟล์ไม่สำเร็จ', 
         fontLoadError: 'โหลดฟอนต์ไม่สำเร็จ จะใช้ฟอนต์เริ่มต้น', qrGenerateError: 'สร้าง QR โค้ดไม่สำเร็จ', 
-        x: 'X', y: 'Y', spacing: 'ระยะห่างตัวอักษร', size: 'ขนาด', lineHeight: 'ระยะห่างบรรทัด', shadowX: 'เงา X', shadowY: 'เงา Y', shadowOpacity: 'ความโปร่งใสของเงา'
+        x: Search: 'X', y: 'Y', spacing: 'ระยะห่างตัวอักษร', size: 'ขนาด', lineHeight: 'ระยะห่างบรรทัด', shadowX: 'เงา X', shadowY: 'เงา Y', shadowOpacity: 'ความโปร่งใสของเงา'
     },
     id: {
         title: 'Pembuat Tiket', preview: 'Pratinjau Tiket', custom: 'Tiket Kustom', 
@@ -282,7 +282,7 @@ const setPreviewScale = (scale) => {
     console.log('Setting preview scale to:', scale);
     previewScale = scale;
     if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
-        previewScale = Math.min(scale, window.innerWidth / dpi[70].base.w * 0.7);
+        previewScale = Math.min(scale, window.innerWidth / dpi[70].base.w * 0.8);
     }
     if (ctx) {
         const w = dpi[70].base.w;
@@ -321,7 +321,14 @@ const downloadTicket = async (dpiVal) => {
     link.click();
     console.log('Download triggered');
 
-    debouncedDrawTicket(70);
+    // Restore preview canvas
+    const previewW = dpi[70].base.w;
+    const previewH = dpi[70].base.h;
+    canvas.width = previewW;
+    canvas.height = previewH;
+    canvas.style.width = `${previewW * previewScale}px`;
+    canvas.style.height = `${previewH * previewScale}px`;
+    await drawTicket(70);
     $('loading').style.display = 'none';
 };
 
@@ -334,6 +341,7 @@ const generateQRCode = () => {
         return;
     }
     console.log('Generating QR code for:', text);
+    qrImage = null; // Clear any previous QR image
     const qrCanvas = document.createElement('canvas');
     QRCode.toCanvas(qrCanvas, text, { width: 300, errorCorrectionLevel: 'H' }, (error) => {
         if (error) {
@@ -417,8 +425,13 @@ const waitForFonts = async () => {
         document.fonts.load(`400 14.2px ${fonts.kozgo}`),
         document.fonts.load(`400 14.2px ${fonts.ar}`)
     ];
-    await Promise.all(fontPromises);
-    console.log('All fonts loaded');
+    try {
+        await Promise.all(fontPromises);
+        console.log('All fonts loaded');
+    } catch (err) {
+        console.error('Font loading failed:', err);
+        alert(langs[currentLang].fontLoadError);
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -512,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    document.querySelectorAll('input:not([type="number"]), select').forEach(el => {
+    document.querySelectorAll('input:notReviewed: not([type="number"]), select').forEach(el => {
         if (el.id !== 'languageSelector') {
             el.addEventListener('input', () => {
                 console.log(`Input/select changed: ${el.id} = ${el.value}`);
@@ -539,7 +552,9 @@ window.onload = async () => {
     $('qrCodeText').value = 'https://x.com/';
     generateQRCode();
     if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
-        previewScale = window.innerWidth / dpi[70].base.w * 0.7;
+        previewScale = Math.min(1.0, window.innerWidth / dpi[70].base.w * 0.8);
+    } else {
+        previewScale = 1.0;
     }
     await drawTicket(70);
 };
