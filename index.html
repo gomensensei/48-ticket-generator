@@ -11,11 +11,11 @@
         @font-face { font-family: 'KozGoPr6N'; src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2'); }
 
         body { font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", "Noto Sans", "Noto Sans KR", "Noto Sans Thai", sans-serif; margin: 0; padding: 20px; background: #FFF4F6; color: #F676A6; position: relative; }
-        #mainContainer { display: flex; justify-content: space-between; flex-wrap: wrap; }
-        #canvasContainer { width: 50%; text-align: center; overflow: auto; }
+        #mainContainer { display: flex; justify-content: space-between; align-items: stretch; flex-wrap: wrap; }
+        #canvasContainer { width: 48%; text-align: center; overflow: auto; }
         #ticketCanvas { border: 1px solid #ccc; max-width: 100%; height: auto; }
-        #controlsContainer { width: 45%; overflow-y: auto; max-height: 90vh; }
-        .divider { background: #F676A6; }
+        #controlsContainer { width: 48%; overflow-y: auto; max-height: 90vh; }
+        .divider { background: #F676A6; flex-shrink: 0; }
 
         .input-group { margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
         .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
@@ -39,8 +39,9 @@
         #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
 
         @media (min-width: 769px) {
-            .divider { width: 5px; height: 100%; margin: 0 20px; }
-            #canvasContainer, #controlsContainer { display: inline-block; vertical-align: top; }
+            #mainContainer { display: flex; justify-content: space-between; align-items: stretch; }
+            #canvasContainer, #controlsContainer { width: 48%; }
+            .divider { width: 5px; height: 100%; margin: 0 1%; }
         }
         @media (max-width: 768px) {
             #mainContainer { flex-direction: column; }
