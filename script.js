@@ -17,8 +17,8 @@ const fonts = {
 };
 const sizes = { base: { w: 150, h: 65 }, bleed: 3 };
 const dpi = {
-    300: { base: { w: sizes.base.w * 300 / 25.4, h: sizes.base.h * 300 / 25.4 }, bleed: { w: (sizes.base.w + 2 * sizes.bleed) * 300 / 25.4, h: (sizes.base.h + 2 * sizes.bleed) * 300 / 25.4 } },
-    70: { base: { w: sizes.base.w * 70 / 25.4, h: sizes.base.h * 70 / 25.4 }, bleed: { w: (sizes.base.w + 2 * sizes.bleed) * 70 / 25.4, h: (sizes.base.h + 2 * sizes.bleed) * 70 / 25.4 } }
+    300: { base: { w: 1843, h: 839 }, bleed: { w: 1844, h: 840 } },
+    70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 2 * 3) * 70 / 25.4), h: Math.round((65 + 2 * 3) * 70 / 25.4) } }
 };
 
 let qrImage = null, customImage = null, previewScale = 1.0;
@@ -29,7 +29,7 @@ const langs = {
         title: 'チケットメーカー', preview: 'チケットプレビュー', custom: 'オリジナルチケット', 
         rect1Line1: 'ロゴ テキスト (1行目)', rect1Line2: 'ロゴ テキスト (2行目)', rect1Color: 'ロゴ 背景色', rect1TextColor: 'ロゴ 文字色', 
         text2: '公演', text3Line1: '生誕祭 (1行目)', text3Line2: '生誕祭 (2行目)', text4Line1: '日付 (1行目)', text4Line2: '日付 (2行目)', text5: '番号', text6: '郵便番号', textColor: '文字色 (2-6)', 
-        bgColor: '全体の背景色', bgText: '背景テキスト', bgTextColor: '背景文字色', bgShadowColor: '背景影の色', 
+        bgColor: '全体の背景色', bgText: '背景テキスト', bgTextColor: '背景文字色', bgTextOpacity: '背景文字透明度', bgShadowColor: '背景影の色', 
         rect9Color: 'ボーダー 背景色', text10: '他', text11: '場所', text12: '電話番号', footerTextColor: 'ボーダー文字色', 
         qrCodeInput: 'QRコード画像', showQR: 'QRコード枠を表示', qrSquareColor: 'QR枠の色', 
         customBgImageInput: 'カスタム背景画像', recommendedSize: '（推奨サイズ: 65mm x 150mm）', 
@@ -46,7 +46,7 @@ const langs = {
         title: '門票生成器', preview: '門票預覽', custom: '自訂門票', 
         rect1Line1: '標誌 文字 (第1行)', rect1Line2: '標誌 文字 (第2行)', rect1Color: '標誌 背景色', rect1TextColor: '標誌 文字色', 
         text2: '演出', text3Line1: '生日祭 (第1行)', text3Line2: '生日祭 (第2行)', text4Line1: '日期 (第1行)', text4Line2: '日期 (第2行)', text5: '編號', text6: '郵遞區號', textColor: '文字色 (2-6)', 
-        bgColor: '整體背景色', bgText: '背景文字', bgTextColor: '背景文字色', bgShadowColor: '背景陰影色', 
+        bgColor: '整體背景色', bgText: '背景文字', bgTextColor: '背景文字色', bgTextOpacity: '背景文字透明度', bgShadowColor: '背景陰影色', 
         rect9Color: '邊框 背景色', text10: '其他', text11: '場地', text12: '電話號碼', footerTextColor: '邊框文字色', 
         qrCodeInput: 'QR碼圖片', showQR: '顯示QR碼框架', qrSquareColor: 'QR框架顏色', 
         customBgImageInput: '自訂背景圖片', recommendedSize: '（推薦尺寸: 65mm x 150mm）', 
@@ -63,7 +63,7 @@ const langs = {
         title: '门票生成器', preview: '门票预览', custom: '自定义门票', 
         rect1Line1: '标志 文本 (第1行)', rect1Line2: '标志 文本 (第2行)', rect1Color: '标志 背景色', rect1TextColor: '标志 文字色', 
         text2: '演出', text3Line1: '生日祭 (第1行)', text3Line2: '生日祭 (第2行)', text4Line1: '日期 (第1行)', text4Line2: '日期 (第2行)', text5: '编号', text6: '邮递区号', textColor: '文字色 (2-6)', 
-        bgColor: '整体背景色', bgText: '背景文本', bgTextColor: '背景文字色', bgShadowColor: '背景阴影色', 
+        bgColor: '整体背景色', bgText: '背景文本', bgTextColor: '背景文字色', bgTextOpacity: '背景文字透明度', bgShadowColor: '背景阴影色', 
         rect9Color: '边框 背景色', text10: '其他', text11: '场地', text12: '电话号码', footerTextColor: '边框文字色', 
         qrCodeInput: 'QR码图片', showQR: '显示QR码框架', qrSquareColor: 'QR框架颜色', 
         customBgImageInput: '自定义背景图片', recommendedSize: '（推荐尺寸: 65mm x 150mm）', 
@@ -80,7 +80,7 @@ const langs = {
         title: 'Ticket Maker', preview: 'Ticket Preview', custom: 'Custom Ticket', 
         rect1Line1: 'Logo Text (Line 1)', rect1Line2: 'Logo Text (Line 2)', rect1Color: 'Logo Background Color', rect1TextColor: 'Logo Text Color', 
         text2: 'Performance', text3Line1: 'Birthday (Line 1)', text3Line2: 'Birthday (Line 2)', text4Line1: 'Date (Line 1)', text4Line2: 'Date (Line 2)', text5: 'Number', text6: 'Postal Code', textColor: 'Text Color (2-6)', 
-        bgColor: 'Overall Background Color', bgText: 'Background Text', bgTextColor: 'Background Text Color', bgShadowColor: 'Background Shadow Color', 
+        bgColor: 'Overall Background Color', bgText: 'Background Text', bgTextColor: 'Background Text Color', bgTextOpacity: 'Background Text Opacity', bgShadowColor: 'Background Shadow Color', 
         rect9Color: 'Border Background Color', text10: 'Other', text11: 'Venue', text12: 'Phone Number', footerTextColor: 'Border Text Color', 
         qrCodeInput: 'QR Code Image', showQR: 'Show QR Code Frame', qrSquareColor: 'QR Frame Color', 
         customBgImageInput: 'Custom Background Image', recommendedSize: '(Recommended Size: 65mm x 150mm)', 
@@ -97,7 +97,7 @@ const langs = {
         title: '티켓 메이커', preview: '티켓 미리보기', custom: '커스텀 티켓', 
         rect1Line1: '로고 텍스트 (1행)', rect1Line2: '로고 텍스트 (2행)', rect1Color: '로고 배경색', rect1TextColor: '로고 글자색', 
         text2: '공연', text3Line1: '생일 축제 (1행)', text3Line2: '생일 축제 (2행)', text4Line1: '날짜 (1행)', text4Line2: '날짜 (2행)', text5: '번호', text6: '우편번호', textColor: '글자색 (2-6)', 
-        bgColor: '전체 배경색', bgText: '배경 텍스트', bgTextColor: '배경 글자색', bgShadowColor: '배경 그림자 색상', 
+        bgColor: '전체 배경색', bgText: '배경 텍스트', bgTextColor: '배경 글자색', bgTextOpacity: '배경 글자 투명도', bgShadowColor: '배경 그림자 색상', 
         rect9Color: '테두리 배경색', text10: '기타', text11: '장소', text12: '전화번호', footerTextColor: '테두리 글자색', 
         qrCodeInput: 'QR코드 이미지', showQR: 'QR코드 프레임 표시', qrSquareColor: 'QR 프레임 색상', 
         customBgImageInput: '커스텀 배경 이미지', recommendedSize: '(추천 크기: 65mm x 150mm)', 
@@ -114,7 +114,7 @@ const langs = {
         title: 'เครื่องทำตั๋ว', preview: 'ตัวอย่างตั๋ว', custom: 'ตั๋วที่กำหนดเอง', 
         rect1Line1: 'ข้อความโลโก้ (บรรทัดที่ 1)', rect1Line2: 'ข้อความโลโก้ (บรรทัดที่ 2)', rect1Color: 'สีพื้นหลังโลโก้', rect1TextColor: 'สีตัวอักษรโลโก้', 
         text2: 'การแสดง', text3Line1: 'งานฉลองวันเกิด (บรรทัดที่ 1)', text3Line2: 'งานฉลองวันเกิด (บรรทัดที่ 2)', text4Line1: 'วันที่ (บรรทัดที่ 1)', text4Line2: 'วันที่ (บรรทัดที่ 2)', text5: 'หมายเลข', text6: 'รหัสไปรษณีย์', textColor: 'สีตัวอักษร (2-6)', 
-        bgColor: 'สีพื้นหลังทั้งหมด', bgText: 'ข้อความพื้นหลัง', bgTextColor: 'สีข้อความพื้นหลัง', bgShadowColor: 'สีเงาพื้นหลัง', 
+        bgColor: 'สีพื้นหลังทั้งหมด', bgText: 'ข้อความพื้นหลัง', bgTextColor: 'สีข้อความพื้นหลัง', bgTextOpacity: 'ความโปร่งใสข้อความพื้นหลัง', bgShadowColor: 'สีเงาพื้นหลัง', 
         rect9Color: 'สีพื้นหลังกรอบ', text10: 'อื่นๆ', text11: 'สถานที่', text12: 'หมายเลขโทรศัพท์', footerTextColor: 'สีตัวอักษรกรอบ', 
         qrCodeInput: 'รูปภาพ QR โค้ด', showQR: 'แสดงกรอบ QR โค้ด', qrSquareColor: 'สีกรอบ QR', 
         customBgImageInput: 'รูปภาพพื้นหลังที่กำหนดเอง', recommendedSize: '(ขนาดแนะนำ: 65 มม. x 150 มม.)', 
@@ -131,7 +131,7 @@ const langs = {
         title: 'Pembuat Tiket', preview: 'Pratinjau Tiket', custom: 'Tiket Kustom', 
         rect1Line1: 'Teks Logo (Baris 1)', rect1Line2: 'Teks Logo (Baris 2)', rect1Color: 'Warna Latar Logo', rect1TextColor: 'Warna Teks Logo', 
         text2: 'Pertunjukan', text3Line1: 'Pesta Ulang Tahun (Baris 1)', text3Line2: 'Pesta Ulang Tahun (Baris 2)', text4Line1: 'Tanggal (Baris 1)', text4Line2: 'Tanggal (Baris 2)', text5: 'Nomor', text6: 'Kode Pos', textColor: 'Warna Teks (2-6)', 
-        bgColor: 'Warna Latar Keseluruhan', bgText: 'Teks Latar', bgTextColor: 'Warna Teks Latar', bgShadowColor: 'Warna Bayangan Latar', 
+        bgColor: 'Warna Latar Keseluruhan', bgText: 'Teks Latar', bgTextColor: 'Warna Teks Latar', bgTextOpacity: 'Opasitas Teks Latar', bgShadowColor: 'Warna Bayangan Latar', 
         rect9Color: 'Warna Latar Batas', text10: 'Lainnya', text11: 'Tempat', text12: 'Nomor Telepon', footerTextColor: 'Warna Teks Batas', 
         qrCodeInput: 'Gambar Kode QR', showQR: 'Tampilkan Bingkai Kode QR', qrSquareColor: 'Warna Bingkai QR', 
         customBgImageInput: 'Gambar Latar Kustom', recommendedSize: '(Ukuran Disarankan: 65mm x 150mm)', 
@@ -185,7 +185,7 @@ const drawBackground = async (dpiVal, bleed, w, h, mmPx, context = ctx) => {
     }
 
     const bg = { 
-        t: $('bgText')?.value || 'AKB48', 
+        t: $('bgText')?.value || 'YSS48', 
         x: parseFloat($('bgTextX')?.value || -100) * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
         y: parseFloat($('bgTextY')?.value || 0) * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
         s: parseFloat($('bgTextSpacing')?.value || -6000), 
@@ -205,18 +205,19 @@ const drawBackground = async (dpiVal, bleed, w, h, mmPx, context = ctx) => {
     for (let y = bg.y, r = 0; y < h; y += gy, r++) 
         for (let x = bg.x + r * cw; x < w; x += gx) 
             context.fillText(bg.t, x, y);
-    context.globalAlpha = 1;
+    context.globalAlpha = parseFloat($('bgTextOpacity')?.value || 1);
     context.shadowOffsetX = context.shadowOffsetY = 0;
     context.fillStyle = $('bgTextColor')?.value || '#FFFFFF';
     for (let y = bg.y, r = 0; y < h; y += gy, r++) 
         for (let x = bg.x + r * cw; x < w; x += gx) 
             context.fillText(bg.t, x, y);
+    context.globalAlpha = 1; // Reset alpha
 };
 
 const drawArea1 = (dpiVal, bleed, mmPx, context = ctx) => {
     context.fillStyle = $('rect1Color')?.value || '#2086D1';
     context.fillRect(8 * mmPx + (bleed ? sizes.bleed * mmPx : 0), bleed ? sizes.bleed * mmPx : 0, 25 * mmPx, 35 * mmPx);
-    drawText([$('rect1Line1')?.value || 'AKB'], parseFloat($('rect1Line1X')?.value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line1Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Size')?.value || 47), parseFloat($('rect1Spacing')?.value || -7000), 0, $('rect1TextColor')?.value || '#FFFFFF', 'center', null, dpiVal, context);
+    drawText([$('rect1Line1')?.value || 'YSS'], parseFloat($('rect1Line1X')?.value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line1Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Size')?.value || 47), parseFloat($('rect1Spacing')?.value || -7000), 0, $('rect1TextColor')?.value || '#FFFFFF', 'center', null, dpiVal, context);
     drawText([$('rect1Line2')?.value || '48'], parseFloat($('rect1Line2X')?.value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line2Y')?.value || 24) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Line2Size')?.value || 47), parseFloat($('rect1Line2Spacing')?.value || -7000), 0, $('rect1TextColor')?.value || '#FFFFFF', 'center', null, dpiVal, context);
 };
 
@@ -224,7 +225,7 @@ const drawText2To6 = (dpiVal, bleed, mmPx, context = ctx) => {
     const tc = $('textColor')?.value || '#000000';
     drawText([$('text2')?.value || '「ここからだ」 公演'], parseFloat($('text2X')?.value || 37) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text2Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text2Size')?.value || 14.2), parseFloat($('text2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal, context);
     drawText([$('text3Line1')?.value || '秋元康 生誕祭'], parseFloat($('text3Line1X')?.value || 35) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line1Y')?.value || 19) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Size')?.value || 14.2), parseFloat($('text3Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal, context);
-    drawText([$('text3Line2')?.value || 'AKB48劇場'], parseFloat($('text3Line2X')?.value || 35) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line2Y')?.value || 25) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Line2Size')?.value || 14.2), parseFloat($('text3Line2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal, context);
+    drawText([$('text3Line2')?.value || 'YSS48劇場'], parseFloat($('text3Line2X')?.value || 35) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text3Line2Y')?.value || 25) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text3Line2Size')?.value || 14.2), parseFloat($('text3Line2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal, context);
     drawText([$('text4Line1')?.value || '＜日付＞2025年05月02日（金）', $('text4Line2')?.value || 'OPEN：18時10分       START：18時30分      ￥3,400'], parseFloat($('text4Line1X')?.value || 13) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text4Line1Y')?.value || 43) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text4Size')?.value || 11), parseFloat($('text4Spacing')?.value || 1000), parseFloat($('text4LineHeight')?.value || 14), tc, 'left', fonts.ar, dpiVal, context);
     drawText([$('text5')?.value || '048番'], parseFloat($('text5X')?.value || 13) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text5Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text5Size')?.value || 16), parseFloat($('text5Spacing')?.value || 200), 0, tc, 'left', fonts.ar, dpiVal, context);
     drawText([$('text6')?.value || '① ❘ 000－0000 ❘ ゴメン先生 様'], parseFloat($('text6X')?.value || 36) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text6Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text6Size')?.value || 13), parseFloat($('text6Spacing')?.value || 311), 0, tc, 'left', fonts.ar, dpiVal, context);
@@ -235,15 +236,18 @@ const drawArea9 = (dpiVal, bleed, mmPx, context = ctx) => {
     context.fillRect(bleed ? sizes.bleed * mmPx : 0, 60 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 150 * mmPx, 5 * mmPx);
     const fc = $('footerTextColor')?.value || '#FFFFFF';
     drawText([$('text10')?.value || '<主催 ‧ お問い合せ>'], parseFloat($('text10X')?.value || 54) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text10Y')?.value || 63.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text10Size')?.value || 7), parseFloat($('text10Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal, context);
-    drawText([$('text11')?.value || 'AKB48 Theater'], parseFloat($('text11X')?.value || 80.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text11Y')?.value || 63.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, fc, 'left', fonts.ar, dpiVal, context);
-    drawText([$('text12')?.value || 'TEL:03-5298-8648'], parseFloat($('text12X')?.value || 108) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y')?.value || 64) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal, context);
+    drawText([$('text11')?.value || 'YSS48 Theater'], parseFloat($('text11X')?.value || 80.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text11Y')?.value || 63.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, fc, 'left', fonts.ar, dpiVal, context);
+    drawText([$('text12')?.value || 'TEL:01-2345-6789'], parseFloat($('text12X')?.value || 108) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y')?.value || 64) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal, context);
 };
 
 const drawQRCode = (dpiVal, bleed, w, mmPx, context = ctx) => {
     if ($('showQR')?.checked) {
-        const qx = w - 8.5 * mmPx - 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
-              qy = 23 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 
-              qs = 23 * mmPx;
+        // QR Code 位置固定相對於基礎尺寸右下角，不隨裁切邊偏移
+        const qrRightMargin = 8.5 * mmPx; // 距離右邊 8.5mm
+        const qrTopMargin = 23 * mmPx;   // 距離頂部 23mm
+        const qs = 23 * mmPx;            // QR Code 尺寸 23mm x 23mm
+        const qx = w - qrRightMargin - qs; // 從右邊計算位置
+        const qy = qrTopMargin;           // 固定從頂部計算
         context.fillStyle = $('qrSquareColor')?.value || '#2086D1';
         context.fillRect(qx, qy, qs, qs);
         if (qrImage) {
