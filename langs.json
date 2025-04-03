@@ -1,6 +1,0 @@
-{
-  "ja": { "tab_basic": "基本設定", "tab_advanced": "詳細設定", "tab_theme": "テーマ", "tab_export": "出力", "label_select_member": "メンバー選択", "label_apply_theme": "メンバーカラーを適用", "label_adjust_colors": "色を微調整", "label_darkmode": "ダークモード", "label_preview": "プレビュー", "note_preview_hint": "このプレビューは参考用です。出力画像の解像度とは異なる可能性があります。" },
-  "zh-TW": { "tab_basic": "基本設定", "tab_advanced": "進階調整", "tab_theme": "主題樣式", "tab_export": "預覽與匯出", "label_select_member": "選擇成員", "label_apply_theme": "套用成員主題配色", "label_adjust_colors": "顏色微調", "label_darkmode": "夜間模式", "label_preview": "即時預覽", "note_preview_hint": "此為即時預覽，實際解析度會根據下載設定而變化。" },
-  "zh-CN": { "tab_basic": "基本设置", "tab_advanced": "高级调整", "tab_theme": "主题样式", "tab_export": "预览与导出", "label_select_member": "选择成员", "label_apply_theme": "应用成员主题配色", "label_adjust_colors": "颜色微调", "label_darkmode": "夜间模式", "label_preview": "实时预览", "note_preview_hint": "此为实时预览，实际分辨率取决于下载设定。" },
-  "en": { "tab_basic": "Basic", "tab_advanced": "Advanced", "tab_theme": "Theme", "tab_export": "Export", "label_select_member": "Select Member", "label_apply_theme": "Apply Member Theme", "label_adjust_colors": "Adjust Colors", "label_darkmode": "Dark Mode", "label_preview": "Live Preview", "note_preview_hint": "This preview is approximate. Exported image resolution may differ." }
-}
