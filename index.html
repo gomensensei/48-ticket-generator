@@ -29,11 +29,12 @@
             --bg-color: #1E1E1E;
             --text-color: #F676A6;
         }
-        #mainContainer { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        #canvasContainer { width: 100%; text-align: center; overflow: auto; }
-        #ticketCanvas { border: 1px solid #ccc; max-width: 100%; height: auto; }
-        #controlsContainer { width: 100%; overflow-y: auto; max-height: 90vh; }
-        .divider { background: var(--divider-color); flex-shrink: 0; }
+        #mainContainer { display: flex; flex-direction: column; gap: 10px; }
+        #canvasContainer { width: 100%; order: 1; text-align: center; overflow: auto; }
+        #memberPreview { margin-bottom: 10px; }
+        #ticketCanvas { border: 1px solid #ccc; max-width: 80%; height: auto; }
+        #controlsContainer { width: 100%; order: 3; overflow-y: auto; max-height: 90vh; }
+        .divider { background: var(--divider-color); order: 2; width: 100%; height: 5px; margin: 10px 0; }
         .input-group { margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
         .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
         .input-group input, .input-group select { margin-top: 5px; width: 100%; max-width: 300px; padding: 5px; }
@@ -44,37 +45,29 @@
         .advanced-mode.active .advanced-label { display: inline-block; }
         .advanced-mode { display: none; }
         .advanced-mode.active { display: block; }
-        #previewSizeButtons, #downloadGroup { margin-top: 10px; }
+        .advanced-mode label { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; white-space: nowrap; }
+        .advanced-mode label input { margin: 0; }
+        #previewSizeButtons, #downloadGroup { margin-top: 10px; position: relative; }
         #previewSizeButtons button, #downloadGroup button { margin: 0 5px 10px; padding: 8px 16px; border-radius: 20px; border: none; background: var(--button-bg); color: #FFF; cursor: pointer; }
         #previewSizeButtons button:hover, #downloadGroup button:hover { background: var(--button-hover); }
+        #scaleOptions, #downloadOptions { display: none; position: absolute; background: #fff; border: 1px solid #ccc; padding: 10px; z-index: 10; }
         .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
         .ad-container { text-align: center; margin: 20px 0; width: 100%; }
         #languageSelector { position: absolute; top: 10px; right: 10px; color: var(--text-color); padding: 5px; }
+        #nightModeBtn { position: absolute; top: 10px; right: 120px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+        #donateBtn { position: absolute; top: 10px; right: 230px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+        #reportBugBtn { position: absolute; top: 10px; right: 170px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
         #disclaimer, #disclaimer + p.note { font-size: 7pt; color: var(--text-color); text-align: center; margin-top: 10px; }
         #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
         #memberGallery { margin: 20px 0; }
-        #galleryContainer { display: flex; flex-wrap: wrap; gap: 10px; }
+        #galleryContainer { display: none; } /* 隱藏所有成員卡片 */
         .member-card { width: 100px; text-align: center; padding: 5px; border: 1px solid #ccc; }
         .member-card img { width: 80px; height: 80px; object-fit: cover; }
         .member-color { width: 80px; height: 20px; margin-top: 5px; }
-
-        @media (min-width: 769px) {
-            #mainContainer { flex-direction: row; justify-content: space-between; align-items: stretch; gap: 10px; }
-            #canvasContainer { width: 48%; order: 1; display: flex; flex-direction: column; align-items: center; }
-            #controlsContainer { width: 48%; order: 3; }
-            .divider { width: 5px; height: auto; order: 2; }
-        }
-        @media (max-width: 768px) {
-            #mainContainer { flex-direction: column; gap: 10px; }
-            #canvasContainer, #controlsContainer { width: 100%; }
-            #canvasContainer { order: 1; }
-            .divider { order: 2; width: 100%; height: 5px; margin: 10px 0; }
-            #controlsContainer { order: 3; }
-            #ticketCanvas { max-width: 80%; }
-            .accordion-toggle { cursor: pointer; padding: 10px; background: var(--button-bg); color: #FFF; margin: 5px 0; }
-            .accordion-content { display: none; }
-            .accordion-content.active { display: block; }
-        }
+        .accordion-toggle { cursor: pointer; padding: 10px; background: var(--button-bg); color: #FFF; margin: 5px 0; }
+        .accordion-content { display: none; }
+        .accordion-content.active { display: block; }
+        #qrPreview { display: block; margin-top: 10px; width: 128px; height: 128px; }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661724500759448" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -97,37 +90,53 @@
         <option value="th">ไทย</option>
         <option value="vi">Tiếng Việt</option>
     </select>
+    <button id="nightModeBtn" data-i18n="night_mode">ダークモード</button>
+    <button id="donateBtn" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-i18n="donate">カンパ</button>
+    <button id="reportBugBtn" onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-i18n="report_bug">報錯</button>
 
     <div id="mainContainer">
         <div id="canvasContainer">
+            <div id="memberPreview"></div>
             <h1 data-i18n="preview">チケットプレビュー</h1>
             <canvas id="ticketCanvas" aria-label="Ticket preview canvas"></canvas>
             <div id="previewSizeButtons">
-                <button id="scale50Button">50%</button>
-                <button id="scale100Button">100%</button>
-                <button id="scale150Button">150%</button>
-                <button id="scale200Button">200%</button>
+                <button id="scaleButton" data-i18n="scale_button">縮放</button>
+                <div id="scaleOptions">
+                    <button onclick="setPreviewScale(0.5)">50%</button>
+                    <button onclick="setPreviewScale(1.0)">100%</button>
+                    <button onclick="setPreviewScale(1.5)">150%</button>
+                    <button onclick="setPreviewScale(2.0)">200%</button>
+                </div>
             </div>
             <div id="downloadGroup">
-                <button id="download300Button" data-i18n="download_png_300">ダウンロード (300 DPI)</button>
-                <button id="download70Button" data-i18n="download_png_70">ダウンロード (70 DPI)</button>
-                <button id="downloadPdfButton" data-i18n="download_pdf">PDFをダウンロード</button>
+                <button id="downloadButton" data-i18n="download_button">ダウンロード</button>
+                <div id="downloadOptions">
+                    <button id="download300Button" data-i18n="download_png_300">ダウンロード (300 DPI)</button>
+                    <button id="download70Button" data-i18n="download_png_70">ダウンロード (70 DPI)</button>
+                    <button id="downloadPdfButton" data-i18n="download_pdf">PDFをダウンロード</button>
+                </div>
                 <button id="advancedModeBtn" data-i18n="advanced_mode">詳細設定</button>
-                <button id="nightModeBtn" data-i18n="night_mode">ダークモード</button>
-                <button id="shareTwitterBtn">Twitterでシェア</button>
-                <button onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-i18n="donate">カンパ</button>
-                <button onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-i18n="report_bug">報錯</button>
-                <p class="note" data-i18n="disclaimer">※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。</p>
+                <button id="shareTwitterBtn" data-i18n="share_x_twitter">X(Twitter)でシェア</button>
+                <button id="donateBtn" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-i18n="donate">カンパ</button>
                 <p class="note" data-i18n="paypay_id">※paypay ID: gomensensei</p>
+                <button id="reportBugBtn" onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-i18n="report_bug">報錯</button>
+                <p class="note" data-i18n="disclaimer">※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。</p>
             </div>
             <p id="disclaimer" data-i18n="copyright_notice">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻された劇場チケットに感動し、趣味の一環として自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は©AKB48および株式会社DHに帰属し、制作者は一切の責任を負いかねます。何卒ご了承ください。</p>
         </div>
         <div class="divider"></div>
         <div id="controlsContainer">
             <h1 data-i18n="custom">オリジナルチケット</h1>
-
+            <div id="memberGallery">
+                <h2 data-i18n="member_color">メンバーカラー</h2>
+                <select id="memberSelector">
+                    <option value="">選択なし</option>
+                </select>
+                <button id="applyMemberColorBtn" data-i18n="apply_member_color">テーマカラー適用</button>
+                <div id="galleryContainer"></div>
+            </div>
             <div class="input-group">
-                <h3 class="accordion-toggle">ロゴ設定</h3>
+                <h3 class="accordion-toggle" data-i18n="logo_settings">ロゴ設定</h3>
                 <div class="accordion-content">
                     <label data-i18n="logo_line1" for="rect1Line1">ロゴ テキスト (1行目): <input type="text" id="rect1Line1" value="YSS"></label>
                     <div class="advanced-mode">
@@ -147,9 +156,8 @@
                     <label data-i18n="rect1TextColor" for="rect1TextColor">ロゴ 文字色: <input type="color" id="rect1TextColor" value="#FFFFFF"></label>
                 </div>
             </div>
-
             <div class="input-group">
-                <h3 class="accordion-toggle">公演與生誕祭</h3>
+                <h3 class="accordion-toggle" data-i18n="event_birthday">公演と生誕祭</h3>
                 <div class="accordion-content">
                     <label data-i18n="event" for="text2">公演: <input type="text" id="text2" value="「ここからだ」 公演"></label>
                     <div class="advanced-mode">
@@ -175,9 +183,8 @@
                     <label data-i18n="text_color" for="textColor">文字色 (2-6): <input type="color" id="textColor" value="#000000"></label>
                 </div>
             </div>
-
             <div class="input-group">
-                <h3 class="accordion-toggle">日付與番号</h3>
+                <h3 class="accordion-toggle" data-i18n="date_number">日付と番号</h3>
                 <div class="accordion-content">
                     <label data-i18n="date_line1" for="text4Line1">日付 (1行目): <input type="text" id="text4Line1" value="＜日付＞2025年05月02日（金）"></label>
                     <div class="advanced-mode">
@@ -204,9 +211,8 @@
                     </div>
                 </div>
             </div>
-
             <div class="input-group">
-                <h3 class="accordion-toggle">背景設定</h3>
+                <h3 class="accordion-toggle" data-i18n="background_settings">背景設定</h3>
                 <div class="accordion-content">
                     <label data-i18n="background_color" for="bgColor">全体の背景色: <input type="color" id="bgColor" value="#E5EDF9"></label>
                     <label data-i18n="background_text" for="bgText">背景テキスト: <input type="text" id="bgText" value="YSS48"></label>
@@ -227,9 +233,8 @@
                     </div>
                 </div>
             </div>
-
             <div class="input-group">
-                <h3 class="accordion-toggle">フッター設定</h3>
+                <h3 class="accordion-toggle" data-i18n="footer_settings">フッター設定</h3>
                 <div class="accordion-content">
                     <label data-i18n="border_color" for="rect9Color">ボーダー 背景色: <input type="color" id="rect9Color" value="#2086D1"></label>
                     <label data-i18n="note" for="text10">他: <input type="text" id="text10" value="<主催 ‧ お問い合せ>"></label>
@@ -256,14 +261,13 @@
                     <label data-i18n="footerTextColor" for="footerTextColor">ボーダー文字色: <input type="color" id="footerTextColor" value="#FFFFFF"></label>
                 </div>
             </div>
-
             <div class="input-group">
-                <h3 class="accordion-toggle">QR碼與其他</h3>
+                <h3 class="accordion-toggle" data-i18n="qr_others">QRコードとその他</h3>
                 <div class="accordion-content">
                     <label data-i18n="qr_code_url" for="qrCodeUrl">QRコードURL: <input type="text" id="qrCodeUrl" placeholder="https://example.com"></label>
                     <label data-i18n="show_qr_frame" for="showQR"><input type="checkbox" id="showQR" checked> 顯示 QR 碼</label>
                     <label data-i18n="border_color" for="qrSquareColor">QR枠の色: <input type="color" id="qrSquareColor" value="#2086D1"></label>
-                    <div id="qrPreview" style="display:none;"></div>
+                    <div id="qrPreview"></div>
                     <div class="advanced-mode">
                         <label data-i18n="customFontRect1" for="customFontRect1">ロゴ用カスタムフォント: <input type="file" id="customFontRect1" accept=".woff,.woff2,.ttf,.otf"></label>
                         <label data-i18n="customFontText2_3" for="customFontText2_3">公演-生誕祭用カスタムフォント: <input type="file" id="customFontText2_3" accept=".woff,.woff2,.ttf,.otf"></label>
@@ -279,15 +283,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div id="memberGallery">
-        <h2 data-i18n="member_select">メンバーを選択</h2>
-        <select id="memberSelector">
-            <option value="">選択なし</option>
-        </select>
-        <button id="applyMemberColorBtn" data-i18n="apply_member_color">テーマカラー適用</button>
-        <div id="galleryContainer"></div>
     </div>
 
     <div class="ad-container">
