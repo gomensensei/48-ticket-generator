@@ -17,134 +17,12 @@ const fonts = {
 };
 const sizes = { base: { w: 150, h: 65 }, bleed: 3 };
 const dpi = {
-    300: { base: { w: 1843, h: 839 }, bleed: { w: 1844, h: 840 } },
-    70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 2 * 3) * 70 / 25.4), h: Math.round((65 + 2 * 3) * 70 / 25.4) } }
+    300: { base: { w: Math.round(150 * 300 / 25.4), h: Math.round(65 * 300 / 25.4) }, bleed: { w: Math.round((150 + 6) * 300 / 25.4), h: Math.round((65 + 6) * 300 / 25.4) } },
+    70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 6) * 70 / 25.4), h: Math.round((65 + 6) * 70 / 25.4) } }
 };
 
 let qrImage = null, customImage = null, previewScale = 1.0;
-let currentLang = 'ja';
-
-const langs = {
-    ja: {
-        title: 'チケットメーカー', preview: 'チケットプレビュー', custom: 'オリジナルチケット', 
-        rect1Line1: 'ロゴ テキスト (1行目)', rect1Line2: 'ロゴ テキスト (2行目)', rect1Color: 'ロゴ 背景色', rect1TextColor: 'ロゴ 文字色', 
-        text2: '公演', text3Line1: '生誕祭 (1行目)', text3Line2: '生誕祭 (2行目)', text4Line1: '日付 (1行目)', text4Line2: '日付 (2行目)', text5: '番号', text6: '郵便番号', textColor: '文字色 (2-6)', 
-        bgColor: '全体の背景色', bgText: '背景テキスト', bgTextColor: '背景文字色', bgTextOpacity: '背景文字透明度', bgShadowColor: '背景影の色', 
-        rect9Color: 'ボーダー 背景色', text10: '他', text11: '場所', text12: '電話番号', footerTextColor: 'ボーダー文字色', 
-        qrCodeInput: 'QRコード画像', showQR: 'QRコード枠を表示', qrSquareColor: 'QR枠の色', 
-        customBgImageInput: 'カスタム背景画像', recommendedSize: '（推奨サイズ: 65mm x 150mm）', 
-        customFontRect1: 'ロゴ用カスタムフォント', customFontText2_3: '公演-生誕祭用カスタムフォント', customFontText4_6: '日付-番号-郵便番号用カスタムフォント', customFontText10_12: '他-場所-電話番号用カスタムフォント', 
-        bleedOption: '裁ち落とし付き (+3mm)', download300: 'ダウンロード (300 DPI)', download70: 'ダウンロード (70 DPI)', advancedMode: '詳細設定', donate: 'カンパ', reportBug: '報錯', 
-        note: '※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。', 
-        disclaimer: 'AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻した劇場チケットに感動し、趣味としてファンが自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は© AKB48及び株式会社DHに帰属し、制作者は責任を負いかねます。何卒ご了承ください。', 
-        downloadError: 'ダウンロードに失敗しました。もう一度お試しください。', inputError: '負の値または無効な値は使用できません。', opacityError: '透明度は0から1の間で入力してください。', 
-        qrFormatError: 'サポートされていないファイル形式です。画像を選択してください。', qrLoadError: 'QRコード画像の読み込みに失敗しました。', qrReadError: 'ファイルの読み込みに失敗しました。', 
-        fontLoadError: 'フォントの読み込みに失敗しました。デフォルトフォントを使用します。', 
-        x: 'X', y: 'Y', spacing: '字間', size: 'サイズ', lineHeight: '行間', shadowX: 'シャドウX', shadowY: 'シャドウY', shadowOpacity: 'シャドウ透明度', scale: '縮放'
-    },
-    'zh-TW': {
-        title: '門票生成器', preview: '門票預覽', custom: '自訂門票', 
-        rect1Line1: '標誌 文字 (第1行)', rect1Line2: '標誌 文字 (第2行)', rect1Color: '標誌 背景色', rect1TextColor: '標誌 文字色', 
-        text2: '演出', text3Line1: '生日祭 (第1行)', text3Line2: '生日祭 (第2行)', text4Line1: '日期 (第1行)', text4Line2: '日期 (第2行)', text5: '編號', text6: '郵遞區號', textColor: '文字色 (2-6)', 
-        bgColor: '整體背景色', bgText: '背景文字', bgTextColor: '背景文字色', bgTextOpacity: '背景文字透明度', bgShadowColor: '背景陰影色', 
-        rect9Color: '邊框 背景色', text10: '其他', text11: '場地', text12: '電話號碼', footerTextColor: '邊框文字色', 
-        qrCodeInput: 'QR碼圖片', showQR: '顯示QR碼框架', qrSquareColor: 'QR框架顏色', 
-        customBgImageInput: '自訂背景圖片', recommendedSize: '（推薦尺寸: 65mm x 150mm）', 
-        customFontRect1: '標誌用自訂字體', customFontText2_3: '演出-生日祭用自訂字體', customFontText4_6: '日期-編號-郵遞區號用自訂字體', customFontText10_12: '其他-場地-電話號碼用自訂字體', 
-        bleedOption: '含出血位 (+3mm)', download300: '下載 (300 DPI)', download70: '下載 (70 DPI)', advancedMode: '進階設定', donate: '捐款', reportBug: '回報錯誤', 
-        note: '※下載的PNG為RGB格式。如需印刷用CMYK，請使用Photoshop或GIMP轉換。', 
-        disclaimer: '鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人感動，故製作此網站，讓粉絲可自製門票並保存。此網站純為興趣製作，請勿用於商業或非法用途。版權歸© AKB48及株式会社DH所有，製作者不承擔任何責任。', 
-        downloadError: '下載失敗，請重試。', inputError: '不可使用負值或無效值。', opacityError: '透明度需在0到1之間。', 
-        qrFormatError: '不支援的檔案格式，請選擇圖片。', qrLoadError: 'QR碼圖片載入失敗。', qrReadError: '檔案讀取失敗。', 
-        fontLoadError: '字體載入失敗，將使用預設字體。', 
-        x: 'X', y: 'Y', spacing: '字距', size: '大小', lineHeight: '行距', shadowX: '陰影X', shadowY: '陰影Y', shadowOpacity: '陰影透明度', scale: '縮放'
-    },
-    'zh-CN': {
-        title: '门票生成器', preview: '门票预览', custom: '自定义门票', 
-        rect1Line1: '标志 文本 (第1行)', rect1Line2: '标志 文本 (第2行)', rect1Color: '标志 背景色', rect1TextColor: '标志 文字色', 
-        text2: '演出', text3Line1: '生日祭 (第1行)', text3Line2: '生日祭 (第2行)', text4Line1: '日期 (第1行)', text4Line2: '日期 (第2行)', text5: '编号', text6: '邮递区号', textColor: '文字色 (2-6)', 
-        bgColor: '整体背景色', bgText: '背景文本', bgTextColor: '背景文字色', bgTextOpacity: '背景文字透明度', bgShadowColor: '背景阴影色', 
-        rect9Color: '边框 背景色', text10: '其他', text11: '场地', text12: '电话号码', footerTextColor: '边框文字色', 
-        qrCodeInput: 'QR码图片', showQR: '显示QR码框架', qrSquareColor: 'QR框架颜色', 
-        customBgImageInput: '自定义背景图片', recommendedSize: '（推荐尺寸: 65mm x 150mm）', 
-        customFontRect1: '标志用自定义字体', customFontText2_3: '演出-生日祭用自定义字体', customFontText4_6: '日期-编号-邮递区号用自定义字体', customFontText10_12: '其他-场地-电话号码用自定义字体', 
-        bleedOption: '含出血位 (+3mm)', download300: '下载 (300 DPI)', download70: '下载 (70 DPI)', advancedMode: '高级设置', donate: '捐款', reportBug: '报告错误', 
-        note: '※下载的PNG为RGB格式。如需印刷用CMYK，请使用Photoshop或GIMP转换。', 
-        disclaimer: '鉴于AKB48成员诞辰祭剧场公演中，粉丝复刻的剧场门票令人感动，故制作此网站，让粉丝可自制门票并保存。此网站纯为兴趣制作，请勿用于商业或非法用途。版权归© AKB48及株式会社DH所有，制作者不承担任何责任。', 
-        downloadError: '下载失败，请重试。', inputError: '不可使用负值或无效值。', opacityError: '透明度需在0到1之间。', 
-        qrFormatError: '不支持的文件格式，请选择图片。', qrLoadError: 'QR码图片加载失败。', qrReadError: '文件读取失败。', 
-        fontLoadError: '字体加载失败，将使用默认字体。', 
-        x: 'X', y: 'Y', spacing: '字距', size: '大小', lineHeight: '行距', shadowX: '阴影X', shadowY: '阴影Y', shadowOpacity: '阴影透明度', scale: '缩放'
-    },
-    en: {
-        title: 'Ticket Maker', preview: 'Ticket Preview', custom: 'Custom Ticket', 
-        rect1Line1: 'Logo Text (Line 1)', rect1Line2: 'Logo Text (Line 2)', rect1Color: 'Logo Background Color', rect1TextColor: 'Logo Text Color', 
-        text2: 'Performance', text3Line1: 'Birthday (Line 1)', text3Line2: 'Birthday (Line 2)', text4Line1: 'Date (Line 1)', text4Line2: 'Date (Line 2)', text5: 'Number', text6: 'Postal Code', textColor: 'Text Color (2-6)', 
-        bgColor: 'Overall Background Color', bgText: 'Background Text', bgTextColor: 'Background Text Color', bgTextOpacity: 'Background Text Opacity', bgShadowColor: 'Background Shadow Color', 
-        rect9Color: 'Border Background Color', text10: 'Other', text11: 'Venue', text12: 'Phone Number', footerTextColor: 'Border Text Color', 
-        qrCodeInput: 'QR Code Image', showQR: 'Show QR Code Frame', qrSquareColor: 'QR Frame Color', 
-        customBgImageInput: 'Custom Background Image', recommendedSize: '(Recommended Size: 65mm x 150mm)', 
-        customFontRect1: 'Custom Font for Logo', customFontText2_3: 'Custom Font for Performance-Birthday', customFontText4_6: 'Custom Font for Date-Number-Postal Code', customFontText10_12: 'Custom Font for Other-Venue-Phone Number', 
-        bleedOption: 'With Bleed (+3mm)', download300: 'Download (300 DPI)', download70: 'Download (70 DPI)', advancedMode: 'Advanced Settings', donate: 'Donate', reportBug: 'Report Bug', 
-        note: '※Downloaded PNG is in RGB. Use Photoshop or GIMP to convert to CMYK for printing.', 
-        disclaimer: 'Inspired by AKB48 member birthday theater performances, this site was created for fans to save custom tickets as a hobby. Commercial or illegal use is prohibited. Rights belong to © AKB48 and DH Co., Ltd. The creator assumes no responsibility.', 
-        downloadError: 'Download failed. Please try again.', inputError: 'Negative or invalid values are not allowed.', opacityError: 'Opacity must be between 0 and 1.', 
-        qrFormatError: 'Unsupported file format. Please select an image.', qrLoadError: 'Failed to load QR code image.', qrReadError: 'Failed to read file.', 
-        fontLoadError: 'Failed to load font. Using default font.', 
-        x: 'X', y: 'Y', spacing: 'Letter Spacing', size: 'Size', lineHeight: 'Line Height', shadowX: 'Shadow X', shadowY: 'Shadow Y', shadowOpacity: 'Shadow Opacity', scale: 'Scale'
-    },
-    ko: {
-        title: '티켓 메이커', preview: '티켓 미리보기', custom: '커스텀 티켓', 
-        rect1Line1: '로고 텍스트 (1행)', rect1Line2: '로고 텍스트 (2행)', rect1Color: '로고 배경색', rect1TextColor: '로고 글자색', 
-        text2: '공연', text3Line1: '생일 축제 (1행)', text3Line2: '생일 축제 (2행)', text4Line1: '날짜 (1행)', text4Line2: '날짜 (2행)', text5: '번호', text6: '우편번호', textColor: '글자색 (2-6)', 
-        bgColor: '전체 배경색', bgText: '배경 텍스트', bgTextColor: '배경 글자색', bgTextOpacity: '배경 글자 투명도', bgShadowColor: '배경 그림자 색상', 
-        rect9Color: '테두리 배경색', text10: '기타', text11: '장소', text12: '전화번호', footerTextColor: '테두리 글자색', 
-        qrCodeInput: 'QR코드 이미지', showQR: 'QR코드 프레임 표시', qrSquareColor: 'QR 프레임 색상', 
-        customBgImageInput: '커스텀 배경 이미지', recommendedSize: '(추천 크기: 65mm x 150mm)', 
-        customFontRect1: '로고용 커스텀 폰트', customFontText2_3: '공연-생일 축제용 커스텀 폰트', customFontText4_6: '날짜-번호-우편번호용 커스텀 폰트', customFontText10_12: '기타-장소-전화번호용 커스텀 폰트', 
-        bleedOption: '블리드 포함 (+3mm)', download300: '다운로드 (300 DPI)', download70: '다운로드 (70 DPI)', advancedMode: '고급 설정', donate: '기부', reportBug: '버그 신고', 
-        note: '※다운로드한 PNG는 RGB입니다. 인쇄용 CMYK로 변환하려면 Photoshop 또는 GIMP를 사용하세요.', 
-        disclaimer: 'AKB48 멤버 생일 공연에서 팬들이 복각한 극장 티켓에 감동받아, 팬들이 취미로 티켓을 제작하고 저장할 수 있는 웹사이트를 만들었습니다. 상업적 또는 불법 사용은 금지됩니다. 권리는 © AKB48 및 DH 주식회사에 있으며, 제작자는 책임을 지지 않습니다.', 
-        downloadError: '다운로드에 실패했습니다. 다시 시도하세요.', inputError: '음수 또는 유효하지 않은 값은 사용할 수 없습니다.', opacityError: '투명도는 0에서 1 사이로 입력하세요.', 
-        qrFormatError: '지원되지 않는 파일 형식입니다. 이미지를 선택하세요.', qrLoadError: 'QR코드 이미지 로드에 실패했습니다.', qrReadError: '파일 읽기에 실패했습니다.', 
-        fontLoadError: '폰트 로드에 실패했습니다. 기본 폰트를 사용합니다.', 
-        x: 'X', y: 'Y', spacing: '자간', size: '크기', lineHeight: '행간', shadowX: '그림자 X', shadowY: '그림자 Y', shadowOpacity: '그림자 투명도', scale: '축척'
-    },
-    th: {
-        title: 'เครื่องทำตั๋ว', preview: 'ตัวอย่างตั๋ว', custom: 'ตั๋วที่กำหนดเอง', 
-        rect1Line1: 'ข้อความโลโก้ (บรรทัดที่ 1)', rect1Line2: 'ข้อความโลโก้ (บรรทัดที่ 2)', rect1Color: 'สีพื้นหลังโลโก้', rect1TextColor: 'สีตัวอักษรโลโก้', 
-        text2: 'การแสดง', text3Line1: 'งานฉลองวันเกิด (บรรทัดที่ 1)', text3Line2: 'งานฉลองวันเกิด (บรรทัดที่ 2)', text4Line1: 'วันที่ (บรรทัดที่ 1)', text4Line2: 'วันที่ (บรรทัดที่ 2)', text5: 'หมายเลข', text6: 'รหัสไปรษณีย์', textColor: 'สีตัวอักษร (2-6)', 
-        bgColor: 'สีพื้นหลังทั้งหมด', bgText: 'ข้อความพื้นหลัง', bgTextColor: 'สีข้อความพื้นหลัง', bgTextOpacity: 'ความโปร่งใสข้อความพื้นหลัง', bgShadowColor: 'สีเงาพื้นหลัง', 
-        rect9Color: 'สีพื้นหลังกรอบ', text10: 'อื่นๆ', text11: 'สถานที่', text12: 'หมายเลขโทรศัพท์', footerTextColor: 'สีตัวอักษรกรอบ', 
-        qrCodeInput: 'รูปภาพ QR โค้ด', showQR: 'แสดงกรอบ QR โค้ด', qrSquareColor: 'สีกรอบ QR', 
-        customBgImageInput: 'รูปภาพพื้นหลังที่กำหนดเอง', recommendedSize: '(ขนาดแนะนำ: 65 มม. x 150 มม.)', 
-        customFontRect1: 'ฟอนต์ที่กำหนดเองสำหรับโลโก้', customFontText2_3: 'ฟอนต์ที่กำหนดเองสำหรับการแสดง-งานฉลองวันเกิด', customFontText4_6: 'ฟอนต์ที่กำหนดเองสำหรับวันที่-หมายเลข-รหัสไปรษณีย์', customFontText10_12: 'ฟอนต์ที่กำหนดเองสำหรับอื่นๆ-สถานที่-หมายเลขโทรศัพท์', 
-        bleedOption: 'รวมระยะตัดขอบ (+3 มม.)', download300: 'ดาวน์โหลด (300 DPI)', download70: 'ดาวน์โหลด (70 DPI)', advancedMode: 'การตั้งค่าขั้นสูง', donate: 'บริจาค', reportBug: 'รายงานข้อผิดพลาด', 
-        note: '※PNG ที่ดาวน์โหลดเป็น RGB หากต้องการใช้ CMYK สำหรับการพิมพ์ กรุณาแปลงด้วย Photoshop หรือ GIMP', 
-        disclaimer: 'ได้รับแรงบันดาลใจจากตั๋วโรงละครที่แฟน ๆ สร้างขึ้นในงานฉลองวันเกิดของสมาชิก AKB48 เว็บไซต์นี้สร้างขึ้นเพื่อให้แฟน ๆ สามารถทำตั๋วเองและเก็บไว้เป็นงานอดิเรก ห้ามใช้เพื่อการค้าหรือผิดกฎหมาย สิทธิ์เป็นของ © AKB48 และบริษัท DH ผู้สร้างไม่รับผิดชอบใด ๆ', 
-        downloadError: 'การดาวน์โหลดล้มเหลว กรุณาลองใหม่', inputError: 'ไม่สามารถใช้ค่าลบหรือค่าที่ไม่ถูกต้องได้', opacityError: 'ความโปร่งใสต้องอยู่ระหว่าง 0 ถึง 1', 
-        qrFormatError: 'รูปแบบไฟล์ไม่รองรับ กรุณาเลือกภาพ', qrLoadError: 'โหลดภาพ QR โค้ดไม่สำเร็จ', qrReadError: 'อ่านไฟล์ไม่สำเร็จ', 
-        fontLoadError: 'โหลดฟอนต์ไม่สำเร็จ จะใช้ฟอนต์เริ่มต้น', 
-        x: 'X', y: 'Y', spacing: 'ระยะห่างตัวอักษร', size: 'ขนาด', lineHeight: 'ระยะห่างบรรทัด', shadowX: 'เงา X', shadowY: 'เงา Y', shadowOpacity: 'ความโปร่งใสของเงา', scale: 'สเกล'
-    },
-    id: {
-        title: 'Pembuat Tiket', preview: 'Pratinjau Tiket', custom: 'Tiket Kustom', 
-        rect1Line1: 'Teks Logo (Baris 1)', rect1Line2: 'Teks Logo (Baris 2)', rect1Color: 'Warna Latar Logo', rect1TextColor: 'Warna Teks Logo', 
-        text2: 'Pertunjukan', text3Line1: 'Pesta Ulang Tahun (Baris 1)', text3Line2: 'Pesta Ulang Tahun (Baris 2)', text4Line1: 'Tanggal (Baris 1)', text4Line2: 'Tanggal (Baris 2)', text5: 'Nomor', text6: 'Kode Pos', textColor: 'Warna Teks (2-6)', 
-        bgColor: 'Warna Latar Keseluruhan', bgText: 'Teks Latar', bgTextColor: 'Warna Teks Latar', bgTextOpacity: 'Opasitas Teks Latar', bgShadowColor: 'Warna Bayangan Latar', 
-        rect9Color: 'Warna Latar Batas', text10: 'Lainnya', text11: 'Tempat', text12: 'Nomor Telepon', footerTextColor: 'Warna Teks Batas', 
-        qrCodeInput: 'Gambar Kode QR', showQR: 'Tampilkan Bingkai Kode QR', qrSquareColor: 'Warna Bingkai QR', 
-        customBgImageInput: 'Gambar Latar Kustom', recommendedSize: '(Ukuran Disarankan: 65mm x 150mm)', 
-        customFontRect1: 'Font Kustom untuk Logo', customFontText2_3: 'Font Kustom untuk Pertunjukan-Pesta Ulang Tahun', customFontText4_6: 'Font Kustom untuk Tanggal-Nomor-Kode Pos', customFontText10_12: 'Font Kustom untuk Lainnya-Tempat-Nomor Telepon', 
-        bleedOption: 'Dengan Bleed (+3mm)', download300: 'Unduh (300 DPI)', download70: 'Unduh (70 DPI)', advancedMode: 'Pengaturan Lanjutan', donate: 'Donasi', reportBug: 'Laporkan Bug', 
-        note: '※PNG yang diunduh dalam format RGB. Gunakan Photoshop atau GIMP untuk mengonversi ke CMYK untuk pencetakan.', 
-        disclaimer: 'Terinspirasi dari tiket teater yang dibuat ulang oleh penggemar dalam pertunjukan ulang tahun anggota AKB48, situs ini dibuat agar penggemar dapat membuat dan menyimpan tiket sebagai hobi. Penggunaan komersial atau ilegal dilarang. Hak cipta milik © AKB48 dan DH Co., Ltd. Pembuat tidak bertanggung jawab.', 
-        downloadError: 'Gagal mengunduh. Silakan coba lagi.', inputError: 'Nilai negatif atau tidak valid tidak diperbolehkan.', opacityError: 'Opasitas harus antara 0 dan 1.', 
-        qrFormatError: 'Format file tidak didukung. Pilih gambar.', qrLoadError: 'Gagal memuat gambar kode QR.', qrReadError: 'Gagal membaca file.', 
-        fontLoadError: 'Gagal memuat font. Menggunakan font default.', 
-        x: 'X', y: 'Y', spacing: 'Jarak Huruf', size: 'Ukuran', lineHeight: 'Jarak Baris', shadowX: 'Bayangan X', shadowY: 'Bayangan Y', shadowOpacity: 'Opasitas Bayangan', scale: 'Skala'
-    }
-};
+let langs = {}, members = [], currentLang = 'ja';
 
 const debounce = (func, delay) => {
     let timeoutId;
@@ -164,7 +42,7 @@ const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left
         if (!l) return;
         l.split('').forEach(c => {
             const isAlt = altFont && /[A-Za-z0-9①❘－]/.test(c);
-            context.font = `${size * ptPx}px ${isAlt ? altFont : font}`;
+            context.font = `${size * ptPx}px ${isAlt ? altFont : font || 'sans-serif'}`;
             context.fillText(c, cx, ly);
             cx += context.measureText(c).width + spacing * ptPx / 1000;
         });
@@ -211,7 +89,7 @@ const drawBackground = async (dpiVal, bleed, w, h, mmPx, context = ctx) => {
     for (let y = bg.y, r = 0; y < h; y += gy, r++) 
         for (let x = bg.x + r * cw; x < w; x += gx) 
             context.fillText(bg.t, x, y);
-    context.globalAlpha = 1; // Reset alpha
+    context.globalAlpha = 1;
 };
 
 const drawArea1 = (dpiVal, bleed, mmPx, context = ctx) => {
@@ -241,26 +119,21 @@ const drawArea9 = (dpiVal, bleed, mmPx, context = ctx) => {
 };
 
 const drawQRCode = (dpiVal, bleed, w, mmPx, context = ctx) => {
-    if ($('showQR')?.checked) {
-        // QR Code 位置固定相對於基礎尺寸右下角，不隨裁切邊偏移
-        const qrRightMargin = 8.5 * mmPx; // 距離右邊 8.5mm
-        const qrTopMargin = 23 * mmPx;   // 距離頂部 23mm
-        const qs = 23 * mmPx;            // QR Code 尺寸 23mm x 23mm
-        const qx = w - qrRightMargin - qs; // 從右邊計算位置
-        const qy = qrTopMargin;           // 固定從頂部計算
+    if ($('showQR')?.checked && qrImage) {
+        const qrRightMargin = 8.5 * mmPx;
+        const qrTopMargin = 23 * mmPx;
+        const qs = 23 * mmPx;
+        const qx = w - qrRightMargin - qs;
+        const qy = qrTopMargin;
+
         context.fillStyle = $('qrSquareColor')?.value || '#2086D1';
         context.fillRect(qx, qy, qs, qs);
-        if (qrImage) {
-            context.drawImage(qrImage, qx, qy, qs, qs);
-        }
+        context.drawImage(qrImage, qx, qy, qs, qs);
     }
 };
 
 const drawTicket = async (dpiVal, context = ctx) => {
-    if (!context) {
-        console.error('Cannot draw ticket: Canvas context is null');
-        return;
-    }
+    if (!context) return;
     const bleed = $('bleedOption')?.checked || false;
     const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
     const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
@@ -283,10 +156,9 @@ const drawTicket = async (dpiVal, context = ctx) => {
 const debouncedDrawTicket = debounce((dpiVal) => drawTicket(dpiVal), 300);
 
 const setPreviewScale = (scale) => {
-    console.log('Setting preview scale to:', scale);
     previewScale = scale;
     if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
-        previewScale = Math.min(scale, window.innerWidth / dpi[70].base.w * 0.8);
+        previewScale = Math.min(scale, (window.visualViewport?.width || window.innerWidth) / dpi[70].base.w * 0.8);
     }
     if (ctx) {
         const w = dpi[70].base.w;
@@ -298,9 +170,7 @@ const setPreviewScale = (scale) => {
 };
 
 const downloadTicket = async (dpiVal) => {
-    console.log(`Downloading ticket at ${dpiVal} DPI`);
     $('loading').style.display = 'block';
-
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
     const bleed = $('bleedOption')?.checked || false;
@@ -322,16 +192,19 @@ const downloadTicket = async (dpiVal) => {
     link.download = `ticket_${dpiVal}dpi.png`;
     link.href = tempCanvas.toDataURL('image/png');
     link.click();
-    console.log('Download triggered');
 
-    // Restore preview canvas
-    const previewW = dpi[70].base.w;
-    const previewH = dpi[70].base.h;
-    canvas.width = previewW;
-    canvas.height = previewH;
-    canvas.style.width = `${previewW * previewScale}px`;
-    canvas.style.height = `${previewH * previewScale}px`;
     await drawTicket(70);
+    $('loading').style.display = 'none';
+};
+
+const downloadPDF = async () => {
+    const { jsPDF } = window.jspdf;
+    $('loading').style.display = 'block';
+    const doc = new jsPDF({ unit: 'mm', format: [150, 65] });
+    const tempCanvas = await html2canvas($('ticketCanvas'), { scale: 300 / 70 });
+    const imgData = tempCanvas.toDataURL('image/png');
+    doc.addImage(imgData, 'PNG', 0, 0, 150, 65);
+    doc.save('ticket.pdf');
     $('loading').style.display = 'none';
 };
 
@@ -344,33 +217,60 @@ const loadFont = (file, fontKey) => {
             await font.load();
             document.fonts.add(font);
             fonts[fontKey] = fontKey;
-            console.log(`Custom font ${fontKey} loaded`);
             debouncedDrawTicket(70);
         } catch (err) {
             console.error(`Failed to load font ${fontKey}:`, err);
             alert(langs[currentLang].fontLoadError);
         }
     };
-    reader.onerror = () => {
-        console.error('Font file read error');
-        alert(langs[currentLang].qrReadError);
-    };
+    reader.onerror = () => alert(langs[currentLang].qrReadError);
     reader.readAsArrayBuffer(file);
 };
 
+const updateQRCode = () => {
+    const url = $('qrCodeUrl')?.value;
+    const qrContainer = $('qrPreview');
+    if (!url) {
+        qrImage = null;
+        qrContainer.innerHTML = "";
+        debouncedDrawTicket(70);
+        return;
+    }
+
+    qrContainer.innerHTML = "";
+    new QRCode(qrContainer, {
+        text: url,
+        width: 128,
+        height: 128,
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+    setTimeout(() => {
+        const qrElement = qrContainer.querySelector('img') || qrContainer.querySelector('canvas');
+        if (!qrElement) {
+            alert(langs[currentLang].qrLoadError);
+            return;
+        }
+        const img = new Image();
+        img.onload = () => {
+            qrImage = img;
+            debouncedDrawTicket(70);
+        };
+        img.onerror = () => alert(langs[currentLang].qrLoadError);
+        img.src = qrElement.tagName === 'IMG' ? qrElement.src : qrElement.toDataURL('image/png');
+    }, 300);
+};
+
 const changeLanguage = (lang) => {
-    console.log('Changing language to:', lang);
     currentLang = lang;
-    document.querySelectorAll('[data-key]').forEach(el => {
-        const key = el.getAttribute('data-key');
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
         if (langs[lang][key]) {
             if (el.tagName === 'LABEL') {
                 const input = el.querySelector('input, select');
                 if (input) {
                     const textNode = Array.from(el.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-                    if (textNode) {
-                        textNode.textContent = langs[lang][key] + ' ';
-                    }
+                    if (textNode) textNode.textContent = langs[lang][key] + ': ';
                 } else {
                     el.textContent = langs[lang][key];
                 }
@@ -383,11 +283,9 @@ const changeLanguage = (lang) => {
 };
 
 const toggleAdvancedMode = () => {
-    console.log('Toggling advanced mode');
-    const advancedElements = document.querySelectorAll('.advanced-mode');
-    advancedElements.forEach(el => el.classList.toggle('active'));
+    document.querySelectorAll('.advanced-mode').forEach(el => el.classList.toggle('active'));
     const btn = $('advancedModeBtn');
-    btn.textContent = btn.textContent === langs[currentLang].advancedMode ? '簡易設定' : langs[currentLang].advancedMode;
+    btn.textContent = btn.textContent === langs[currentLang].advanced_mode ? langs[currentLang].simple_mode : langs[currentLang].advanced_mode;
 };
 
 const waitForFonts = async () => {
@@ -399,47 +297,61 @@ const waitForFonts = async () => {
     ];
     try {
         await Promise.all(fontPromises);
-        console.log('All fonts loaded');
     } catch (err) {
         console.error('Font loading failed:', err);
         alert(langs[currentLang].fontLoadError);
     }
 };
 
+async function loadLanguages() {
+    try {
+        const response = await fetch('langs.json');
+        langs = await response.json();
+        changeLanguage(currentLang);
+    } catch (error) {
+        console.error('Failed to load languages:', error);
+    }
+}
+
+async function loadMembers() {
+    try {
+        const response = await fetch('members.json');
+        members = await response.json();
+        const selector = $('memberSelector');
+        const gallery = $('galleryContainer');
+        members.forEach(member => {
+            const option = document.createElement('option');
+            option.value = member.name_en;
+            option.textContent = `${member.name_ja} (${member.name_en})`;
+            selector.appendChild(option);
+
+            const card = document.createElement('div');
+            card.className = 'member-card';
+            card.innerHTML = `
+                <img src="${member.image}" alt="${member.name_en}">
+                <p>${member.name_ja}</p>
+                <div class="member-color" style="background: linear-gradient(to right, ${member.gradient[0]}, ${member.gradient[1]})"></div>
+            `;
+            gallery.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Failed to load members:', error);
+    }
+}
+
+function contrastColor(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 128 ? '#000000' : '#FFFFFF';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded');
     $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
-    $('qrCodeInput')?.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file || !file.type.startsWith('image/')) {
-            alert(langs[currentLang].qrFormatError);
-            qrImage = null;
-            debouncedDrawTicket(70);
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            qrImage = new Image();
-            qrImage.src = event.target.result;
-            qrImage.onload = () => {
-                console.log('QR code image uploaded successfully');
-                debouncedDrawTicket(70);
-            };
-            qrImage.onerror = () => {
-                console.error('Failed to load QR code image');
-                alert(langs[currentLang].qrLoadError);
-                qrImage = null;
-                debouncedDrawTicket(70);
-            };
-        };
-        reader.onerror = () => {
-            console.error('Failed to read QR code file');
-            alert(langs[currentLang].qrReadError);
-            qrImage = null;
-            debouncedDrawTicket(70);
-        };
-        reader.readAsDataURL(file);
-    });
+    $('qrCodeUrl')?.addEventListener('input', debounce(updateQRCode, 500));
+    $('showQR')?.addEventListener('change', () => debouncedDrawTicket(70));
+    $('qrSquareColor')?.addEventListener('input', () => debouncedDrawTicket(70));
 
     $('customImageInput')?.addEventListener('change', (e) => {
         const file = e.target.files[0];
@@ -451,19 +363,9 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.onload = (event) => {
             customImage = new Image();
             customImage.src = event.target.result;
-            customImage.onload = () => {
-                console.log('Custom image uploaded');
-                debouncedDrawTicket(70);
-            };
-            customImage.onerror = () => {
-                console.error('Failed to load custom image');
-                alert(langs[currentLang].qrLoadError);
-            };
+            customImage.onload = () => debouncedDrawTicket(70);
         };
-        reader.onerror = () => {
-            console.error('Failed to read custom image file');
-            alert(langs[currentLang].qrReadError);
-        };
+        reader.onerror = () => alert(langs[currentLang].qrReadError);
         reader.readAsDataURL(file);
     });
 
@@ -476,7 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('input[type="number"]').forEach(input => {
         input.addEventListener('input', () => {
-            console.log(`Input changed: ${input.id} = ${input.value}`);
             const val = parseFloat(input.value);
             if (isNaN(val)) {
                 $(input.id + '-error').textContent = langs[currentLang].inputError;
@@ -499,29 +400,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('input:not([type="number"]), select').forEach(el => {
         if (el.id !== 'languageSelector') {
-            el.addEventListener('input', () => {
-                console.log(`Input/select changed: ${el.id} = ${el.value}`);
-                debouncedDrawTicket(70);
-            });
+            el.addEventListener('input', () => debouncedDrawTicket(70));
         }
     });
 
     $('download300Button')?.addEventListener('click', () => downloadTicket(300));
     $('download70Button')?.addEventListener('click', () => downloadTicket(70));
+    $('downloadPdfButton')?.addEventListener('click', downloadPDF);
     $('scale50Button')?.addEventListener('click', () => setPreviewScale(0.5));
     $('scale100Button')?.addEventListener('click', () => setPreviewScale(1.0));
     $('scale150Button')?.addEventListener('click', () => setPreviewScale(1.5));
     $('scale200Button')?.addEventListener('click', () => setPreviewScale(2.0));
     $('advancedModeBtn')?.addEventListener('click', toggleAdvancedMode);
+    $('nightModeBtn')?.addEventListener('click', () => {
+        document.body.classList.toggle('night-mode');
+        $('nightModeBtn').textContent = document.body.classList.contains('night-mode') ? langs[currentLang].simple_mode : langs[currentLang].night_mode;
+    });
+    $('shareTwitterBtn')?.addEventListener('click', () => {
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent('自作チケットをシェアします！ #TicketMaker');
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    });
+    $('applyMemberColorBtn')?.addEventListener('click', () => {
+        const selected = members.find(m => m.name_en === $('memberSelector').value);
+        if (selected) {
+            $('bgColor').value = selected.color;
+            $('rect1Color').value = selected.gradient[0];
+            $('rect9Color').value = selected.gradient[1];
+            $('bgTextColor').value = contrastColor(selected.color);
+            debouncedDrawTicket(70);
+        }
+    });
+
+    document.querySelectorAll('.accordion-toggle').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const content = toggle.nextElementSibling;
+            content.classList.toggle('active');
+        });
+    });
 });
 
 window.onload = async () => {
-    console.log('Page loaded');
+    await loadLanguages();
+    await loadMembers();
     await waitForFonts();
-    console.log('Fonts loaded, initializing ticket');
-    changeLanguage('ja');
     if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
-        previewScale = Math.min(1.0, window.innerWidth / dpi[70].base.w * 0.8);
+        previewScale = Math.min(1.0, (window.visualViewport?.width || window.innerWidth) / dpi[70].base.w * 0.8);
     } else {
         previewScale = 1.0;
     }
