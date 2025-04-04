@@ -48,28 +48,6 @@ AKB48の生誕祭劇場チケットを再現する、ファン制作のジェネ
 
 ---
 
-## 🚀 GitHub Pages 部署建議 / Deployment / デプロイ方法
-
-**方法一 Fork：**  
-1. Fork 此 repo 至你的帳號  
-2. 進入 `Settings` → `Pages`  
-3. Source 選擇 `main` / 根目錄  
-4. 儲存後自動生成網站
-
-**Option 1 – Fork:**  
-1. Fork this repo to your GitHub account  
-2. Go to `Settings` → `Pages`  
-3. Set Source to `main` branch, root folder  
-4. Save and your site is live
-
-**方法1 – フォーク:**  
-1. このリポジトリを自分のアカウントにフォーク  
-2. `Settings` → `Pages` を開く  
-3. Sourceを `main` に、フォルダは `/ (root)` を選択  
-4. 保存すると公開ページが生成されます
-
----
-
 ## ⚠️ 免責聲明 / Disclaimer / 免責事項
 
 本網站純屬粉絲興趣製作，禁止用於任何商業或非法用途。  
