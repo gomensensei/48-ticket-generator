@@ -347,7 +347,7 @@ function contrastColor(hex) {
 }
 
 function applyMemberColor(member) {
-    const specialMembers = ["福岡聖菜", "永野芹佳", "橋本陽菜", "鈴木くるみ", "大盛真歩", "正鋳真優", "白鳥沙怜", "花田藍衣"];
+    const specialMembers = ["福岡 聖菜", "永野 芹佳", "橋本 陽菜", "鈴木 くるみ", "大盛 真歩", "正鋳 真優", "白鳥 沙怜", "花田 藍衣"];
     const isSpecialMember = specialMembers.includes(member.name_ja);
     const textColor = isSpecialMember ? "#212121" : "#FFFFFF";
 
@@ -386,11 +386,20 @@ function applyMemberColor(member) {
 }
 
 const showThanksMessage = () => {
-    alert(langs[currentLang].thanks_message);
+    alert(langs[currentLang].thanks_message || '感謝您的支持！');
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadLanguages();
+    await loadMembers();
+    await waitForFonts();
+    debouncedDrawTicket(70);
+
     $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
+    $('memberSelector')?.addEventListener('change', (e) => {
+        const member = members.find(m => m.name_en === e.target.value);
+        if (member) applyMemberColor(member);
+    });
     $('qrCodeUrl')?.addEventListener('input', debounce(updateQRCode, 500));
     $('showQR')?.addEventListener('change', () => debouncedDrawTicket(70));
     $('qrSquareColor')?.addEventListener('input', () => debouncedDrawTicket(70));
@@ -465,31 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     $('shareTwitterBtn')?.addEventListener('click', () => {
         const url = encodeURIComponent(window.location.href);
-        const text = encodeURIComponent('自作チケットをシェアします！ #TicketMaker');
+        const text = encodeURIComponent(langs[currentLang].share_text || '自作チケットをシェアします！ #TicketMaker');
         window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
     });
-    $('memberSelector')?.addEventListener('change', (e) => {
-        const selected = members.find(m => m.name_en === e.target.value);
-        if (selected) applyMemberColor(selected);
-        else $('memberPreview').innerHTML = '';
-    });
-
-    document.querySelectorAll('.accordion-toggle').forEach(toggle => {
-        toggle.addEventListener('click', () => {
-            const content = toggle.nextElementSibling;
-            content.classList.toggle('active');
-        });
-    });
 });
-
-window.onload = async () => {
-    await loadLanguages();
-    await loadMembers();
-    await waitForFonts();
-    if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
-        previewScale = Math.min(1.0, (window.visualViewport?.width || window.innerWidth) / dpi[70].base.w * 0.8);
-    } else {
-        previewScale = 1.0;
-    }
-    await drawTicket(70);
-};
