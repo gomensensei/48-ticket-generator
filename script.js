@@ -125,7 +125,6 @@ const drawQRCode = (dpiVal, bleed, w, mmPx, context = ctx) => {
         const qs = 23 * mmPx;
         const qx = w - qrRightMargin - qs;
         const qy = qrTopMargin;
-
         context.fillStyle = $('qrSquareColor')?.value || '#2086D1';
         context.fillRect(qx, qy, qs, qs);
         context.drawImage(qrImage, qx, qy, qs, qs);
@@ -199,10 +198,13 @@ const downloadTicket = async (dpiVal) => {
 
 const downloadPDF = async () => {
     const { jsPDF } = window.jspdf;
+    $('loading').textContent = langs[currentLang].generating || '生成中...';
     $('loading').style.display = 'block';
-    const doc = new jsPDF({ unit: 'mm', format: [150, 65] });
-    const tempCanvas = await html2canvas($('ticketCanvas'), { scale: 300 / 70 });
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    await drawTicket(300, tempCtx); // 使用 300 DPI
     const imgData = tempCanvas.toDataURL('image/png');
+    const doc = new jsPDF({ unit: 'mm', format: [150, 65] });
     doc.addImage(imgData, 'PNG', 0, 0, 150, 65);
     doc.save('ticket.pdf');
     $('loading').style.display = 'none';
@@ -230,33 +232,34 @@ const loadFont = (file, fontKey) => {
 const updateQRCode = () => {
     const url = $('qrCodeUrl')?.value;
     const qrContainer = $('qrPreview');
+    qrContainer.innerHTML = '';
+    qrContainer.style.display = 'block';
     if (!url) {
         qrImage = null;
-        qrContainer.innerHTML = "";
+        const canvas = document.createElement('canvas');
+        canvas.width = 128;
+        canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = $('qrSquareColor')?.value || '#2086D1';
+        ctx.fillRect(0, 0, 128, 128);
+        qrContainer.appendChild(canvas);
         debouncedDrawTicket(70);
         return;
     }
-
-    qrContainer.innerHTML = "";
     new QRCode(qrContainer, {
         text: url,
         width: 128,
         height: 128,
         correctLevel: QRCode.CorrectLevel.H
     });
-
     setTimeout(() => {
         const qrElement = qrContainer.querySelector('img') || qrContainer.querySelector('canvas');
-        if (!qrElement) {
-            alert(langs[currentLang].qrLoadError);
-            return;
-        }
+        if (!qrElement) return;
         const img = new Image();
         img.onload = () => {
             qrImage = img;
             debouncedDrawTicket(70);
         };
-        img.onerror = () => alert(langs[currentLang].qrLoadError);
         img.src = qrElement.tagName === 'IMG' ? qrElement.src : qrElement.toDataURL('image/png');
     }, 300);
 };
@@ -318,21 +321,12 @@ async function loadMembers() {
         const response = await fetch('members.json');
         members = await response.json();
         const selector = $('memberSelector');
-        const gallery = $('galleryContainer');
+        selector.innerHTML = '<option value="">選択なし</option>';
         members.forEach(member => {
             const option = document.createElement('option');
             option.value = member.name_en;
             option.textContent = `${member.name_ja} (${member.name_en})`;
             selector.appendChild(option);
-
-            const card = document.createElement('div');
-            card.className = 'member-card';
-            card.innerHTML = `
-                <img src="${member.image}" alt="${member.name_en}">
-                <p>${member.name_ja}</p>
-                <div class="member-color" style="background: linear-gradient(to right, ${member.gradient[0]}, ${member.gradient[1]})"></div>
-            `;
-            gallery.appendChild(card);
         });
     } catch (error) {
         console.error('Failed to load members:', error);
@@ -346,6 +340,37 @@ function contrastColor(hex) {
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
     return brightness > 128 ? '#000000' : '#FFFFFF';
 }
+
+function applyMemberColor(member) {
+    if (member.color === "#ffffff") {
+        $('bgColor').value = "#ffffff";
+        $('rect1Color').value = member.gradient[1];
+        $('rect9Color').value = member.gradient[1];
+        $('bgTextColor').value = member.name_en === "Mayuu Masai" || member.name_en === "Serika Nagano" ? "#1F1F1F" : contrastColor("#ffffff");
+    } else if (member.name_en === "Saho Iwatate") {
+        $('bgColor').value = "#3860FF";
+        $('rect1Color').value = "#3860FF";
+        $('rect9Color').value = "#FF3633";
+        $('bgTextColor').value = contrastColor("#3860FF");
+    } else {
+        $('bgColor').value = member.color;
+        $('rect1Color').value = member.gradient[1];
+        $('rect9Color').value = member.gradient[1];
+        $('bgTextColor').value = contrastColor(member.color);
+    }
+    $('bgTextOpacity').value = 0.2;
+    const preview = $('memberPreview');
+    preview.innerHTML = `
+        <img src="${member.image}" alt="${member.name_ja}" style="width: 50px; height: 50px; object-fit: cover;">
+        <p>${member.name_ja}</p>
+        <div style="width: 80px; height: 20px; background: linear-gradient(to right, ${member.gradient[0]}, ${member.gradient[1]})"></div>
+    `;
+    debouncedDrawTicket(70);
+}
+
+const showThanksMessage = () => {
+    alert(langs[currentLang].thanks_message);
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
@@ -379,57 +404,60 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('input[type="number"]').forEach(input => {
         input.addEventListener('input', () => {
             const val = parseFloat(input.value);
+            const errorSpan = $(input.id + '-error');
             if (isNaN(val)) {
-                $(input.id + '-error').textContent = langs[currentLang].inputError;
-                $(input.id + '-error').style.display = 'inline';
+                errorSpan.textContent = langs[currentLang].inputError;
+                errorSpan.style.display = 'inline';
                 input.value = 0;
+            } else if (input.classList.contains('size-input') && (val < 1 || val > 100)) {
+                errorSpan.textContent = langs[currentLang].sizeError || '大小必須介於 1-100pt';
+                errorSpan.style.display = 'inline';
+                input.value = Math.max(1, Math.min(100, val));
             } else if (input.classList.contains('opacity-input') && (val < 0 || val > 1)) {
-                $(input.id + '-error').textContent = langs[currentLang].opacityError;
-                $(input.id + '-error').style.display = 'inline';
+                errorSpan.textContent = langs[currentLang].opacityError;
+                errorSpan.style.display = 'inline';
                 input.value = Math.max(0, Math.min(1, val));
-            } else if (val < 0) {
-                $(input.id + '-error').textContent = langs[currentLang].inputError;
-                $(input.id + '-error').style.display = 'inline';
-                input.value = 0;
             } else {
-                $(input.id + '-error').style.display = 'none';
+                errorSpan.style.display = 'none';
             }
             debouncedDrawTicket(70);
         });
     });
 
     document.querySelectorAll('input:not([type="number"]), select').forEach(el => {
-        if (el.id !== 'languageSelector') {
+        if (el.id !== 'languageSelector' && el.id !== 'memberSelector') {
             el.addEventListener('input', () => debouncedDrawTicket(70));
         }
     });
 
-    $('download300Button')?.addEventListener('click', () => downloadTicket(300));
-    $('download70Button')?.addEventListener('click', () => downloadTicket(70));
-    $('downloadPdfButton')?.addEventListener('click', downloadPDF);
-    $('scale50Button')?.addEventListener('click', () => setPreviewScale(0.5));
-    $('scale100Button')?.addEventListener('click', () => setPreviewScale(1.0));
-    $('scale150Button')?.addEventListener('click', () => setPreviewScale(1.5));
-    $('scale200Button')?.addEventListener('click', () => setPreviewScale(2.0));
+    $('scaleButton')?.addEventListener('click', () => {
+        const options = $('scaleOptions');
+        options.style.display = options.style.display === 'block' ? 'none' : 'block';
+    });
+    $('downloadButton')?.addEventListener('click', () => {
+        const options = $('downloadOptions');
+        options.style.display = options.style.display === 'block' ? 'none' : 'block';
+    });
+    $('download300Button')?.addEventListener('click', () => { showThanksMessage(); downloadTicket(300); });
+    $('download70Button')?.addEventListener('click', () => { showThanksMessage(); downloadTicket(70); });
+    $('downloadPdfButton')?.addEventListener('click', () => { showThanksMessage(); downloadPDF(); });
     $('advancedModeBtn')?.addEventListener('click', toggleAdvancedMode);
     $('nightModeBtn')?.addEventListener('click', () => {
         document.body.classList.toggle('night-mode');
-        $('nightModeBtn').textContent = document.body.classList.contains('night-mode') ? langs[currentLang].simple_mode : langs[currentLang].night_mode;
+        $('nightModeBtn').textContent = document.body.classList.contains('night-mode') ? langs[currentLang].default_mode : langs[currentLang].night_mode;
     });
     $('shareTwitterBtn')?.addEventListener('click', () => {
         const url = encodeURIComponent(window.location.href);
         const text = encodeURIComponent('自作チケットをシェアします！ #TicketMaker');
         window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
     });
+    $('memberSelector')?.addEventListener('change', (e) => {
+        const selected = members.find(m => m.name_en === e.target.value);
+        if (selected) applyMemberColor(selected);
+    });
     $('applyMemberColorBtn')?.addEventListener('click', () => {
         const selected = members.find(m => m.name_en === $('memberSelector').value);
-        if (selected) {
-            $('bgColor').value = selected.color;
-            $('rect1Color').value = selected.gradient[0];
-            $('rect9Color').value = selected.gradient[1];
-            $('bgTextColor').value = contrastColor(selected.color);
-            debouncedDrawTicket(70);
-        }
+        if (selected) applyMemberColor(selected);
     });
 
     document.querySelectorAll('.accordion-toggle').forEach(toggle => {
