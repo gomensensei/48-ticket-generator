@@ -50,7 +50,10 @@ const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left
 };
 
 const drawBackground = async (dpiVal, bleed, w, h, mmPx, context = ctx) => {
-    context.fillStyle = $('bgColor')?.value || '#E5EDF9';
+    const gradient = context.createLinearGradient(0, 0, w, 0);
+    gradient.addColorStop(0, $('bgGradientStart')?.value || '#E5EDF9');
+    gradient.addColorStop(1, $('bgGradientEnd')?.value || '#E5EDF9');
+    context.fillStyle = gradient;
     context.fillRect(0, 0, w, h);
 
     if (customImage) {
@@ -202,7 +205,7 @@ const downloadPDF = async () => {
     $('loading').style.display = 'block';
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
-    await drawTicket(300, tempCtx); // 使用 300 DPI
+    await drawTicket(300, tempCtx);
     const imgData = tempCanvas.toDataURL('image/png');
     const doc = new jsPDF({ unit: 'mm', format: [150, 65] });
     doc.addImage(imgData, 'PNG', 0, 0, 150, 65);
@@ -234,7 +237,7 @@ const updateQRCode = () => {
     const qrContainer = $('qrPreview');
     qrContainer.innerHTML = '';
     qrContainer.style.display = 'block';
-    if (!url) {
+    if (!url || url.trim() === '') {
         qrImage = null;
         const canvas = document.createElement('canvas');
         canvas.width = 128;
@@ -343,27 +346,33 @@ function contrastColor(hex) {
 
 function applyMemberColor(member) {
     if (member.color === "#ffffff") {
-        $('bgColor').value = "#ffffff";
+        $('bgGradientStart').value = "#ffffff";
+        $('bgGradientEnd').value = member.gradient[1];
         $('rect1Color').value = member.gradient[1];
         $('rect9Color').value = member.gradient[1];
+        $('qrSquareColor').value = member.gradient[1];
         $('bgTextColor').value = member.name_en === "Mayuu Masai" || member.name_en === "Serika Nagano" ? "#1F1F1F" : contrastColor("#ffffff");
     } else if (member.name_en === "Saho Iwatate") {
-        $('bgColor').value = "#3860FF";
+        $('bgGradientStart').value = "#3860FF";
+        $('bgGradientEnd').value = "#FF3633";
         $('rect1Color').value = "#3860FF";
         $('rect9Color').value = "#FF3633";
+        $('qrSquareColor').value = "#FF3633";
         $('bgTextColor').value = contrastColor("#3860FF");
     } else {
-        $('bgColor').value = member.color;
+        $('bgGradientStart').value = member.color;
+        $('bgGradientEnd').value = member.gradient[1];
         $('rect1Color').value = member.gradient[1];
         $('rect9Color').value = member.gradient[1];
+        $('qrSquareColor').value = member.gradient[1];
         $('bgTextColor').value = contrastColor(member.color);
     }
     $('bgTextOpacity').value = 0.2;
     const preview = $('memberPreview');
     preview.innerHTML = `
-        <img src="${member.image}" alt="${member.name_ja}" style="width: 50px; height: 50px; object-fit: cover;">
-        <p>${member.name_ja}</p>
-        <div style="width: 80px; height: 20px; background: linear-gradient(to right, ${member.gradient[0]}, ${member.gradient[1]})"></div>
+        <img src="${member.image}" alt="${member.name_ja}" style="width: 80px; height: 80px; object-fit: cover;">
+        <h1 style="display: inline-block; margin: 0 10px;">${member.name_ja} (${member.name_en})</h1>
+        <div style="width: 80px; height: 20px; background: linear-gradient(to right, ${member.gradient[0]}, ${member.gradient[1]}); display: inline-block; vertical-align: middle;"></div>
     `;
     debouncedDrawTicket(70);
 }
@@ -454,10 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('memberSelector')?.addEventListener('change', (e) => {
         const selected = members.find(m => m.name_en === e.target.value);
         if (selected) applyMemberColor(selected);
-    });
-    $('applyMemberColorBtn')?.addEventListener('click', () => {
-        const selected = members.find(m => m.name_en === $('memberSelector').value);
-        if (selected) applyMemberColor(selected);
+        else $('memberPreview').innerHTML = '';
     });
 
     document.querySelectorAll('.accordion-toggle').forEach(toggle => {
