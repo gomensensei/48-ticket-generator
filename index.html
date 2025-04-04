@@ -35,6 +35,9 @@
             #controlsContainer { width: 50%; order: 0; }
             .divider { width: 5px; height: auto; background: #F676A6; }
             #ticketCanvas { max-width: 100%; }
+            #nightModeBtn { position: absolute; top: 10px; right: 220px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+            #donateBtn { position: absolute; top: 10px; right: 420px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+            #reportBugBtn { position: absolute; top: 10px; right: 320px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
         }
         @media (max-width: 768px) {
             #mainContainer { flex-direction: column; }
@@ -43,6 +46,9 @@
             .divider { order: 2; width: 100%; height: 5px; }
             #controlsContainer { order: 3; }
             #ticketCanvas { max-width: 80%; }
+            #nightModeBtn { position: absolute; top: 10px; right: 120px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
+            #donateBtn { position: absolute; top: 40px; right: 10px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
+            #reportBugBtn { position: absolute; top: 70px; right: 10px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
         }
         #canvasContainer { text-align: center; overflow: auto; }
         #memberPreview { margin-bottom: 10px; }
@@ -66,9 +72,6 @@
         .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
         .ad-container { text-align: center; margin: 20px 0; width: 100%; }
         #languageSelector { position: absolute; top: 10px; right: 10px; color: var(--text-color); padding: 5px; }
-        #nightModeBtn { position: absolute; top: 10px; right: 200px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-        #donateBtn { position: absolute; top: 10px; right: 340px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-        #reportBugBtn { position: absolute; top: 10px; right: 270px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
         #disclaimer, #disclaimer + p.note { font-size: 7pt; color: var(--text-color); text-align: center; margin-top: 10px; }
         #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
         #memberGallery { margin: 20px 0; }
@@ -97,11 +100,11 @@
         <option value="zh-CN">中文（简体）</option>
         <option value="ko">한국어</option>
         <option value="th">ไทย</option>
-        <option value="vi">Tiếng Việt</option>
+        <option value="id">Bahasa Indonesia</option>
     </select>
     <button id="nightModeBtn" data-i18n="night_mode">ダークモード</button>
-    <button id="donateBtn" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')">カンパ</button>
-    <button id="reportBugBtn" onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-i18n="report_bug">報錯</button>
+    <button id="donateBtn" data-i18n="donate" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')">カンパ</button>
+    <button id="reportBugBtn" data-i18n="report_bug" onclick="window.open('https://x.com/sorrysir_gomen','_blank')">報錯</button>
 
     <div id="mainContainer">
         <div id="canvasContainer">
@@ -127,7 +130,7 @@
                 <button id="advancedModeBtn" data-i18n="advanced_mode">詳細設定</button>
                 <button id="shareTwitterBtn" data-i18n="share_x_twitter">X(Twitter)でシェア</button>
                 <p class="note" data-i18n="paypay_id">※PayPay ID: gomensensei</p>
-                <p class="note" data-i18n="disclaimer">※下載的 PNG 為 RGB 格式，如需印刷用 CMYK，請使用 Photoshop 或 GIMP 轉換。</p>
+                <p class="note" data-i18n="disclaimer">※ダウンロードしたPNGはRGB形式です。印刷用にCMYKへ変換するには、PhotoshopまたはGIMPをご利用ください。</p>
                 <p id="disclaimer" data-i18n="copyright_notice">鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人動容，特別製作此網站，讓粉絲能以興趣方式自製並保存門票。網站僅供非商業用途使用，請勿用於營利或任何違法行為。版權歸©AKB48及株式会社DH所有，製作者恕不承擔相關責任。敬請理解。</p>
             </div>
         </div>
