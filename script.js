@@ -122,7 +122,7 @@ const drawArea9 = (dpiVal, bleed, mmPx, context = ctx) => {
 };
 
 const drawQRCode = (dpiVal, bleed, w, mmPx, context = ctx) => {
-    if ($('showQR')?.checked && qrImage) {
+    if ($('showQR')?.checked) {
         const qrRightMargin = 8.5 * mmPx;
         const qrTopMargin = 23 * mmPx;
         const qs = 23 * mmPx;
@@ -130,7 +130,9 @@ const drawQRCode = (dpiVal, bleed, w, mmPx, context = ctx) => {
         const qy = qrTopMargin;
         context.fillStyle = $('qrSquareColor')?.value || '#2086D1';
         context.fillRect(qx, qy, qs, qs);
-        context.drawImage(qrImage, qx, qy, qs, qs);
+        if (qrImage) {
+            context.drawImage(qrImage, qx, qy, qs, qs);
+        }
     }
 };
 
@@ -345,6 +347,10 @@ function contrastColor(hex) {
 }
 
 function applyMemberColor(member) {
+    const specialMembers = ["福岡聖菜", "永野芹佳", "橋本陽菜", "鈴木くるみ", "大盛真歩", "正鋳真優", "白鳥沙怜", "花田藍衣"];
+    const isSpecialMember = specialMembers.includes(member.name_ja);
+    const textColor = isSpecialMember ? "#212121" : "#FFFFFF";
+
     if (member.color === "#ffffff") {
         $('bgGradientStart').value = "#ffffff";
         $('bgGradientEnd').value = member.gradient[1];
@@ -367,6 +373,8 @@ function applyMemberColor(member) {
         $('qrSquareColor').value = member.gradient[1];
         $('bgTextColor').value = contrastColor(member.color);
     }
+    $('rect1TextColor').value = textColor;
+    $('footerTextColor').value = textColor;
     $('bgTextOpacity').value = 0.2;
     const preview = $('memberPreview');
     preview.innerHTML = `
