@@ -29,12 +29,24 @@
             --bg-color: #1E1E1E;
             --text-color: #F676A6;
         }
-        #mainContainer { display: flex; flex-direction: column; gap: 10px; }
-        #canvasContainer { width: 100%; order: 1; text-align: center; overflow: auto; }
+        @media (min-width: 769px) {
+            #mainContainer { display: flex; flex-direction: row; gap: 10px; }
+            #canvasContainer { width: 50%; order: 0; }
+            #controlsContainer { width: 50%; order: 0; }
+            .divider { width: 5px; height: auto; background: #F676A6; }
+            #ticketCanvas { max-width: 100%; }
+        }
+        @media (max-width: 768px) {
+            #mainContainer { flex-direction: column; }
+            #canvasContainer, #controlsContainer { width: 100%; }
+            #canvasContainer { order: 1; }
+            .divider { order: 2; width: 100%; height: 5px; }
+            #controlsContainer { order: 3; }
+            #ticketCanvas { max-width: 80%; }
+        }
+        #canvasContainer { text-align: center; overflow: auto; }
         #memberPreview { margin-bottom: 10px; }
-        #ticketCanvas { border: 1px solid #ccc; max-width: 80%; height: auto; }
-        #controlsContainer { width: 100%; order: 3; overflow-y: auto; max-height: 90vh; }
-        .divider { background: var(--divider-color); order: 2; width: 100%; height: 5px; margin: 10px 0; }
+        #controlsContainer { overflow-y: auto; max-height: 90vh; }
         .input-group { margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
         .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
         .input-group input, .input-group select { margin-top: 5px; width: 100%; max-width: 300px; padding: 5px; }
@@ -54,16 +66,13 @@
         .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
         .ad-container { text-align: center; margin: 20px 0; width: 100%; }
         #languageSelector { position: absolute; top: 10px; right: 10px; color: var(--text-color); padding: 5px; }
-        #nightModeBtn { position: absolute; top: 10px; right: 120px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-        #donateBtn { position: absolute; top: 10px; right: 230px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-        #reportBugBtn { position: absolute; top: 10px; right: 170px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+        #nightModeBtn { position: absolute; top: 10px; right: 150px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+        #donateBtn { position: absolute; top: 10px; right: 250px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+        #reportBugBtn { position: absolute; top: 10px; right: 200px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
         #disclaimer, #disclaimer + p.note { font-size: 7pt; color: var(--text-color); text-align: center; margin-top: 10px; }
         #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
         #memberGallery { margin: 20px 0; }
-        #galleryContainer { display: none; } /* 隱藏所有成員卡片 */
-        .member-card { width: 100px; text-align: center; padding: 5px; border: 1px solid #ccc; }
-        .member-card img { width: 80px; height: 80px; object-fit: cover; }
-        .member-color { width: 80px; height: 20px; margin-top: 5px; }
+        #galleryContainer { display: none; }
         .accordion-toggle { cursor: pointer; padding: 10px; background: var(--button-bg); color: #FFF; margin: 5px 0; }
         .accordion-content { display: none; }
         .accordion-content.active { display: block; }
@@ -117,12 +126,10 @@
                 </div>
                 <button id="advancedModeBtn" data-i18n="advanced_mode">詳細設定</button>
                 <button id="shareTwitterBtn" data-i18n="share_x_twitter">X(Twitter)でシェア</button>
-                <button id="donateBtn" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')" data-i18n="donate">カンパ</button>
-                <p class="note" data-i18n="paypay_id">※paypay ID: gomensensei</p>
-                <button id="reportBugBtn" onclick="window.open('https://x.com/sorrysir_gomen','_blank')" data-i18n="report_bug">報錯</button>
-                <p class="note" data-i18n="disclaimer">※ダウンロードしたPNGはRGBです。印刷用にCMYKへ変換するにはPhotoshopかGIMPをご利用ください。</p>
+                <p class="note" data-i18n="paypay_id">※PayPay ID: gomensensei</p>
+                <p class="note" data-i18n="disclaimer">※下載的 PNG 為 RGB 格式，如需印刷用 CMYK，請使用 Photoshop 或 GIMP 轉換。</p>
+                <p id="disclaimer" data-i18n="copyright_notice">鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人動容，特別製作此網站，讓粉絲能以興趣方式自製並保存門票。網站僅供非商業用途使用，請勿用於營利或任何違法行為。版權歸©AKB48及株式会社DH所有，製作者恕不承擔相關責任。敬請理解。</p>
             </div>
-            <p id="disclaimer" data-i18n="copyright_notice">AKB48メンバーの生誕祭劇場公演で、ファンの皆様が復刻された劇場チケットに感動し、趣味の一環として自作チケットを保存できるウェブサイトを制作いたしました。商業目的や違法な使用はご遠慮ください。権利は©AKB48および株式会社DHに帰属し、制作者は一切の責任を負いかねます。何卒ご了承ください。</p>
         </div>
         <div class="divider"></div>
         <div id="controlsContainer">
@@ -132,8 +139,6 @@
                 <select id="memberSelector">
                     <option value="">選択なし</option>
                 </select>
-                <button id="applyMemberColorBtn" data-i18n="apply_member_color">テーマカラー適用</button>
-                <div id="galleryContainer"></div>
             </div>
             <div class="input-group">
                 <h3 class="accordion-toggle" data-i18n="logo_settings">ロゴ設定</h3>
@@ -214,7 +219,8 @@
             <div class="input-group">
                 <h3 class="accordion-toggle" data-i18n="background_settings">背景設定</h3>
                 <div class="accordion-content">
-                    <label data-i18n="background_color" for="bgColor">全体の背景色: <input type="color" id="bgColor" value="#E5EDF9"></label>
+                    <label data-i18n="background_gradient_start" for="bgGradientStart">背景漸變起始色: <input type="color" id="bgGradientStart" value="#E5EDF9"></label>
+                    <label data-i18n="background_gradient_end" for="bgGradientEnd">背景漸變結束色: <input type="color" id="bgGradientEnd" value="#E5EDF9"></label>
                     <label data-i18n="background_text" for="bgText">背景テキスト: <input type="text" id="bgText" value="YSS48"></label>
                     <div class="advanced-mode">
                         <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="bgTextX" value="-100" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="bgTextX-error"></span>
