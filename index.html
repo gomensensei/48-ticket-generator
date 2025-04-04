@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AKB48生誕チケットジェネレーター" />
+  <title>48 Ticket Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preload" as="font" href="fonts/KozGoPr6N-Medium.woff2" type="font/woff2" crossorigin />
+  <link rel="preload" as="font" href="fonts/ITC Avant Garde Gothic Std Extra Light.woff2" type="font/woff2" crossorigin />
+  <link rel="preload" as="font" href="fonts/Alternate Gothic No2 D Regular.woff2" type="font/woff2" crossorigin />
+  <link rel="preload" as="font" href="fonts/jadhei01m.woff2" type="font/woff2" crossorigin />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg-color: #fff;
+      --text-color: #333;
+      --accent-color: #f06292;
+      --border-color: #ccc;
+    }
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #eee;
+      --accent-color: #f48fb1;
+      --border-color: #444;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+    body {
+      margin: 0;
+      font-family: "KozGoPr6N-Medium", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+    }
+    .fixed-top-right {
+      position: fixed;
+      top: 0.5rem;
+      right: 0.5rem;
+      z-index: 1000;
+    }
+    .lang-switcher,
+    .darkmode-toggle {
+      background: var(--bg-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.6rem;
+      margin-left: 0.3rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="fixed-top-right">
+  <select id="lang-select" class="lang-switcher">
+    <option value="ja">日本語</option>
+    <option value="en">English</option>
+    <option value="zh-TW">繁體中文</option>
+    <option value="zh-CN">简体中文</option>
+    <option value="ko">한국어</option>
+    <option value="th">ไทย</option>
+    <option value="vi">Tiếng Việt</option>
+  </select>
+  <button id="darkmode-toggle" class="darkmode-toggle">☾</button>
+</div>
+<div id="qr-preview" style="display:none;"></div>
+<main>
+  <h1 style="text-align:center">48 Ticket Generator</h1>
+  <!-- 中略：略去後續 HTML 區塊，實際打包前會寫入完整版本 -->
+</main>
+<script src="script.js"></script>
+</body>
+</html>
