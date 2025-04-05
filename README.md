@@ -11,16 +11,21 @@ AKB48の生誕祭劇場チケットを再現する、ファン制作のジェネ
 ## 🌐 語言支援 / Language Support / 言語対応
 
 - 繁體中文（Traditional Chinese）
+- 簡體中文（Simplified Chinese）
 - English（英語）
 - 日本語（Japanese）
+- 한국어（韓文）
+- ไทย（泰文）
+- Bahasa Indonesia（印尼文）
 
 ---
 
 ## 📝 功能說明 / Features / 機能
 
-- 自訂標誌、日期、公演、場地、電話、備註等欄位  
-  Customize logo, date, stage info, venue, phone, notes, etc.  
-  ロゴ、日付、公演、会場、電話、備考などのフィールドをカスタマイズ
+### 簡易設定 / Basic Settings / 基本設定
+- 自訂標誌、公演、生誕祭、日期、場地、電話、備註等欄位  
+  Customize logo, stage info, birthday event, date, venue, phone, notes, etc.  
+  ロゴ、公演、生誕祭、日付、会場、電話、備考などのフィールドをカスタマイズ
 
 - 成員選擇與主題配色自動套用  
   Member select with auto theme color  
@@ -34,17 +39,34 @@ AKB48の生誕祭劇場チケットを再現する、ファン制作のジェネ
   Export to PNG (300/70 DPI) or PDF  
   PNG（300/70 DPI）とPDFで出力可能
 
-- 上傳字體（.woff2）與背景圖片  
-  Upload custom font (.woff2) and background image  
-  フォント（.woff2）と背景画像のアップロード
-
-- 自動或上傳 QR Code  
+- 自動生成或上傳 QR Code  
   Auto-generate or upload QR code  
   QRコードの生成または画像アップロード
 
 - 夜間模式與多語系切換  
   Dark mode & multilingual UI  
   ダークモード対応、多言語UI
+
+### 詳細設定 / Advanced Settings / 詳細設定
+- 調整文字位置（X/Y 座標）、字間、行間、字體大小  
+  Adjust text position (X/Y coordinates), letter spacing, line height, font size  
+  テキストの位置（X/Y座標）、字間、行間、フォントサイズを調整
+
+- 自訂背景漸層、背景文字、陰影效果與透明度  
+  Customize background gradient, background text, shadow effects, and opacity  
+  背景グラデーション、背景テキスト、シャドウ効果、透明度をカスタマイズ
+
+- 上傳自訂字體（支援 .woff, .woff2, .ttf, .otf）與背景圖片  
+  Upload custom font (.woff, .woff2, .ttf, .otf) and background image  
+  カスタムフォント（.woff, .woff2, .ttf, .otf）と背景画像のアップロード
+
+- 調整背景圖片位置與縮放比例  
+  Adjust background image position and scale  
+  背景画像の位置とスケールを調整
+
+- 選擇是否包含裁ち落とし（+3mm）  
+  Option to include bleed (+3mm)  
+  裁ち落とし（+3mm）のオプション
 
 ---
 
@@ -64,5 +86,6 @@ All rights belong to AKB48 and DH Corporation.
 ## 📎 製作者 / Credit / クレジット
 
 - 製作：gomensensei  
+- 聯繫方式：[X/Twitter @sorrysir_gomen](https://x.com/sorrysir_gomen)  
 - 官方資料來源：[AKB48 官方網站](https://www.akb48.co.jp/about/members)  
 - 顏色資料來源：[48pedia: サイリウムカラー](https://48pedia.org/サイリウムカラー#AKB48)
