@@ -53,7 +53,7 @@ const blobToBase64 = (blob) => {
 // 上傳圖片到 Imgur 並更新 og:image
 const uploadToImgurAndUpdateOgImage = async () => {
     $('loading').style.display = 'block';
-    $('loading').textContent = langs[currentLang].uploading || '上傳中...';
+    $('loading').textContent = langs[currentLang]?.uploading || '上傳中...';
 
     try {
         // 獲取 canvas 的圖片數據
@@ -99,11 +99,11 @@ const uploadToImgurAndUpdateOgImage = async () => {
 
             return imageUrl;
         } else {
-            throw new Error('Imgur upload failed: ' + (result.data.error || 'Unknown error'));
+            throw new Error('Imgur upload failed: ' + (result.data?.error || 'Unknown error'));
         }
     } catch (error) {
         console.error('Error uploading to Imgur:', error);
-        alert(langs[currentLang].upload_error + ': ' + error.message);
+        alert((langs[currentLang]?.upload_error || '上傳失敗') + ': ' + error.message);
         return null;
     } finally {
         $('loading').style.display = 'none';
@@ -293,7 +293,7 @@ const downloadTicket = async (dpiVal) => {
 // 下載 PDF
 const downloadPDF = async () => {
     const { jsPDF } = window.jspdf;
-    $('loading').textContent = langs[currentLang].generating || '生成中...';
+    $('loading').textContent = langs[currentLang]?.generating || '生成中...';
     $('loading').style.display = 'block';
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
@@ -320,10 +320,10 @@ const loadFont = (file, fontKey) => {
             debouncedDrawTicket(70);
         } catch (err) {
             console.error(`Failed to load font ${fontKey}:`, err);
-            alert(langs[currentLang].fontLoadError);
+            alert(langs[currentLang]?.fontLoadError || '字型載入失敗');
         }
     };
-    reader.onerror = () => alert(langs[currentLang].qrReadError);
+    reader.onerror = () => alert(langs[currentLang]?.qrReadError || '無法讀取字型檔案');
     reader.readAsArrayBuffer(file);
 };
 
@@ -391,7 +391,7 @@ const changeLanguage = (lang) => {
 const toggleAdvancedMode = () => {
     document.querySelectorAll('.advanced-mode').forEach(el => el.classList.toggle('active'));
     const btn = $('advancedModeBtn');
-    btn.textContent = btn.textContent === langs[currentLang].advanced_mode ? langs[currentLang].simple_mode : langs[currentLang].advanced_mode;
+    btn.textContent = btn.textContent === langs[currentLang]?.advanced_mode ? langs[currentLang]?.simple_mode : langs[currentLang]?.advanced_mode;
 };
 
 // 等待字型載入
@@ -406,7 +406,7 @@ const waitForFonts = async () => {
         await Promise.all(fontPromises);
     } catch (err) {
         console.error('Font loading failed:', err);
-        alert(langs[currentLang].fontLoadError);
+        alert(langs[currentLang]?.fontLoadError || '字型載入失敗');
     }
 };
 
@@ -421,7 +421,7 @@ async function loadLanguages() {
         changeLanguage(currentLang);
     } catch (error) {
         console.error('Failed to load languages:', error);
-        alert('無法載入語言檔案，請檢查網路連線或檔案是否存在。');
+        alert(langs[currentLang]?.langLoadError || '無法載入語言檔案，請檢查網路連線或檔案是否存在。');
     }
 }
 
@@ -496,7 +496,7 @@ function applyMemberColor(member) {
 
 // 顯示感謝訊息
 const showThanksMessage = () => {
-    alert(`${langs[currentLang].download_message}\n※PayPay ID: gomensensei`);
+    alert(`${langs[currentLang]?.download_message || '感謝下載！\n如果能支持我們，將不勝感激。'}\n※PayPay ID: gomensensei`);
 };
 
 // DOM 載入完成後的事件
@@ -530,7 +530,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('customImageInput')?.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file || !file.type.startsWith('image/')) {
-            alert(langs[currentLang].qrFormatError);
+            alert(langs[currentLang]?.qrFormatError || '請選擇正確的圖片格式');
             return;
         }
         const reader = new FileReader();
@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             customImage.src = event.target.result;
             customImage.onload = () => debouncedDrawTicket(70);
         };
-        reader.onerror = () => alert(langs[currentLang].qrReadError);
+        reader.onerror = () => alert(langs[currentLang]?.qrReadError || '無法讀取圖片檔案');
         reader.readAsDataURL(file);
     });
 
@@ -555,15 +555,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             const val = parseFloat(input.value);
             const errorSpan = $(input.id + '-error');
             if (isNaN(val)) {
-                errorSpan.textContent = langs[currentLang].inputError;
+                errorSpan.textContent = langs[currentLang]?.inputError || '請輸入有效數字';
                 errorSpan.style.display = 'inline';
                 input.value = 0;
             } else if (input.classList.contains('size-input') && (val < 1 || val > 100)) {
-                errorSpan.textContent = langs[currentLang].sizeError || '大小必須介於 1-100pt';
+                errorSpan.textContent = langs[currentLang]?.sizeError || '大小必須介於 1-100pt';
                 errorSpan.style.display = 'inline';
                 input.value = Math.max(1, Math.min(100, val));
             } else if (input.classList.contains('opacity-input') && (val < 0 || val > 1)) {
-                errorSpan.textContent = langs[currentLang].opacityError;
+                errorSpan.textContent = langs[currentLang]?.opacityError || '透明度必須介於 0-1';
                 errorSpan.style.display = 'inline';
                 input.value = Math.max(0, Math.min(1, val));
             } else {
@@ -593,13 +593,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('advancedModeBtn')?.addEventListener('click', toggleAdvancedMode);
     $('nightModeBtn')?.addEventListener('click', () => {
         document.body.classList.toggle('night-mode');
-        $('nightModeBtn').textContent = document.body.classList.contains('night-mode') ? langs[currentLang].default_mode : langs[currentLang].night_mode;
+        $('nightModeBtn').textContent = document.body.classList.contains('night-mode') ? langs[currentLang]?.default_mode : langs[currentLang]?.night_mode;
     });
     $('shareTwitterBtn')?.addEventListener('click', async () => {
         const imageUrl = await uploadToImgurAndUpdateOgImage();
         if (imageUrl) {
             const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent(langs[currentLang].share_text || '自作チケットをシェアします！ #TicketMaker');
+            const text = encodeURIComponent(langs[currentLang]?.share_text || '自作チケットをシェアします！ #TicketMaker');
             window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
         }
     });
