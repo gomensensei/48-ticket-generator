@@ -37,6 +37,41 @@ const debounce = (func, delay) => {
     };
 };
 
+// 將畫布轉換為 base64 圖片並設置 og:image
+const setOgImageFromCanvas = () => {
+    return new Promise((resolve) => {
+        const dataUrl = canvas.toDataURL('image/png'); // 將畫布轉為 PNG base64 格式
+
+        // 檢查並設置 og:image 元資料
+        let ogImageTag = document.querySelector('meta[property="og:image"]');
+        if (!ogImageTag) {
+            ogImageTag = document.createElement('meta');
+            ogImageTag.setAttribute('property', 'og:image');
+            document.head.appendChild(ogImageTag);
+        }
+        ogImageTag.setAttribute('content', dataUrl);
+
+        // 設置其他元資料（可選）
+        let ogTitleTag = document.querySelector('meta[property="og:title"]');
+        if (!ogTitleTag) {
+            ogTitleTag = document.createElement('meta');
+            ogTitleTag.setAttribute('property', 'og:title');
+            document.head.appendChild(ogTitleTag);
+        }
+        ogTitleTag.setAttribute('content', '我的自訂門票');
+
+        let ogDescTag = document.querySelector('meta[property="og:description"]');
+        if (!ogDescTag) {
+            ogDescTag = document.createElement('meta');
+            ogDescTag.setAttribute('property', 'og:description');
+            document.head.appendChild(ogDescTag);
+        }
+        ogDescTag.setAttribute('content', '看看我用 Ticket Maker 製作的門票！');
+
+        resolve();
+    });
+};
+
 // 繪製文字
 const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left', altFont, dpiVal = 300, context = ctx) => {
     if (!context) return;
@@ -228,7 +263,7 @@ const downloadPDF = async () => {
     tempCanvas.height = dpi[300].base.h;
     await drawTicket(300, tempCtx);
     const imgData = tempCanvas.toDataURL('image/png');
-    const doc = new jsPDF({ unit: 'mm', format: [65, 150] }); // 調整為 65mm 寬 x 150mm 高
+    const doc = new jsPDF({ unit: 'mm', format: [65, 150] });
     doc.addImage(imgData, 'PNG', 0, 0, 65, 150);
     doc.save('ticket.pdf');
     $('loading').style.display = 'none';
@@ -516,7 +551,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.body.classList.toggle('night-mode');
         $('nightModeBtn').textContent = document.body.classList.contains('night-mode') ? langs[currentLang].default_mode : langs[currentLang].night_mode;
     });
-    $('shareTwitterBtn')?.addEventListener('click', () => {
+    $('shareTwitterBtn')?.addEventListener('click', async () => {
+        await setOgImageFromCanvas();
         const url = encodeURIComponent(window.location.href);
         const text = encodeURIComponent(langs[currentLang].share_text || '自作チケットをシェアします！ #TicketMaker');
         window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
