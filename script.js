@@ -378,7 +378,7 @@ function applyMemberColor(member) {
     $('bgTextOpacity').value = 0.2;
     const preview = $('memberPreview');
     preview.innerHTML = `
-        <img src="${member.image}" alt="${member.name_ja}" style="width: 80px; height: 80px; object-fit: cover;">
+        <img src="${member.image}" alt="${member.name_ja}" style="width: 120px; height: 120px; object-fit: cover;">
         <h1 style="display: inline-block; margin: 0 10px;">${member.name_ja} (${member.name_en})</h1>
         <div style="width: 80px; height: 20px; background: linear-gradient(to right, ${member.gradient[0]}, ${member.gradient[1]}); display: inline-block; vertical-align: middle;"></div>
     `;
