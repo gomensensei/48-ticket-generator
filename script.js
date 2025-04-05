@@ -188,7 +188,7 @@ const setPreviewScale = (scale) => {
     }
 };
 
-// 下載票券
+// 下載票券 (PNG)
 const downloadTicket = async (dpiVal) => {
     $('loading').style.display = 'block';
     const tempCanvas = document.createElement('canvas');
@@ -217,20 +217,30 @@ const downloadTicket = async (dpiVal) => {
     $('loading').style.display = 'none';
 };
 
-// 下載 PDF
+// 下載 PDF（修正為橫向）
 const downloadPDF = async () => {
     const { jsPDF } = window.jspdf;
     $('loading').textContent = langs[currentLang].generating || '生成中...';
     $('loading').style.display = 'block';
+
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
-    tempCanvas.width = dpi[300].base.w;
-    tempCanvas.height = dpi[300].base.h;
+    const bleed = $('bleedOption')?.checked || false;
+    const width = bleed ? 156 : 150;  // 含出血 156mm，否則 150mm
+    const height = bleed ? 71 : 65;   // 含出血 71mm，否則 65mm
+    tempCanvas.width = bleed ? dpi[300].bleed.w : dpi[300].base.w;
+    tempCanvas.height = bleed ? dpi[300].bleed.h : dpi[300].base.h;
     await drawTicket(300, tempCtx);
     const imgData = tempCanvas.toDataURL('image/png');
-    const doc = new jsPDF({ unit: 'mm', format: [150, 65] }); 
-    doc.addImage(imgData, 'PNG', 0, 0, 150, 65);
+
+    const doc = new jsPDF({
+        orientation: 'landscape',  // 設定為橫向
+        unit: 'mm',
+        format: [width, height]    // 動態調整尺寸，匹配門票
+    });
+    doc.addImage(imgData, 'PNG', 0, 0, width, height);  // 確保圖像填滿畫布
     doc.save('ticket.pdf');
+
     $('loading').style.display = 'none';
 };
 
