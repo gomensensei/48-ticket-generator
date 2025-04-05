@@ -386,7 +386,7 @@ function applyMemberColor(member) {
 }
 
 const showThanksMessage = () => {
-    alert(langs[currentLang].thanks_message || '感謝您的支持！');
+    alert(`${langs[currentLang].download_message}\n※PayPay ID: gomensensei`);
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -394,6 +394,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadMembers();
     await waitForFonts();
     debouncedDrawTicket(70);
+
+    document.querySelectorAll('.accordion-toggle').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const content = toggle.nextElementSibling;
+            content.classList.toggle('active');
+        });
+    });
 
     $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
     $('memberSelector')?.addEventListener('change', (e) => {
