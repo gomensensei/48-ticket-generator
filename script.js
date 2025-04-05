@@ -37,25 +37,56 @@ const debounce = (func, delay) => {
     };
 };
 
+// 將 Blob 轉換為 Base64
+const blobToBase64 = (blob) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result.split(',')[1]; // 移除 "data:image/png;base64," 前綴
+            resolve(base64String);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+};
+
 // 上傳圖片到 Imgur 並更新 og:image
 const uploadToImgurAndUpdateOgImage = async () => {
-    const dataUrl = canvas.toDataURL('image/png');
-    const blob = await fetch(dataUrl).then(res => res.blob());
-    const formData = new FormData();
-    formData.append('image', blob);
-    formData.append('type', 'base64');
+    $('loading').style.display = 'block';
+    $('loading').textContent = langs[currentLang].uploading || '上傳中...';
 
     try {
+        // 獲取 canvas 的圖片數據
+        const dataUrl = canvas.toDataURL('image/png');
+        const blob = await fetch(dataUrl).then(res => res.blob());
+
+        // 檢查圖片大小（單位：字節）
+        const maxSize = 1 * 1024 * 1024; // 1MB
+        if (blob.size > maxSize) {
+            throw new Error('圖片大小超過 1MB，請降低分辨率或壓縮圖片。');
+        }
+
+        // 將 Blob 轉換為 Base64
+        const base64Image = await blobToBase64(blob);
+
+        // 準備 FormData
+        const formData = new FormData();
+        formData.append('image', base64Image);
+        formData.append('type', 'base64');
+
+        // 發送請求到 Imgur API
         const response = await fetch('https://api.imgur.com/3/image', {
             method: 'POST',
             headers: {
-                'Authorization': 'Client-ID 9bc3dd21bac0637' // 已填入你的 Client ID
+                'Authorization': 'Client-ID 9bc3dd21bac0637'
             },
             body: formData
         });
+
         const result = await response.json();
         if (result.success) {
-            const imageUrl = result.data.link; // Imgur 提供的圖片 URL
+            const imageUrl = result.data.link;
+            console.log('圖片上傳成功，URL:', imageUrl);
 
             // 更新 og:image 元資料
             let ogImageTag = document.querySelector('meta[property="og:image"]');
@@ -72,8 +103,10 @@ const uploadToImgurAndUpdateOgImage = async () => {
         }
     } catch (error) {
         console.error('Error uploading to Imgur:', error);
-        alert('圖片上傳失敗，請檢查網路連線或稍後重試。錯誤訊息：' + error.message);
+        alert(langs[currentLang].upload_error + ': ' + error.message);
         return null;
+    } finally {
+        $('loading').style.display = 'none';
     }
 };
 
@@ -335,17 +368,19 @@ const changeLanguage = (lang) => {
     currentLang = lang;
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (langs[lang][key]) {
+        if (langs[lang] && langs[lang][key]) {
             if (el.tagName === 'LABEL') {
                 const input = el.querySelector('input, select');
                 if (input) {
                     const textNode = Array.from(el.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-                    if (textNode) textNode.textContent = langs[lang][key] + ': ';
+                    if (textNode) textNode.textContent = langs[lang][key] + ' ';
                 } else {
                     el.textContent = langs[lang][key];
                 }
+            } else if (el.tagName === 'META') {
+                el.setAttribute('content', langs[lang][key]);
             } else {
-                el.setAttribute('content', langs[lang][key]); // 為 meta 標籤更新 content
+                el.textContent = langs[lang][key];
             }
         }
     });
@@ -379,10 +414,14 @@ const waitForFonts = async () => {
 async function loadLanguages() {
     try {
         const response = await fetch('langs.json');
+        if (!response.ok) {
+            throw new Error('Failed to load langs.json: ' + response.statusText);
+        }
         langs = await response.json();
         changeLanguage(currentLang);
     } catch (error) {
         console.error('Failed to load languages:', error);
+        alert('無法載入語言檔案，請檢查網路連線或檔案是否存在。');
     }
 }
 
@@ -557,16 +596,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         $('nightModeBtn').textContent = document.body.classList.contains('night-mode') ? langs[currentLang].default_mode : langs[currentLang].night_mode;
     });
     $('shareTwitterBtn')?.addEventListener('click', async () => {
-        $('loading').textContent = langs[currentLang].uploading || '上傳中...';
-        $('loading').style.display = 'block';
-
         const imageUrl = await uploadToImgurAndUpdateOgImage();
         if (imageUrl) {
             const url = encodeURIComponent(window.location.href);
             const text = encodeURIComponent(langs[currentLang].share_text || '自作チケットをシェアします！ #TicketMaker');
             window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
         }
-
-        $('loading').style.display = 'none';
     });
 });
