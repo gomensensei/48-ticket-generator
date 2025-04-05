@@ -1,10 +1,10 @@
 # 🎟️ 48 Ticket Generator
 
-一個由粉絲開發的 AKB48 生誕祭劇場門票產生器，支援自訂內容與配色，預覽並下載達印刷品質的高解析票券圖像。
+一個由粉絲開發的 AKB48 劇場門票產生器，支援自訂內容與配色，預覽並下載達印刷品質的高解析票券圖像。
 
 A fan-made AKB48 Birthday Stage Ticket Generator. Customize the content and colors to preview and download high-resolution ticket images suitable for printing.
 
-AKB48の生誕祭劇場チケットを再現する、ファン制作のジェネレーターです。文字や色をカスタマイズし、印刷にも対応できる高解像度チケット画像を生成できます。
+AKB48の旧劇場チケットを再現する、ファン制作のジェネレーターです。文字や色をカスタマイズし、印刷にも対応できる高解像度チケット画像を生成できます。
 
 ---
 
