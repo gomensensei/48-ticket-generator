@@ -9,8 +9,8 @@
   {
     "name_ja": "村山 彩希",
     "name_en": "Yuiri Murayama",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#ffeb3b"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#ffeb3b"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/mobile/member/83100632.jpg"
   },
   {
@@ -23,8 +23,8 @@
   {
     "name_ja": "向井地 美音",
     "name_en": "Mion Mukaichi",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#ff4081"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#ff4081"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/mobile/member/83100791.jpg"
   },
   {
@@ -37,15 +37,15 @@
   {
     "name_ja": "倉野尾 成美",
     "name_en": "Narumi Kuranoo",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#4caf50"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#4caf50"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/mobile/member/83100846.jpg"
   },
   {
     "name_ja": "坂川 陽香",
     "name_en": "Hiyuka Sakagawa",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#ff9800"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#ff9800"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/mobile/member/83100997.jpg"
   },
   {
@@ -100,8 +100,8 @@
   {
     "name_ja": "田口 愛佳",
     "name_en": "Manaka Taguchi",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#f44336"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#d32f2f"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/mobile/member/83100941.jpg"
   },
   {
@@ -142,15 +142,15 @@
   {
     "name_ja": "佐藤 綺星",
     "name_en": "Airi Sato",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#ffffff"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#ffffff"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/mobile/member/83101000.jpg"
   },
   {
     "name_ja": "橋本 恵理子",
     "name_en": "Eriko Hashimoto",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#ffeb3b"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#ffeb3b"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/mobile/member/83101001.jpg"
   },
   {
@@ -170,8 +170,8 @@
   {
     "name_ja": "布袋 百椛",
     "name_en": "Moka Hotei",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#ff4081"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#ff4081"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/mobile/member/83101005.jpg"
   },
   {
@@ -212,8 +212,8 @@
   {
     "name_ja": "工藤 華純",
     "name_en": "Kasumi Kudo",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#4caf50"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#4caf50"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/hashiranokai/member/83101011.jpg"
   },
   {
@@ -247,8 +247,8 @@
   {
     "name_ja": "山口 結愛",
     "name_en": "Yui Yamaguchi",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#ff9800"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#ff9800"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/hashiranokai/member/83101016.jpg"
   },
   {
@@ -268,8 +268,8 @@
   {
     "name_ja": "川村 結衣",
     "name_en": "Yui Kawamura",
-    "color": "#f44336",
-    "gradient": ["#f44336", "#9c27b0"],
+    "color": "#d32f2f",
+    "gradient": ["#d32f2f", "#9c27b0"],
     "image": "https://d2r1lkk9i7row.cloudfront.net/hashiranokai/member/83101019.jpg"
   },
   {
