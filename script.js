@@ -228,8 +228,8 @@ const downloadPDF = async () => {
     tempCanvas.height = dpi[300].base.h;
     await drawTicket(300, tempCtx);
     const imgData = tempCanvas.toDataURL('image/png');
-    const doc = new jsPDF({ unit: 'mm', format: [65, 150] }); // 調整為 65mm 寬 x 150mm 高
-    doc.addImage(imgData, 'PNG', 0, 0, 65, 150);
+    const doc = new jsPDF({ unit: 'mm', format: [150, 65] }); 
+    doc.addImage(imgData, 'PNG', 0, 0, 150, 65);
     doc.save('ticket.pdf');
     $('loading').style.display = 'none';
 };
