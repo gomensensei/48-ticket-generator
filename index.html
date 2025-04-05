@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="site_title">チケットジェネレーター</title>
-    <!-- Open Graph 元資料 -->
-    <meta property="og:image" content="https://yourdomain.com/default-ticket.png">
-    <meta property="og:title" data-i18n="og_title" content="我的自訂門票">
-    <meta property="og:description" data-i18n="og_description" content="看看我用 Ticket Maker 製作的門票！">
-    <meta property="twitter:card" content="summary_large_image">
-
-    <!-- 字型引入 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+KR&family=Noto+Sans+Thai&display=swap" rel="stylesheet">
     <style>
         @font-face { font-family: 'ITC Avant Garde Gothic Std Extra Light'; src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2') format('woff2'); }
@@ -165,7 +158,7 @@
         #memberSelector, #memberSelector option {
             font-family: "KozGoPr6N", "YuGothic", "Meiryo", "Noto Sans", sans-serif;
             font-size: 16px;
-            color: var(--text-color);
+            color: var(--text-color); /* 與語言選單一致 */
         }
         #disclaimer { font-size: 7pt; color: var(--text-color); text-align: center; margin-top: 10px; }
         #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
@@ -175,21 +168,18 @@
         .accordion-content.active { display: block; }
         #qrPreview { display: block; margin-top: 10px; width: 128px; height: 128px; }
     </style>
-
-    <!-- 外部資源 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661724500759448" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js" defer></script>
 </head>
 <body>
-    <!-- 廣告 -->
     <div class="ad-container">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5661724500759448" data-ad-slot="5661724500759448" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
-    <!-- 語言選擇 -->
     <select id="languageSelector">
         <option value="ja" selected>日本語</option>
         <option value="en">English</option>
@@ -206,7 +196,6 @@
             <h1 data-i18n="preview">チケットプレビュー</h1>
             <canvas id="ticketCanvas" aria-label="Ticket preview canvas"></canvas>
             <div id="previewSizeButtons">
-                <button id="scaleButton" data-i18n="scale_button">縮放</button>
                 <div id="scaleOptions">
                     <button onclick="setPreviewScale(0.5)">50%</button>
                     <button onclick="setPreviewScale(1.0)">100%</button>
@@ -222,7 +211,7 @@
                     <button id="downloadPdfButton" data-i18n="download_pdf">PDFをダウンロード</button>
                 </div>
             </div>
-            <p id="disclaimer" data-i18n="copyright_notice">AKB48メンバーの生誕祭劇場公演において、ファンの皆様が復刻された劇場チケットに感動し、本サイトを制作いたしました。ファンの皆様が趣味としてチケットを自作・保存できるように設計されています。商業利用や違法な目的での使用はご遠慮ください。権利は©AKB48および株式会社DHに帰属し、製作者は一切の責任を負いかねます。何卒ご理解のほどよろしくお願いいたします。</p>
+            <p id="disclaimer" data-i18n="copyright_notice">鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人動容，特別製作此網站，讓粉絲能以興趣方式自製並保存門票。網站僅供非商業用途使用，請勿用於營利或任何違法行為。版權歸©AKB48及株式会社DH所有，製作者恕不承擔相關責任。敬請理解。</p>
             <div id="buttonContainer">
                 <button id="scaleButton" data-i18n="scale_button">縮放</button>
                 <button id="advancedModeBtn" data-i18n="advanced_mode">詳細設定</button>
@@ -392,7 +381,6 @@
         </div>
     </div>
 
-    <!-- 底部廣告 -->
     <div class="ad-container">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5661724500759448" data-ad-slot="5661724500759448" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
