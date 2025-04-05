@@ -37,6 +37,46 @@ const debounce = (func, delay) => {
     };
 };
 
+// 上傳圖片到 Imgur 並更新 og:image
+const uploadToImgurAndUpdateOgImage = async () => {
+    const dataUrl = canvas.toDataURL('image/png');
+    const blob = await fetch(dataUrl).then(res => res.blob());
+    const formData = new FormData();
+    formData.append('image', blob);
+    formData.append('type', 'base64');
+
+    try {
+        const response = await fetch('https://api.imgur.com/3/image', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Client-ID 9bc3dd21bac0637' // 已填入你的 Client ID
+            },
+            body: formData
+        });
+        const result = await response.json();
+        if (result.success) {
+            const imageUrl = result.data.link; // Imgur 提供的圖片 URL
+
+            // 更新 og:image 元資料
+            let ogImageTag = document.querySelector('meta[property="og:image"]');
+            if (!ogImageTag) {
+                ogImageTag = document.createElement('meta');
+                ogImageTag.setAttribute('property', 'og:image');
+                document.head.appendChild(ogImageTag);
+            }
+            ogImageTag.setAttribute('content', imageUrl);
+
+            return imageUrl;
+        } else {
+            throw new Error('Imgur upload failed: ' + (result.data.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error uploading to Imgur:', error);
+        alert('圖片上傳失敗，請檢查網路連線或稍後重試。錯誤訊息：' + error.message);
+        return null;
+    }
+};
+
 // 繪製文字
 const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left', altFont, dpiVal = 300, context = ctx) => {
     if (!context) return;
@@ -516,9 +556,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.body.classList.toggle('night-mode');
         $('nightModeBtn').textContent = document.body.classList.contains('night-mode') ? langs[currentLang].default_mode : langs[currentLang].night_mode;
     });
-    $('shareTwitterBtn')?.addEventListener('click', () => {
-        const url = encodeURIComponent(window.location.href);
-        const text = encodeURIComponent(langs[currentLang].share_text || '自作チケットをシェアします！ #TicketMaker');
-        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    $('shareTwitterBtn')?.addEventListener('click', async () => {
+        $('loading').textContent = langs[currentLang].uploading || '上傳中...';
+        $('loading').style.display = 'block';
+
+        const imageUrl = await uploadToImgurAndUpdateOgImage();
+        if (imageUrl) {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(langs[currentLang].share_text || '自作チケットをシェアします！ #TicketMaker');
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        }
+
+        $('loading').style.display = 'none';
     });
 });
