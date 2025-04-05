@@ -305,7 +305,7 @@ const changeLanguage = (lang) => {
                     el.textContent = langs[lang][key];
                 }
             } else {
-                el.textContent = langs[lang][key];
+                el.setAttribute('content', langs[lang][key]); // 為 meta 標籤更新 content
             }
         }
     });
