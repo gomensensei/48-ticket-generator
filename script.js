@@ -151,15 +151,14 @@ const drawQRCode = (dpiVal, bleed, w, mmPx, context = ctx) => {
 const drawTicket = async (dpiVal, context = ctx) => {
     if (!context) return;
     const bleed = $('bleedOption')?.checked || false;
-    const scale = dpiVal / 70;
-    const w = bleed ? dpi[dpiVal].bleed.w : 65 * scale; // 65mm
-    const h = bleed ? dpi[dpiVal].bleed.h : 150 * scale; // 150mm
+    const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
+    const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
     const mmPx = dpiVal / 25.4;
     context.canvas.width = w;
     context.canvas.height = h;
     if (context === ctx) {
-        canvas.style.width = `${w}px`;
-        canvas.style.height = `${h}px`;
+        canvas.style.width = `${w * previewScale}px`;
+        canvas.style.height = `${h * previewScale}px`;
     }
     context.clearRect(0, 0, w, h);
 
@@ -176,11 +175,15 @@ const debouncedDrawTicket = debounce((dpiVal) => drawTicket(dpiVal), 300);
 const setPreviewScale = (scale) => {
     previewScale = scale;
     if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
-        previewScale = Math.min(scale, (window.visualViewport?.width || window.innerWidth) / dpi[70].base.w * 0.8);
+        const maxWidth = (window.visualViewport?.width || window.innerWidth) * 0.8;
+        const baseWidth = dpi[70].base.w;
+        previewScale = Math.min(scale, maxWidth / baseWidth);
     }
     if (ctx) {
-        canvas.style.transform = `scale(${previewScale})`;
-        canvas.style.transformOrigin = 'top center';
+        const w = dpi[70].base.w;
+        const h = dpi[70].base.h;
+        canvas.style.width = `${w * previewScale}px`;
+        canvas.style.height = `${h * previewScale}px`;
         debouncedDrawTicket(70);
     }
 };
@@ -422,6 +425,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadLanguages();
     await loadMembers();
     await waitForFonts();
+    setPreviewScale(1.0);
     debouncedDrawTicket(70);
 
     document.querySelectorAll('.accordion-toggle').forEach(toggle => {
