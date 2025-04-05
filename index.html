@@ -35,13 +35,10 @@
             #controlsContainer { width: 50%; order: 0; }
             .divider { width: 5px; height: auto; background: #F676A6; }
             #ticketCanvas { max-width: 100%; }
-            #scaleButton { position: absolute; top: 10px; left: 10px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-            #advancedModeBtn { position: absolute; top: 10px; left: 100px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-            #downloadButton { position: absolute; top: 10px; left: 190px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-            #reportBugBtn { position: absolute; top: 40px; left: 10px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-            #donateBtn { position: absolute; top: 40px; left: 100px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-            #nightModeBtn { position: absolute; top: 40px; left: 190px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-            #shareTwitterBtn { position: absolute; top: 40px; left: 280px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+            #buttonContainer { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 10px; }
+            #scaleButton, #advancedModeBtn, #downloadButton, #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
+                padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; z-index: 1;
+            }
         }
         @media (max-width: 768px) {
             #mainContainer { flex-direction: column; }
@@ -50,16 +47,13 @@
             .divider { order: 2; width: 100%; height: 5px; }
             #controlsContainer { order: 3; }
             #ticketCanvas { max-width: 80%; }
-            #scaleButton { position: absolute; top: 10px; left: 10px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
-            #advancedModeBtn { position: absolute; top: 10px; left: 70px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
-            #downloadButton { position: absolute; top: 10px; left: 130px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
-            #reportBugBtn { position: absolute; top: 40px; left: 10px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
-            #donateBtn { position: absolute; top: 40px; left: 70px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
-            #nightModeBtn { position: absolute; top: 40px; left: 130px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
-            #shareTwitterBtn { position: absolute; top: 40px; left: 190px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
+            #buttonContainer { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
+            #scaleButton, #advancedModeBtn, #downloadButton, #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
+                padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; z-index: 1;
+            }
         }
         #canvasContainer { text-align: center; overflow: auto; }
-        #memberPreview { margin-bottom: 10px; }
+        #memberPreview { margin-bottom: 10px; position: relative; z-index: 2; }
         #controlsContainer { overflow-y: auto; max-height: 90vh; }
         .input-group { margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
         .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
@@ -67,16 +61,16 @@
         .note { color: var(--text-color); font-size: 14px; }
         .position-input, .spacing-input, .size-input, .line-height-input, .shadow-input, .opacity-input { width: 50px; margin-left: 5px; display: none; }
         .advanced-mode.active .position-input, .advanced-mode.active .spacing-input, .advanced-mode.active .size-input, .advanced-mode.active .line-height-input, .advanced-mode.active .shadow-input, .advanced-mode.active .opacity-input { display: inline-block; }
-        .advanced-label { display: none; margin-right: 5px; }
+        .advanced-label { display: none; margin-right: 5px; min-width: 20px; }
         .advanced-mode.active .advanced-label { display: inline-block; }
         .advanced-mode { display: none; }
         .advanced-mode.active { display: block; }
-        .advanced-mode label { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; white-space: nowrap; }
-        .advanced-mode label input { margin: 0; }
+        .advanced-mode label { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; white-space: nowrap; min-width: 200px; }
+        .advanced-mode label input { margin: 0; width: 50px; }
         #previewSizeButtons, #downloadGroup { margin-top: 10px; position: relative; }
         #previewSizeButtons button, #downloadGroup button { margin: 0 5px 10px; padding: 8px 16px; border-radius: 20px; border: none; background: var(--button-bg); color: #FFF; cursor: pointer; }
         #previewSizeButtons button:hover, #downloadGroup button:hover { background: var(--button-hover); }
-        #scaleOptions, #downloadOptions { display: none; position: absolute; background: #fff; border: 1px solid #ccc; padding: 10px; z-index: 10; }
+        #scaleOptions, #downloadOptions { display: none; position: absolute; background: #fff; border: 1px solid #ccc; padding: 10px; z-index: 10; left: 50%; transform: translateX(-50%); }
         .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
         .ad-container { text-align: center; margin: 20px 0; width: 100%; }
         #languageSelector { position: absolute; top: 10px; right: 10px; color: var(--text-color); padding: 5px; }
@@ -109,13 +103,6 @@
         <option value="th">ไทย</option>
         <option value="id">Bahasa Indonesia</option>
     </select>
-    <button id="scaleButton" data-i18n="scale_button">縮放</button>
-    <button id="advancedModeBtn" data-i18n="advanced_mode">詳細設定</button>
-    <button id="downloadButton" data-i18n="download_button">ダウンロード</button>
-    <button id="reportBugBtn" data-i18n="report_bug" onclick="window.open('https://x.com/sorrysir_gomen','_blank')">報錯</button>
-    <button id="donateBtn" data-i18n="donate" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')">カンパ</button>
-    <button id="nightModeBtn" data-i18n="night_mode">ダークモード</button>
-    <button id="shareTwitterBtn" data-i18n="share_x_twitter">X(Twitter)でシェア</button>
 
     <div id="mainContainer">
         <div id="canvasContainer">
@@ -137,6 +124,15 @@
                     <button id="downloadPdfButton" data-i18n="download_pdf">PDFをダウンロード</button>
                 </div>
                 <p id="disclaimer" data-i18n="copyright_notice">鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人動容，特別製作此網站，讓粉絲能以興趣方式自製並保存門票。網站僅供非商業用途使用，請勿用於營利或任何違法行為。版權歸©AKB48及株式会社DH所有，製作者恕不承擔相關責任。敬請理解。</p>
+            </div>
+            <div id="buttonContainer">
+                <button id="scaleButton" data-i18n="scale_button">縮放</button>
+                <button id="advancedModeBtn" data-i18n="advanced_mode">詳細設定</button>
+                <button id="downloadButton" data-i18n="download_button">ダウンロード</button>
+                <button id="reportBugBtn" data-i18n="report_bug" onclick="window.open('https://x.com/sorrysir_gomen','_blank')">報錯</button>
+                <button id="donateBtn" data-i18n="donate" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')">カンパ</button>
+                <button id="nightModeBtn" data-i18n="night_mode">ダークモード</button>
+                <button id="shareTwitterBtn" data-i18n="share_x_twitter">X(Twitter)でシェア</button>
             </div>
         </div>
         <div class="divider"></div>
