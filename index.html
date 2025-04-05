@@ -29,12 +29,6 @@
             --bg-color: #1E1E1E;
             --text-color: #F676A6;
         }
-
-        #memberGallery { margin: 20px 0; }
-        #memberSelector, #memberSelector option {
-        font-family: "KozGoPr6N", "YuGothic", "Meiryo", "Noto Sans", sans-serif;
-        font-size: 16px;
-        }
         @media (min-width: 769px) {
             #mainContainer { display: flex; flex-direction: row; gap: 10px; }
             #canvasContainer { width: 50%; order: 0; }
@@ -57,11 +51,11 @@
                 border-radius: 20px; 
                 cursor: pointer; 
                 z-index: 1;
-                flex: 0 0 calc(33.33% - 20px); /* 第一行 3 個按鈕 */
+                flex: 0 0 calc(33.33% - 20px);
                 text-align: center;
             }
             #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
-                flex: 0 0 calc(25% - 20px); /* 第二行 4 個按鈕 */
+                flex: 0 0 calc(25% - 20px);
             }
             #downloadGroup { 
                 margin-top: 10px; 
@@ -84,7 +78,10 @@
             #canvasContainer { order: 1; }
             .divider { order: 2; width: 100%; height: 5px; }
             #controlsContainer { order: 3; }
-            #ticketCanvas { max-width: 80%; }
+            #ticketCanvas { 
+                width: 100%; 
+                aspect-ratio: 65 / 150; /* 確保比例為 65:150 */
+            }
             #buttonContainer { 
                 display: flex; 
                 flex-direction: row; 
@@ -102,11 +99,11 @@
                 border-radius: 15px; 
                 cursor: pointer; 
                 z-index: 1;
-                flex: 0 0 calc(33.33% - 16px); /* 第一行 3 個按鈕 */
+                flex: 0 0 calc(33.33% - 16px);
                 text-align: center;
             }
             #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
-                flex: 0 0 calc(25% - 16px); /* 第二行 4 個按鈕 */
+                flex: 0 0 calc(25% - 16px);
             }
             #downloadGroup { 
                 margin-top: 10px; 
@@ -123,18 +120,21 @@
                 cursor: pointer; 
                 z-index: 1;
             }
+            #memberPreview h1 {
+                margin: 8px 10px; /* 增加手機版垂直間距 */
+            }
         }
         #canvasContainer { text-align: center; overflow: auto; }
         #memberPreview { 
-    margin-bottom: 10px; 
-    position: relative; 
-    z-index: 2; 
-    text-align: center; 
-}
+            margin-bottom: 10px; 
+            position: relative; 
+            z-index: 2; 
+            text-align: center; 
+        }
         #memberPreview img { 
-    max-width: 100%; 
-    vertical-align: middle; 
-}
+            max-width: 100%; 
+            vertical-align: middle; 
+        }
         #controlsContainer { overflow-y: auto; max-height: 90vh; }
         .input-group { margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
         .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
@@ -155,6 +155,11 @@
         .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
         .ad-container { text-align: center; margin: 20px 0; width: 100%; }
         #languageSelector { position: absolute; top: 10px; right: 10px; color: var(--text-color); padding: 5px; }
+        #memberSelector, #memberSelector option {
+            font-family: "KozGoPr6N", "YuGothic", "Meiryo", "Noto Sans", sans-serif;
+            font-size: 16px;
+            color: var(--text-color); /* 與語言選單一致 */
+        }
         #disclaimer { font-size: 7pt; color: var(--text-color); text-align: center; margin-top: 10px; }
         #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
         #memberGallery { margin: 20px 0; }
