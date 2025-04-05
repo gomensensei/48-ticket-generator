@@ -1,8 +1,11 @@
-const $ = id => {
+// 工具函數
+function $(id) {
     const element = document.getElementById(id);
     if (!element) console.error(`Element with ID "${id}" not found`);
     return element;
-};
+}
+
+// 初始設置
 const canvas = $('ticketCanvas');
 const ctx = canvas ? canvas.getContext('2d') : null;
 
@@ -23,7 +26,9 @@ const dpi = {
 
 let qrImage = null, customImage = null, previewScale = 1.0;
 let langs = {}, members = [], currentLang = 'ja';
+let customFonts = {};
 
+// 去抖動函數
 const debounce = (func, delay) => {
     let timeoutId;
     return (...args) => {
@@ -32,6 +37,7 @@ const debounce = (func, delay) => {
     };
 };
 
+// 繪製文字
 const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left', altFont, dpiVal = 300, context = ctx) => {
     if (!context) return;
     const ptPx = dpiVal / 72;
@@ -49,6 +55,7 @@ const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left
     });
 };
 
+// 繪製背景
 const drawBackground = async (dpiVal, bleed, w, h, mmPx, context = ctx) => {
     const gradient = context.createLinearGradient(0, 0, w, 0);
     gradient.addColorStop(0, $('bgGradientStart')?.value || '#E5EDF9');
@@ -95,6 +102,7 @@ const drawBackground = async (dpiVal, bleed, w, h, mmPx, context = ctx) => {
     context.globalAlpha = 1;
 };
 
+// 繪製區域 1（Logo）
 const drawArea1 = (dpiVal, bleed, mmPx, context = ctx) => {
     context.fillStyle = $('rect1Color')?.value || '#2086D1';
     context.fillRect(8 * mmPx + (bleed ? sizes.bleed * mmPx : 0), bleed ? sizes.bleed * mmPx : 0, 25 * mmPx, 35 * mmPx);
@@ -102,6 +110,7 @@ const drawArea1 = (dpiVal, bleed, mmPx, context = ctx) => {
     drawText([$('rect1Line2')?.value || '48'], parseFloat($('rect1Line2X')?.value || 13.5) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('rect1Line2Y')?.value || 24) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customRect1 || fonts.avant, parseFloat($('rect1Line2Size')?.value || 47), parseFloat($('rect1Line2Spacing')?.value || -7000), 0, $('rect1TextColor')?.value || '#FFFFFF', 'center', null, dpiVal, context);
 };
 
+// 繪製文字 2-6
 const drawText2To6 = (dpiVal, bleed, mmPx, context = ctx) => {
     const tc = $('textColor')?.value || '#000000';
     drawText([$('text2')?.value || '「ここからだ」 公演'], parseFloat($('text2X')?.value || 37) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text2Y')?.value || 12) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText2_3 || fonts.kozgo, parseFloat($('text2Size')?.value || 14.2), parseFloat($('text2Spacing')?.value || 2000), 0, tc, 'left', fonts.ar, dpiVal, context);
@@ -112,6 +121,7 @@ const drawText2To6 = (dpiVal, bleed, mmPx, context = ctx) => {
     drawText([$('text6')?.value || '① ❘ 000－0000 ❘ ゴメン先生 様'], parseFloat($('text6X')?.value || 36) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text6Y')?.value || 55) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText4_6 || fonts.kozgo, parseFloat($('text6Size')?.value || 13), parseFloat($('text6Spacing')?.value || 311), 0, tc, 'left', fonts.ar, dpiVal, context);
 };
 
+// 繪製區域 9（Footer）
 const drawArea9 = (dpiVal, bleed, mmPx, context = ctx) => {
     context.fillStyle = $('rect9Color')?.value || '#2086D1';
     context.fillRect(bleed ? sizes.bleed * mmPx : 0, 60 * mmPx + (bleed ? sizes.bleed * mmPx : 0), 150 * mmPx, 5 * mmPx);
@@ -121,6 +131,7 @@ const drawArea9 = (dpiVal, bleed, mmPx, context = ctx) => {
     drawText([$('text12')?.value || 'TEL:01-2345-6789'], parseFloat($('text12X')?.value || 108) * mmPx + (bleed ? sizes.bleed * mmPx : 0), parseFloat($('text12Y')?.value || 64) * mmPx + (bleed ? sizes.bleed * mmPx : 0), fonts.customText10_12 || fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, fc, 'left', fonts.ar, dpiVal, context);
 };
 
+// 繪製 QR 碼
 const drawQRCode = (dpiVal, bleed, w, mmPx, context = ctx) => {
     if ($('showQR')?.checked) {
         const qrRightMargin = 8.5 * mmPx;
@@ -136,17 +147,19 @@ const drawQRCode = (dpiVal, bleed, w, mmPx, context = ctx) => {
     }
 };
 
+// 繪製票券
 const drawTicket = async (dpiVal, context = ctx) => {
     if (!context) return;
     const bleed = $('bleedOption')?.checked || false;
-    const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
-    const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
+    const scale = dpiVal / 70;
+    const w = bleed ? dpi[dpiVal].bleed.w : 65 * scale; // 65mm
+    const h = bleed ? dpi[dpiVal].bleed.h : 150 * scale; // 150mm
     const mmPx = dpiVal / 25.4;
     context.canvas.width = w;
     context.canvas.height = h;
     if (context === ctx) {
-        canvas.style.width = `${w * previewScale}px`;
-        canvas.style.height = `${h * previewScale}px`;
+        canvas.style.width = `${w}px`;
+        canvas.style.height = `${h}px`;
     }
     context.clearRect(0, 0, w, h);
 
@@ -159,20 +172,20 @@ const drawTicket = async (dpiVal, context = ctx) => {
 
 const debouncedDrawTicket = debounce((dpiVal) => drawTicket(dpiVal), 300);
 
+// 縮放預覽
 const setPreviewScale = (scale) => {
     previewScale = scale;
     if (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches) {
         previewScale = Math.min(scale, (window.visualViewport?.width || window.innerWidth) / dpi[70].base.w * 0.8);
     }
     if (ctx) {
-        const w = dpi[70].base.w;
-        const h = dpi[70].base.h;
-        canvas.style.width = `${w * previewScale}px`;
-        canvas.style.height = `${h * previewScale}px`;
+        canvas.style.transform = `scale(${previewScale})`;
+        canvas.style.transformOrigin = 'top center';
         debouncedDrawTicket(70);
     }
 };
 
+// 下載票券
 const downloadTicket = async (dpiVal) => {
     $('loading').style.display = 'block';
     const tempCanvas = document.createElement('canvas');
@@ -201,12 +214,15 @@ const downloadTicket = async (dpiVal) => {
     $('loading').style.display = 'none';
 };
 
+// 下載 PDF
 const downloadPDF = async () => {
     const { jsPDF } = window.jspdf;
     $('loading').textContent = langs[currentLang].generating || '生成中...';
     $('loading').style.display = 'block';
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
+    tempCanvas.width = dpi[300].base.w;
+    tempCanvas.height = dpi[300].base.h;
     await drawTicket(300, tempCtx);
     const imgData = tempCanvas.toDataURL('image/png');
     const doc = new jsPDF({ unit: 'mm', format: [150, 65] });
@@ -215,6 +231,7 @@ const downloadPDF = async () => {
     $('loading').style.display = 'none';
 };
 
+// 載入字型
 const loadFont = (file, fontKey) => {
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -234,6 +251,7 @@ const loadFont = (file, fontKey) => {
     reader.readAsArrayBuffer(file);
 };
 
+// 更新 QR 碼
 const updateQRCode = () => {
     const url = $('qrCodeUrl')?.value;
     const qrContainer = $('qrPreview');
@@ -269,6 +287,7 @@ const updateQRCode = () => {
     }, 300);
 };
 
+// 切換語言
 const changeLanguage = (lang) => {
     currentLang = lang;
     document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -290,12 +309,14 @@ const changeLanguage = (lang) => {
     debouncedDrawTicket(70);
 };
 
+// 切換進階模式
 const toggleAdvancedMode = () => {
     document.querySelectorAll('.advanced-mode').forEach(el => el.classList.toggle('active'));
     const btn = $('advancedModeBtn');
     btn.textContent = btn.textContent === langs[currentLang].advanced_mode ? langs[currentLang].simple_mode : langs[currentLang].advanced_mode;
 };
 
+// 等待字型載入
 const waitForFonts = async () => {
     const fontPromises = [
         document.fonts.load(`400 47px ${fonts.avant}`),
@@ -311,6 +332,7 @@ const waitForFonts = async () => {
     }
 };
 
+// 載入語言
 async function loadLanguages() {
     try {
         const response = await fetch('langs.json');
@@ -321,6 +343,7 @@ async function loadLanguages() {
     }
 }
 
+// 載入成員資料
 async function loadMembers() {
     try {
         const response = await fetch('members.json');
@@ -329,8 +352,8 @@ async function loadMembers() {
         selector.innerHTML = '<option value="">選択なし</option>';
         members.forEach(member => {
             const option = document.createElement('option');
-            option.value = member.name_en;
-            option.textContent = `${member.name_ja} (${member.name_en})`;
+            option.value = member.name_ja;
+            option.textContent = member.name_ja;
             selector.appendChild(option);
         });
     } catch (error) {
@@ -338,6 +361,7 @@ async function loadMembers() {
     }
 }
 
+// 計算對比色
 function contrastColor(hex) {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -346,6 +370,7 @@ function contrastColor(hex) {
     return brightness > 128 ? '#000000' : '#FFFFFF';
 }
 
+// 應用成員配色
 function applyMemberColor(member) {
     const specialMembers = ["福岡 聖菜", "永野 芹佳", "橋本 陽菜", "鈴木 くるみ", "大盛 真歩", "正鋳 真優", "白鳥 沙怜", "花田 藍衣"];
     const isSpecialMember = specialMembers.includes(member.name_ja);
@@ -379,16 +404,20 @@ function applyMemberColor(member) {
     const preview = $('memberPreview');
     preview.innerHTML = `
         <img src="${member.image}" alt="${member.name_ja}" style="width: 120px; height: 120px; object-fit: cover;">
-        <h1 style="display: inline-block; margin: 0 10px;">${member.name_ja} (${member.name_en})</h1>
-        <div style="width: 80px; height: 20px; background: linear-gradient(to right, ${member.gradient[0]}, ${member.gradient[1]}); display: inline-block; vertical-align: middle;"></div>
+        <h1 style="display: inline-block; margin: 5px 10px;">${member.name_ja} (${member.name_en})</h1>
+        <div style="display: inline-block; vertical-align: middle;">
+            ${member.gradient.map(color => `<div style="width: ${80 / member.gradient.length}px; height: 20px; background: ${color}; display: inline-block;"></div>`).join('')}
+        </div>
     `;
     debouncedDrawTicket(70);
 }
 
+// 顯示感謝訊息
 const showThanksMessage = () => {
     alert(`${langs[currentLang].download_message}\n※PayPay ID: gomensensei`);
 };
 
+// DOM 載入完成後的事件
 document.addEventListener('DOMContentLoaded', async () => {
     await loadLanguages();
     await loadMembers();
@@ -404,8 +433,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
     $('memberSelector')?.addEventListener('change', (e) => {
-        const member = members.find(m => m.name_en === e.target.value);
-        if (member) applyMemberColor(member);
+        const selectedMember = members.find(m => m.name_ja === e.target.value);
+        if (selectedMember) {
+            applyMemberColor(selectedMember);
+        } else {
+            $('memberPreview').innerHTML = '';
+        }
     });
     $('qrCodeUrl')?.addEventListener('input', debounce(updateQRCode, 500));
     $('showQR')?.addEventListener('change', () => debouncedDrawTicket(70));
