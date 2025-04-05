@@ -35,9 +35,13 @@
             #controlsContainer { width: 50%; order: 0; }
             .divider { width: 5px; height: auto; background: #F676A6; }
             #ticketCanvas { max-width: 100%; }
-            #nightModeBtn { position: absolute; top: 10px; right: 220px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-            #donateBtn { position: absolute; top: 10px; right: 420px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
-            #reportBugBtn { position: absolute; top: 10px; right: 320px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+            #scaleButton { position: absolute; top: 10px; left: 10px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+            #advancedModeBtn { position: absolute; top: 10px; left: 100px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+            #downloadButton { position: absolute; top: 10px; left: 190px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+            #reportBugBtn { position: absolute; top: 40px; left: 10px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+            #donateBtn { position: absolute; top: 40px; left: 100px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+            #nightModeBtn { position: absolute; top: 40px; left: 190px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
+            #shareTwitterBtn { position: absolute; top: 40px; left: 280px; padding: 5px 10px; background: var(--button-bg); color: #FFF; border: none; border-radius: 20px; cursor: pointer; }
         }
         @media (max-width: 768px) {
             #mainContainer { flex-direction: column; }
@@ -46,9 +50,13 @@
             .divider { order: 2; width: 100%; height: 5px; }
             #controlsContainer { order: 3; }
             #ticketCanvas { max-width: 80%; }
-            #nightModeBtn { position: absolute; top: 10px; right: 120px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
-            #donateBtn { position: absolute; top: 40px; right: 10px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
-            #reportBugBtn { position: absolute; top: 70px; right: 10px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
+            #scaleButton { position: absolute; top: 10px; left: 10px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
+            #advancedModeBtn { position: absolute; top: 10px; left: 70px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
+            #downloadButton { position: absolute; top: 10px; left: 130px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
+            #reportBugBtn { position: absolute; top: 40px; left: 10px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
+            #donateBtn { position: absolute; top: 40px; left: 70px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
+            #nightModeBtn { position: absolute; top: 40px; left: 130px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
+            #shareTwitterBtn { position: absolute; top: 40px; left: 190px; padding: 3px 6px; font-size: 12px; background: var(--button-bg); color: #FFF; border: none; border-radius: 15px; cursor: pointer; }
         }
         #canvasContainer { text-align: center; overflow: auto; }
         #memberPreview { margin-bottom: 10px; }
@@ -72,10 +80,9 @@
         .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
         .ad-container { text-align: center; margin: 20px 0; width: 100%; }
         #languageSelector { position: absolute; top: 10px; right: 10px; color: var(--text-color); padding: 5px; }
-        #disclaimer, #disclaimer + p.note { font-size: 7pt; color: var(--text-color); text-align: center; margin-top: 10px; }
+        #disclaimer { font-size: 7pt; color: var(--text-color); text-align: center; margin-top: 10px; }
         #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
         #memberGallery { margin: 20px 0; }
-        #galleryContainer { display: none; }
         .accordion-toggle { cursor: pointer; padding: 10px; background: var(--button-bg); color: #FFF; margin: 5px 0; }
         .accordion-content { display: none; }
         .accordion-content.active { display: block; }
@@ -102,9 +109,13 @@
         <option value="th">ไทย</option>
         <option value="id">Bahasa Indonesia</option>
     </select>
-    <button id="nightModeBtn" data-i18n="night_mode">ダークモード</button>
-    <button id="donateBtn" data-i18n="donate" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')">カンパ</button>
+    <button id="scaleButton" data-i18n="scale_button">縮放</button>
+    <button id="advancedModeBtn" data-i18n="advanced_mode">詳細設定</button>
+    <button id="downloadButton" data-i18n="download_button">ダウンロード</button>
     <button id="reportBugBtn" data-i18n="report_bug" onclick="window.open('https://x.com/sorrysir_gomen','_blank')">報錯</button>
+    <button id="donateBtn" data-i18n="donate" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')">カンパ</button>
+    <button id="nightModeBtn" data-i18n="night_mode">ダークモード</button>
+    <button id="shareTwitterBtn" data-i18n="share_x_twitter">X(Twitter)でシェア</button>
 
     <div id="mainContainer">
         <div id="canvasContainer">
@@ -112,7 +123,6 @@
             <h1 data-i18n="preview">チケットプレビュー</h1>
             <canvas id="ticketCanvas" aria-label="Ticket preview canvas"></canvas>
             <div id="previewSizeButtons">
-                <button id="scaleButton" data-i18n="scale_button">縮放</button>
                 <div id="scaleOptions">
                     <button onclick="setPreviewScale(0.5)">50%</button>
                     <button onclick="setPreviewScale(1.0)">100%</button>
@@ -121,16 +131,11 @@
                 </div>
             </div>
             <div id="downloadGroup">
-                <button id="downloadButton" data-i18n="download_button">ダウンロード</button>
                 <div id="downloadOptions">
                     <button id="download300Button" data-i18n="download_png_300">ダウンロード (300 DPI)</button>
                     <button id="download70Button" data-i18n="download_png_70">ダウンロード (70 DPI)</button>
                     <button id="downloadPdfButton" data-i18n="download_pdf">PDFをダウンロード</button>
                 </div>
-                <button id="advancedModeBtn" data-i18n="advanced_mode">詳細設定</button>
-                <button id="shareTwitterBtn" data-i18n="share_x_twitter">X(Twitter)でシェア</button>
-                <p class="note" data-i18n="paypay_id">※PayPay ID: gomensensei</p>
-                <p class="note" data-i18n="disclaimer">※ダウンロードしたPNGはRGB形式です。印刷用にCMYKへ変換するには、PhotoshopまたはGIMPをご利用ください。</p>
                 <p id="disclaimer" data-i18n="copyright_notice">鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人動容，特別製作此網站，讓粉絲能以興趣方式自製並保存門票。網站僅供非商業用途使用，請勿用於營利或任何違法行為。版權歸©AKB48及株式会社DH所有，製作者恕不承擔相關責任。敬請理解。</p>
             </div>
         </div>
