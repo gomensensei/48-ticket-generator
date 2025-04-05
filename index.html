@@ -29,55 +29,95 @@
             --bg-color: #1E1E1E;
             --text-color: #F676A6;
         }
-@media (min-width: 769px) {
-    #buttonContainer { 
-        display: flex; 
-        flex-direction: row; 
-        flex-wrap: wrap; 
-        gap: 10px; 
-        justify-content: center; 
-        margin-top: 10px; 
-    }
-    #scaleButton, #advancedModeBtn, #downloadButton, #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
-        padding: 5px 10px; 
-        background: var(--button-bg); 
-        color: #FFF; 
-        border: none; 
-        border-radius: 20px; 
-        cursor: pointer; 
-        z-index: 1;
-        flex: 0 0 calc(33.33% - 20px); /* 第一行 3 個按鈕，每個佔 33.33% 寬度，減去間距 */
-        text-align: center;
-    }
-    #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
-        flex: 0 0 calc(25% - 20px); /* 第二行 4 個按鈕，每個佔 25% 寬度，減去間距 */
-    }
-}
-@media (max-width: 768px) {
-    #buttonContainer { 
-        display: flex; 
-        flex-direction: row; 
-        flex-wrap: wrap; 
-        gap: 8px; 
-        justify-content: center; 
-        margin-top: 10px; 
-    }
-    #scaleButton, #advancedModeBtn, #downloadButton, #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
-        padding: 3px 6px; 
-        font-size: 12px; 
-        background: var(--button-bg); 
-        color: #FFF; 
-        border: none; 
-        border-radius: 15px; 
-        cursor: pointer; 
-        z-index: 1;
-        flex: 0 0 calc(33.33% - 16px); /* 第一行 3 個按鈕，每個佔 33.33% 寬度，減去間距 */
-        text-align: center;
-    }
-    #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
-        flex: 0 0 calc(25% - 16px); /* 第二行 4 個按鈕，每個佔 25% 寬度，減去間距 */
-    }
-}
+        @media (min-width: 769px) {
+            #mainContainer { display: flex; flex-direction: row; gap: 10px; }
+            #canvasContainer { width: 50%; order: 0; }
+            #controlsContainer { width: 50%; order: 0; }
+            .divider { width: 5px; height: auto; background: #F676A6; }
+            #ticketCanvas { max-width: 100%; }
+            #buttonContainer { 
+                display: flex; 
+                flex-direction: row; 
+                flex-wrap: wrap; 
+                gap: 10px; 
+                justify-content: center; 
+                margin-top: 10px; 
+            }
+            #scaleButton, #advancedModeBtn, #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
+                padding: 5px 10px; 
+                background: var(--button-bg); 
+                color: #FFF; 
+                border: none; 
+                border-radius: 20px; 
+                cursor: pointer; 
+                z-index: 1;
+                flex: 0 0 calc(33.33% - 20px); /* 第一行 3 個按鈕 */
+                text-align: center;
+            }
+            #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
+                flex: 0 0 calc(25% - 20px); /* 第二行 4 個按鈕 */
+            }
+            #downloadGroup { 
+                margin-top: 10px; 
+                text-align: center; 
+                position: relative; 
+            }
+            #downloadButton {
+                padding: 5px 10px; 
+                background: var(--button-bg); 
+                color: #FFF; 
+                border: none; 
+                border-radius: 20px; 
+                cursor: pointer; 
+                z-index: 1;
+            }
+        }
+        @media (max-width: 768px) {
+            #mainContainer { flex-direction: column; }
+            #canvasContainer, #controlsContainer { width: 100%; }
+            #canvasContainer { order: 1; }
+            .divider { order: 2; width: 100%; height: 5px; }
+            #controlsContainer { order: 3; }
+            #ticketCanvas { max-width: 80%; }
+            #buttonContainer { 
+                display: flex; 
+                flex-direction: row; 
+                flex-wrap: wrap; 
+                gap: 8px; 
+                justify-content: center; 
+                margin-top: 10px; 
+            }
+            #scaleButton, #advancedModeBtn, #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
+                padding: 3px 6px; 
+                font-size: 12px; 
+                background: var(--button-bg); 
+                color: #FFF; 
+                border: none; 
+                border-radius: 15px; 
+                cursor: pointer; 
+                z-index: 1;
+                flex: 0 0 calc(33.33% - 16px); /* 第一行 3 個按鈕 */
+                text-align: center;
+            }
+            #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
+                flex: 0 0 calc(25% - 16px); /* 第二行 4 個按鈕 */
+            }
+            #downloadGroup { 
+                margin-top: 10px; 
+                text-align: center; 
+                position: relative; 
+            }
+            #downloadButton {
+                padding: 3px 6px; 
+                font-size: 12px; 
+                background: var(--button-bg); 
+                color: #FFF; 
+                border: none; 
+                border-radius: 15px; 
+                cursor: pointer; 
+                z-index: 1;
+            }
+        }
         #canvasContainer { text-align: center; overflow: auto; }
         #memberPreview { margin-bottom: 10px; position: relative; z-index: 2; }
         #controlsContainer { overflow-y: auto; max-height: 90vh; }
@@ -144,17 +184,17 @@
                 </div>
             </div>
             <div id="downloadGroup">
+                <button id="downloadButton" data-i18n="download_button">ダウンロード</button>
                 <div id="downloadOptions">
                     <button id="download300Button" data-i18n="download_png_300">ダウンロード (300 DPI)</button>
                     <button id="download70Button" data-i18n="download_png_70">ダウンロード (70 DPI)</button>
                     <button id="downloadPdfButton" data-i18n="download_pdf">PDFをダウンロード</button>
                 </div>
-                <p id="disclaimer" data-i18n="copyright_notice">鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人動容，特別製作此網站，讓粉絲能以興趣方式自製並保存門票。網站僅供非商業用途使用，請勿用於營利或任何違法行為。版權歸©AKB48及株式会社DH所有，製作者恕不承擔相關責任。敬請理解。</p>
             </div>
+            <p id="disclaimer" data-i18n="copyright_notice">鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人動容，特別製作此網站，讓粉絲能以興趣方式自製並保存門票。網站僅供非商業用途使用，請勿用於營利或任何違法行為。版權歸©AKB48及株式会社DH所有，製作者恕不承擔相關責任。敬請理解。</p>
             <div id="buttonContainer">
                 <button id="scaleButton" data-i18n="scale_button">縮放</button>
                 <button id="advancedModeBtn" data-i18n="advanced_mode">詳細設定</button>
-                <button id="downloadButton" data-i18n="download_button">ダウンロード</button>
                 <button id="reportBugBtn" data-i18n="report_bug" onclick="window.open('https://x.com/sorrysir_gomen','_blank')">報錯</button>
                 <button id="donateBtn" data-i18n="donate" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')">カンパ</button>
                 <button id="nightModeBtn" data-i18n="night_mode">ダークモード</button>
