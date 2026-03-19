@@ -283,7 +283,6 @@ function initSidebarNav() {
         });
     });
 
-    // 畫布 Hover 區塊綁定
     document.querySelectorAll('.hover-zone').forEach(zone => {
         zone.addEventListener('click', () => {
             const targetId = zone.id.replace('zone-', 'sec-');
