@@ -3,12 +3,7 @@ function $(id) { return document.getElementById(id); }
 const canvas = $('ticketCanvas');
 const ctx = canvas ? canvas.getContext('2d') : null;
 
-const fonts = {
-    avant: 'ITC Avant Garde Gothic Std Extra Light',
-    kozgo: 'KozGoPr6N',
-    ar: 'AR ADGothicJP'
-};
-
+const fonts = { avant: 'ITC Avant Garde Gothic Std Extra Light', kozgo: 'KozGoPr6N', ar: 'AR ADGothicJP' };
 const dpi = {
     300: { base: { w: Math.round(150 * 300 / 25.4), h: Math.round(65 * 300 / 25.4) }, bleed: { w: Math.round((150 + 6) * 300 / 25.4), h: Math.round((65 + 6) * 300 / 25.4) } },
     70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 6) * 70 / 25.4), h: Math.round((65 + 6) * 70 / 25.4) } }
@@ -23,6 +18,7 @@ const debounce = (func, delay) => {
     return (...args) => { clearTimeout(timeoutId); timeoutId = setTimeout(() => func(...args), delay); };
 };
 
+// 語言系統
 async function loadLanguages() {
     try {
         const response = await fetch('langs.json');
@@ -36,9 +32,7 @@ async function loadLanguages() {
         
         $('languageSelector').value = currentLang;
         changeLanguage(currentLang);
-    } catch (error) {
-        console.error('Failed to load langs.json:', error);
-    }
+    } catch (error) { console.error('Failed to load langs.json:', error); }
 }
 
 const changeLanguage = (lang) => {
@@ -48,7 +42,7 @@ const changeLanguage = (lang) => {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (langs[lang][key]) {
-            if (el.tagName === 'SPAN' || el.tagName === 'DIV' || el.tagName === 'H3' || el.tagName === 'BUTTON') {
+            if (el.tagName === 'SPAN' || el.tagName === 'DIV' || el.tagName === 'H3' || el.tagName === 'BUTTON' || el.tagName === 'OPTION') {
                 const icon = el.querySelector('i');
                 if (icon) {
                     el.innerHTML = ''; el.appendChild(icon); el.appendChild(document.createTextNode(' ' + langs[lang][key]));
@@ -153,18 +147,14 @@ const drawTicket = async (dpiVal, targetCtx = ctx) => {
     targetCtx.shadowOffsetY = parseFloat($('bgShadowY')?.value || -0.4) * mmPx;
     
     for (let y = bgTextY, r = 0; y < h; y += gy, r++) {
-        for (let x = bgTextX + (r * cw); x < w; x += gx) {
-            targetCtx.fillText(bgTextStr, x, y);
-        }
+        for (let x = bgTextX + (r * cw); x < w; x += gx) { targetCtx.fillText(bgTextStr, x, y); }
     }
     
     targetCtx.globalAlpha = parseFloat($('bgTextOpacity')?.value || 1);
     targetCtx.shadowOffsetX = 0; targetCtx.shadowOffsetY = 0;
     targetCtx.fillStyle = $('bgTextColor')?.value || '#FFFFFF';
     for (let y = bgTextY, r = 0; y < h; y += gy, r++) {
-        for (let x = bgTextX + (r * cw); x < w; x += gx) {
-            targetCtx.fillText(bgTextStr, x, y);
-        }
+        for (let x = bgTextX + (r * cw); x < w; x += gx) { targetCtx.fillText(bgTextStr, x, y); }
     }
     targetCtx.globalAlpha = 1;
 
@@ -259,36 +249,52 @@ $('memberSelector')?.addEventListener('change', (e) => {
     }
 });
 
+// 全域點擊漣漪
 document.addEventListener('mousedown', function(e) {
-    if(e.target.tagName === 'CANVAS' || e.target.closest('.hover-zone')) {
-        let ripple = document.createElement('div');
-        ripple.className = 'ripple';
-        ripple.style.left = e.clientX - 20 + 'px';
-        ripple.style.top = e.clientY - 20 + 'px';
-        ripple.style.width = '40px'; ripple.style.height = '40px';
-        document.body.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
-    }
+    let ripple = document.createElement('div');
+    ripple.className = 'ripple';
+    ripple.style.left = e.clientX - 20 + 'px';
+    ripple.style.top = e.clientY - 20 + 'px';
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
 });
 
-document.querySelectorAll('.hover-zone').forEach(zone => {
-    zone.addEventListener('click', () => {
-        const targetId = zone.id.replace('zone-', 'sec-');
-        const icon = document.querySelector(`.nav-icon[data-target="${targetId}"]`);
-        if(icon) icon.click();
-    });
-});
-
+// 隱形區塊與抽屜控制
 function initSidebarNav() {
     const navIcons = document.querySelectorAll('.nav-icon:not(.special-link)');
     const sections = document.querySelectorAll('.drawer-section');
+    const drawer = $('settingsDrawer');
+
     navIcons.forEach(icon => {
         icon.addEventListener('click', () => {
+            const isAlreadyActive = icon.classList.contains('active');
+            
             navIcons.forEach(i => i.classList.remove('active'));
-            icon.classList.add('active');
             sections.forEach(sec => sec.style.display = 'none');
-            const targetSec = $(icon.getAttribute('data-target'));
-            if(targetSec) targetSec.style.display = 'block';
+            
+            if (isAlreadyActive && drawer.classList.contains('open')) {
+                drawer.classList.remove('open');
+            } else {
+                icon.classList.add('active');
+                drawer.classList.add('open');
+                const targetSec = $(icon.getAttribute('data-target'));
+                if(targetSec) targetSec.style.display = 'block';
+            }
+        });
+    });
+
+    // 畫布 Hover 區塊綁定
+    document.querySelectorAll('.hover-zone').forEach(zone => {
+        zone.addEventListener('click', () => {
+            const targetId = zone.id.replace('zone-', 'sec-');
+            const icon = document.querySelector(`.nav-icon[data-target="${targetId}"]`);
+            if(icon) {
+                if(!icon.classList.contains('active')) {
+                    icon.click();
+                } else if (!drawer.classList.contains('open')) {
+                    drawer.classList.add('open');
+                }
+            }
         });
     });
 }
