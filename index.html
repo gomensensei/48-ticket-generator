@@ -15,6 +15,7 @@
         @font-face { font-family: 'KozGoPr6N'; src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2'); }
 
         :root {
+            /* 極致毛玻璃變數 */
             --bg-color: #FDF9FA;
             --bg-panel: rgba(255, 255, 255, 0.4);
             --bg-panel-solid: rgba(255, 255, 255, 0.7);
@@ -74,11 +75,11 @@
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
         .canvas-area { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; overflow: auto; padding: 20px; transition: 0.3s;}
         
+        /* 雙色呼吸燈頭像 */
         .member-header { position: absolute; top: 20px; display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-radius: 100px; z-index: 10; transition: 0.3s; }
         .member-avatar-wrap { position: relative; padding: 4px; border-radius: 50%; background: linear-gradient(45deg, var(--color-a), var(--color-b)); animation: breathe 2.5s infinite alternate ease-in-out; }
         .member-avatar-wrap img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-panel-solid); display: block;}
         .member-header h2 { font-size: 1.4rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        
         @keyframes breathe { 0% { box-shadow: 0 0 10px var(--color-a); transform: scale(1); } 100% { box-shadow: 0 0 25px var(--color-a), 0 0 15px var(--color-b); transform: scale(1.05); } }
 
         .canvas-wrapper { position: relative; transition: transform 0.2s; }
@@ -104,17 +105,14 @@
         .btn-secondary { background: var(--bg-panel-solid); color: var(--text-main); border: 1px solid var(--border-glass); }
         .btn-secondary:hover { transform: translateY(-4px); color: var(--primary); }
 
-        /* 預設隱藏，動態拉出的抽屜 */
-        .drawer { 
-            width: 0; padding: 24px 0; opacity: 0; border-left: none; overflow-x: hidden; overflow-y: auto; 
-            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 20; 
-        }
+        /* 順滑抽屜面板 */
+        .drawer { width: 0; padding: 24px 0; opacity: 0; border-left: none; overflow-x: hidden; overflow-y: auto; transition: all 0.3s ease-out; z-index: 20; }
         .drawer.open { width: 420px; padding: 24px; opacity: 1; border-left: 1px solid var(--border-glass); }
         .drawer::-webkit-scrollbar { width: 6px; }
         .drawer::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 10px; }
-        .drawer-inner { width: 370px; /* 固定內部寬度防 reflow */ }
+        .drawer-inner { width: 370px; } /* 固定內部寬度，防止動畫期間排版崩塌 */
         
-        .drawer-section { margin-bottom: 24px; display: none; animation: slideIn 0.4s ease-out; }
+        .drawer-section { margin-bottom: 24px; display: none; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         
         .drawer-title { font-size: 1.1rem; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-weight: 700; text-shadow: 0 2px 5px rgba(246,118,166,0.1); }
@@ -139,22 +137,24 @@
         .color-row .input-group { flex: 1; }
         input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
 
-        /* 導航列完美拉出動畫 */
-        .icon-nav { width: auto; border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; align-items: center; padding: 24px 15px; gap: 20px; z-index: 30; }
-        .nav-icon { 
-            display: flex; align-items: center; gap: 12px;
-            max-width: 55px; height: 55px; padding: 0 15px;
-            color: var(--text-muted); cursor: pointer; 
-            border-radius: 30px; transition: max-width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; 
-            overflow: hidden; white-space: nowrap;
+        /* 導航列完美拉出動畫 (解決見唔到/彈跳問題) */
+        .icon-nav { 
+            width: 80px; flex-shrink: 0; border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; align-items: flex-end; padding: 24px 15px; gap: 12px; z-index: 30; 
         }
-        .nav-icon span { font-weight: 700; font-size: 0.95rem; opacity: 0; transition: opacity 0.3s 0.1s; }
-        .nav-icon.active, .nav-icon:hover { color: var(--primary); background: rgba(246, 118, 166, 0.15); max-width: 250px; padding-right: 20px; box-shadow: 0 4px 15px rgba(246, 118, 166, 0.1); }
-        .nav-icon.active span, .nav-icon:hover span { opacity: 1; }
+        .nav-icon { 
+            display: flex; align-items: center; flex-direction: row-reverse; justify-content: flex-start;
+            width: 50px; height: 50px; padding: 0 13px;
+            color: var(--text-muted); cursor: pointer; 
+            border-radius: 25px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            overflow: hidden; white-space: nowrap; background: transparent;
+        }
+        .nav-icon i { flex-shrink: 0; width: 24px; display: flex; justify-content: center; }
+        .nav-icon span { font-weight: 700; font-size: 0.95rem; opacity: 0; margin-right: 12px; transition: opacity 0.2s; }
+        .nav-icon.active, .nav-icon:hover { width: 170px; color: var(--primary); background: rgba(246, 118, 166, 0.15); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.1); }
+        .nav-icon.active span, .nav-icon:hover span { opacity: 1; transition-delay: 0.1s; }
         
         .special-link { margin-top: auto; color: #FF5C8D; animation: pulse-glow 2s infinite; }
 
-        /* 修正 Footer 水平排列 */
         .global-footer { height: 45px; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-glass); }
         .footer-links { display: flex; flex-direction: row; gap: 16px; align-items: center; }
         .footer-links a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.2s; white-space: nowrap; }
@@ -168,9 +168,9 @@
         @media (max-width: 800px) {
             .workspace { flex-direction: column; overflow-y: auto; }
             .canvas-area { min-height: 40vh; padding: 10px; order: 1; }
-            .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 10px 20px; border-left: none; border-top: 1px solid var(--border-glass); justify-content: space-between; order: 2; overflow-x: auto;}
-            .nav-icon { max-width: 45px; height: 45px; padding: 0 11px;}
-            .nav-icon.active, .nav-icon:hover { max-width: 45px; padding-right: 11px;} 
+            .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 10px 20px; align-items: center; justify-content: space-between; overflow-x: auto; border-left: none; border-top: 1px solid var(--border-glass); order: 2;}
+            .nav-icon { flex-direction: row; justify-content: center; width: 45px; height: 45px; padding: 0; }
+            .nav-icon.active, .nav-icon:hover { width: 45px; } 
             .nav-icon span { display: none; }
             .drawer.open { width: 100%; height: auto; border-left: none; order: 3; }
             .drawer-inner { width: 100%; }
@@ -208,7 +208,6 @@
 
             <div class="canvas-wrapper" id="canvasWrapper">
                 <canvas id="ticketCanvas"></canvas>
-                <!-- 精準Hover區塊 -->
                 <div class="hover-zone" id="zone-bg" data-i18n-label="background_settings"></div>
                 <div class="hover-zone" id="zone-logo" data-i18n-label="logo_settings"></div>
                 <div class="hover-zone" id="zone-event" data-i18n-label="event_birthday"></div>
@@ -230,7 +229,6 @@
         <!-- 初始隱藏的抽屜 -->
         <aside class="drawer glass" id="settingsDrawer">
             <div class="drawer-inner">
-                <!-- 神推設定 -->
                 <div class="drawer-section" id="sec-member">
                     <div class="drawer-title"><i data-lucide="users"></i> <span data-i18n="member_color">神推設定</span></div>
                     <div class="input-group">
@@ -238,7 +236,6 @@
                     </div>
                 </div>
 
-                <!-- 背景設定 -->
                 <div class="drawer-section" id="sec-bg">
                     <div class="drawer-title"><i data-lucide="image"></i> <span data-i18n="background_settings">背景設定</span></div>
                     <div class="color-row">
@@ -262,7 +259,6 @@
                     </div>
                 </div>
 
-                <!-- 標誌設定 -->
                 <div class="drawer-section" id="sec-logo">
                     <div class="drawer-title"><i data-lucide="type"></i> <span data-i18n="logo_settings">標誌設定</span></div>
                     <div class="input-group">
@@ -286,7 +282,6 @@
                     </div>
                 </div>
 
-                <!-- 公演資訊 -->
                 <div class="drawer-section" id="sec-event">
                     <div class="drawer-title"><i data-lucide="calendar-heart"></i> <span data-i18n="event_birthday">公演資訊</span></div>
                     <div class="input-group"><label data-i18n="text_color">文字色</label><input type="color" id="textColor" value="#000000" class="modern-input" style="height:45px; padding:2px;"></div>
@@ -316,7 +311,6 @@
                     </div>
                 </div>
 
-                <!-- 日期與編號 -->
                 <div class="drawer-section" id="sec-date">
                     <div class="drawer-title"><i data-lucide="hash"></i> <span data-i18n="date_number">日期與編號</span></div>
                     <div class="input-group">
@@ -350,7 +344,6 @@
                     </div>
                 </div>
 
-                <!-- QR -->
                 <div class="drawer-section" id="sec-qr">
                     <div class="drawer-title"><i data-lucide="qr-code"></i> <span data-i18n="qr_others">QR</span></div>
                     <div class="input-group" style="flex-direction: row; align-items: center; gap:10px;">
@@ -364,9 +357,8 @@
                     </div>
                 </div>
 
-                <!-- その他 (分離出來的 Footer 設定) -->
                 <div class="drawer-section" id="sec-others">
-                    <div class="drawer-title"><i data-lucide="layout-panel-bottom"></i> <span data-i18n="others_settings">その他 (Footer)</span></div>
+                    <div class="drawer-title"><i data-lucide="more-horizontal"></i> <span data-i18n="others_settings">その他 (Footer)</span></div>
                     <div class="color-row">
                         <div class="input-group"><label data-i18n="border_color">邊框色</label><input type="color" id="rect9Color" value="#2086D1" class="modern-input"></div>
                         <div class="input-group"><label data-i18n="footerTextColor">文字色</label><input type="color" id="footerTextColor" value="#FFFFFF" class="modern-input"></div>
@@ -399,7 +391,7 @@
             </div>
         </aside>
 
-        <!-- 滑出式 Icon Nav -->
+        <!-- 滑出式 Nav 導航 (修復不可見與彈跳問題) -->
         <nav class="icon-nav glass">
             <div class="nav-icon" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div>
             <div class="nav-icon" data-target="sec-bg"><i data-lucide="image"></i><span data-i18n="background_settings">背景設定</span></div>
@@ -407,7 +399,7 @@
             <div class="nav-icon" data-target="sec-event"><i data-lucide="calendar-heart"></i><span data-i18n="event_birthday">公演資訊</span></div>
             <div class="nav-icon" data-target="sec-date"><i data-lucide="hash"></i><span data-i18n="date_number">日期編號</span></div>
             <div class="nav-icon" data-target="sec-qr"><i data-lucide="qr-code"></i><span data-i18n="qr_others">QR設定</span></div>
-            <div class="nav-icon" data-target="sec-others"><i data-lucide="layout-panel-bottom"></i><span data-i18n="others_settings">その他</span></div>
+            <div class="nav-icon" data-target="sec-others"><i data-lucide="more-horizontal"></i><span data-i18n="others_settings">その他</span></div>
             
             <div class="nav-icon special-link" onclick="window.open('https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank')">
                 <i data-lucide="sparkles"></i><span data-i18n="mbti_link">MBTI性格鑑定</span>
