@@ -3,414 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="site_title">チケットジェネレーター</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+KR&family=Noto+Sans+Thai&display=swap" rel="stylesheet">
+    <title data-i18n="site_title">チケットジェネレーター (Reiwa Edition)</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+    <!-- [預留 GA4 代碼位置] -->
+    <!-- Google tag (gtag.js) -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script> -->
+
+    <!-- [預留 AdSense 代碼位置] -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661724500759448" crossorigin="anonymous"></script> -->
+
     <style>
         @font-face { font-family: 'ITC Avant Garde Gothic Std Extra Light'; src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2') format('woff2'); }
         @font-face { font-family: 'AR ADGothicJP'; src: url('fonts/jadhei01m.woff2') format('woff2'); }
         @font-face { font-family: 'KozGoPr6N'; src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2'); }
 
         :root {
-            --bg-color: #FFF4F6;
-            --text-color: #F676A6;
-            --divider-color: #F676A6;
-            --button-bg: #F676A6;
-            --button-hover: #E55A8C;
+            --bg-base: #FDF9FA; --bg-panel: rgba(255, 255, 255, 0.75); --bg-canvas-area: #F5F0F2;
+            --primary: #F676A6; --primary-hover: #E55A8C; --text-main: #333333; --text-muted: #888888;
+            --border-glass: rgba(255, 255, 255, 0.5); --shadow-soft: 0 8px 32px rgba(246, 118, 166, 0.08);
+            --radius-lg: 20px; --radius-md: 12px; --radius-sm: 8px; --spacing-panel: 24px;
         }
-        body {
-            font-family: "KozGoPr6N", "AR ADGothicJP", "YuGothic", "Meiryo", "Noto Sans", "Noto Sans KR", "Noto Sans Thai", sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: var(--bg-color);
-            color: var(--text-color);
-            position: relative;
+        [data-theme="dark"] {
+            --bg-base: #121212; --bg-panel: rgba(30, 30, 30, 0.75); --bg-canvas-area: #1A1A1A;
+            --text-main: #EEEEEE; --text-muted: #AAAAAA; --border-glass: rgba(255, 255, 255, 0.05);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
-        body.night-mode {
-            --bg-color: #1E1E1E;
-            --text-color: #F676A6;
-        }
-        @media (min-width: 769px) {
-            #mainContainer { display: flex; flex-direction: row; gap: 10px; }
-            #canvasContainer { width: 50%; order: 0; }
-            #controlsContainer { width: 50%; order: 0; }
-            .divider { width: 5px; height: auto; background: #F676A6; }
-            #ticketCanvas { max-width: 100%; }
-            #buttonContainer { 
-                display: flex; 
-                flex-direction: row; 
-                flex-wrap: wrap; 
-                gap: 10px; 
-                justify-content: center; 
-                margin-top: 10px; 
-            }
-            #scaleButton, #advancedModeBtn, #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
-                padding: 5px 10px; 
-                background: var(--button-bg); 
-                color: #FFF; 
-                border: none; 
-                border-radius: 20px; 
-                cursor: pointer; 
-                z-index: 1;
-                flex: 0 0 calc(33.33% - 20px);
-                text-align: center;
-            }
-            #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
-                flex: 0 0 calc(25% - 20px);
-            }
-            #downloadGroup { 
-                margin-top: 10px; 
-                text-align: center; 
-                position: relative; 
-            }
-            #downloadButton {
-                padding: 5px 10px; 
-                background: var(--button-bg); 
-                color: #FFF; 
-                border: none; 
-                border-radius: 20px; 
-                cursor: pointer; 
-                z-index: 1;
-            }
-        }
-        @media (max-width: 768px) {
-            #mainContainer { flex-direction: column; }
-            #canvasContainer, #controlsContainer { width: 100%; }
-            #canvasContainer { order: 1; }
-            .divider { order: 2; width: 100%; height: 5px; }
-            #controlsContainer { order: 3; }
-            #ticketCanvas { 
-                width: 100%; 
-                aspect-ratio: 65 / 150; /* 確保比例為 65:150 */
-            }
-            #buttonContainer { 
-                display: flex; 
-                flex-direction: row; 
-                flex-wrap: wrap; 
-                gap: 8px; 
-                justify-content: center; 
-                margin-top: 10px; 
-            }
-            #scaleButton, #advancedModeBtn, #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
-                padding: 3px 6px; 
-                font-size: 12px; 
-                background: var(--button-bg); 
-                color: #FFF; 
-                border: none; 
-                border-radius: 15px; 
-                cursor: pointer; 
-                z-index: 1;
-                flex: 0 0 calc(33.33% - 16px);
-                text-align: center;
-            }
-            #reportBugBtn, #donateBtn, #nightModeBtn, #shareTwitterBtn {
-                flex: 0 0 calc(25% - 16px);
-            }
-            #downloadGroup { 
-                margin-top: 10px; 
-                text-align: center; 
-                position: relative; 
-            }
-            #downloadButton {
-                padding: 3px 6px; 
-                font-size: 12px; 
-                background: var(--button-bg); 
-                color: #FFF; 
-                border: none; 
-                border-radius: 15px; 
-                cursor: pointer; 
-                z-index: 1;
-            }
-            #memberPreview h1 {
-                margin: 8px 10px; /* 增加手機版垂直間距 */
-            }
-        }
-        #canvasContainer { text-align: center; overflow: auto; }
-        #memberPreview { 
-            margin-bottom: 10px; 
-            position: relative; 
-            z-index: 2; 
-            text-align: center; 
-        }
-        #memberPreview img { 
-            max-width: 100%; 
-            vertical-align: middle; 
-        }
-        #controlsContainer { overflow-y: auto; max-height: 90vh; }
-        .input-group { margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
-        .input-group label { display: flex; flex-direction: column; margin-bottom: 5px; }
-        .input-group input, .input-group select { margin-top: 5px; width: 100%; max-width: 300px; padding: 5px; }
-        .note { color: var(--text-color); font-size: 14px; }
-        .position-input, .spacing-input, .size-input, .line-height-input, .shadow-input, .opacity-input { width: 50px; margin-left: 5px; display: none; }
-        .advanced-mode.active .position-input, .advanced-mode.active .spacing-input, .advanced-mode.active .size-input, .advanced-mode.active .line-height-input, .advanced-mode.active .shadow-input, .advanced-mode.active .opacity-input { display: inline-block; }
-        .advanced-label { display: none; margin-right: 5px; min-width: 20px; }
-        .advanced-mode.active .advanced-label { display: inline-block; }
-        .advanced-mode { display: none; }
-        .advanced-mode.active { display: block; }
-        .advanced-mode label { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; white-space: nowrap; min-width: 200px; }
-        .advanced-mode label input { margin: 0; width: 50px; }
-        #previewSizeButtons, #downloadGroup { margin-top: 10px; position: relative; }
-        #previewSizeButtons button, #downloadGroup button { margin: 0 5px 10px; padding: 8px 16px; border-radius: 20px; border: none; background: var(--button-bg); color: #FFF; cursor: pointer; }
-        #previewSizeButtons button:hover, #downloadGroup button:hover { background: var(--button-hover); }
-        #scaleOptions, #downloadOptions { display: none; position: absolute; background: #fff; border: 1px solid #ccc; padding: 10px; z-index: 10; left: 50%; transform: translateX(-50%); }
-        .error-msg { color: red; font-size: 12px; margin-left: 5px; display: none; }
-        .ad-container { text-align: center; margin: 20px 0; width: 100%; }
-        #languageSelector { position: absolute; top: 10px; right: 10px; color: var(--text-color); padding: 5px; }
-        #memberSelector, #memberSelector option {
-            font-family: "KozGoPr6N", "YuGothic", "Meiryo", "Noto Sans", sans-serif;
-            font-size: 16px;
-            color: var(--text-color); /* 與語言選單一致 */
-        }
-        #disclaimer { font-size: 7pt; color: var(--text-color); text-align: center; margin-top: 10px; }
-        #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); color: #FFF; padding: 20px; border-radius: 10px; display: none; }
-        #memberGallery { margin: 20px 0; }
-        .accordion-toggle {
-            cursor: pointer;
-            padding: 10px;
-            background: var(--button-bg);
-            color: #FFF;
-            margin: 5px 0;
-            position: relative; /* 為箭咀定位 */
-            padding-right: 20px; /* 為箭咀留空間 */
-        }
-        .accordion-toggle::after {
-            content: '▶'; /* 預設為右箭咀 */
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: transform 0.3s ease; /* 過渡效果 */
-            color: #FFF; /* 箭咀顏色，與按鈕文字匹配 */
-        }
-        /* 當內容展開時，箭咀變為向下 */
-        .accordion-toggle + .accordion-content.active ~ .accordion-toggle::after {
-            content: '▼'; /* 展開時顯示向下箭咀 */
-        }
-        /* 夜間模式下保持箭咀可見 */
-        body.night-mode .accordion-toggle::after {
-            color: #FFF;
-        }
-        .accordion-content { display: none; }
-        .accordion-content.active { display: block; }
-        #qrPreview { display: block; margin-top: 10px; width: 128px; height: 128px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'KozGoPr6N', 'Noto Sans JP', sans-serif; background: var(--bg-base); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: all 0.3s; }
+        .glass { background: var(--bg-panel); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border-glass); box-shadow: var(--shadow-soft); }
+        
+        /* 頂部 */
+        .topbar { height: 60px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .brand-title { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .topbar-tools { display: flex; align-items: center; gap: 16px; }
+        .tool-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 50%; transition: all 0.2s; }
+        .tool-btn:hover { background: var(--bg-panel); color: var(--primary); }
+        .lang-select { background: transparent; border: 1px solid var(--border-glass); color: var(--text-main); padding: 6px 12px; border-radius: var(--radius-sm); outline: none; }
+
+        /* 工作區與畫布 */
+        .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
+        .canvas-area { flex: 1; background: var(--bg-canvas-area); border-radius: var(--radius-lg) 0 0 var(--radius-lg); margin-left: 12px; display: flex; justify-content: center; align-items: center; position: relative; overflow: auto; }
+        .canvas-wrapper { position: relative; transition: transform 0.2s; }
+        .canvas-wrapper:hover { transform: scale(1.02); cursor: pointer; }
+        .canvas-wrapper::after { content: ''; position: absolute; inset: 0; border: 2px dashed transparent; border-radius: 8px; pointer-events: none; transition: 0.3s; }
+        .canvas-wrapper:hover::after { border-color: var(--primary); }
+        
+        .member-header { position: absolute; top: 24px; display: flex; align-items: center; gap: 12px; padding: 8px 16px; border-radius: 100px; z-index: 10; }
+        .member-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
+        
+        .fab-group { position: absolute; bottom: 32px; display: flex; gap: 16px; z-index: 10; }
+        .btn-primary, .btn-secondary { padding: 10px 20px; border-radius: 100px; border: none; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(246, 118, 166, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-secondary { background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border-glass); }
+        
+        /* 側邊抽屜 */
+        .drawer { width: 360px; border-left: 1px solid var(--border-glass); padding: var(--spacing-panel); overflow-y: auto; transition: 0.3s; }
+        .drawer-section { margin-bottom: 24px; }
+        .drawer-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+        .input-group label { font-size: 0.85rem; font-weight: 500; }
+        .modern-input, .modern-select { background: transparent; border: 1px solid var(--border-glass); color: var(--text-main); padding: 8px 12px; border-radius: var(--radius-sm); width: 100%; outline: none; }
+        
+        .slider-group { background: rgba(0,0,0,0.02); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-glass); margin-top: 4px; }
+        .slider-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
+        .slider-val { color: var(--primary); background: rgba(246, 118, 166, 0.1); padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); }
+        
+        .color-picker-wrap { display: flex; align-items: center; gap: 12px; }
+        input[type="color"] { -webkit-appearance: none; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
+
+        /* Icon 導航 */
+        .icon-nav { width: 64px; border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 20px; z-index: 20; }
+        .nav-icon { color: var(--text-muted); cursor: pointer; padding: 10px; border-radius: 12px; transition: 0.2s; position: relative; }
+        .nav-icon.active, .nav-icon:hover { color: var(--primary); background: rgba(246, 118, 166, 0.1); }
+        .nav-icon::after { content: attr(data-tooltip); position: absolute; right: 100%; top: 50%; transform: translateY(-50%) translateX(-8px); background: var(--text-main); color: var(--bg-base); padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.2s; }
+        .nav-icon:hover::after { opacity: 1; transform: translateY(-50%) translateX(-12px); }
+        .special-link { margin-top: auto; color: #FF5C8D; animation: pulse-glow 2s infinite; }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(255,92,141,0.4); } 70% { box-shadow: 0 0 0 10px rgba(255,92,141,0); } 100% { box-shadow: 0 0 0 0 rgba(255,92,141,0); } }
+
+        /* Footer */
+        .global-footer { height: 40px; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; font-size: 0.75rem; color: var(--text-muted); }
+        .footer-links { display: flex; gap: 16px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 4px; }
+        .footer-links a:hover { color: var(--primary); }
+
+        /* QR Code 預覽 */
+        #qrPreview { display: none; margin-top: 10px; }
     </style>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661724500759448" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="ad-container">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5661724500759448" data-ad-slot="5661724500759448" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
 
-    <select id="languageSelector">
-        <option value="ja" selected>日本語</option>
-        <option value="en">English</option>
-        <option value="zh-TW">中文（繁體）</option>
-        <option value="zh-CN">中文（简体）</option>
-        <option value="ko">한국어</option>
-        <option value="th">ไทย</option>
-        <option value="id">Bahasa Indonesia</option>
-    </select>
-
-    <div id="mainContainer">
-        <div id="canvasContainer">
-            <div id="memberPreview"></div>
-            <h1 data-i18n="preview">チケットプレビュー</h1>
-            <canvas id="ticketCanvas" aria-label="Ticket preview canvas"></canvas>
-            <div id="previewSizeButtons">
-                <div id="scaleOptions">
-                    <button onclick="setPreviewScale(0.5)">50%</button>
-                    <button onclick="setPreviewScale(1.0)">100%</button>
-                    <button onclick="setPreviewScale(1.5)">150%</button>
-                    <button onclick="setPreviewScale(2.0)">200%</button>
-                </div>
-            </div>
-            <div id="downloadGroup">
-                <button id="downloadButton" data-i18n="download_button">ダウンロード</button>
-                <div id="downloadOptions">
-                    <button id="download300Button" data-i18n="download_png_300">ダウンロード (300 DPI)</button>
-                    <button id="download70Button" data-i18n="download_png_70">ダウンロード (70 DPI)</button>
-                    <button id="downloadPdfButton" data-i18n="download_pdf">PDFをダウンロード</button>
-                </div>
-            </div>
-            <p id="disclaimer" data-i18n="copyright_notice">鑑於AKB48成員生誕祭劇場公演中，粉絲復刻的劇場門票令人動容，特別製作此網站，讓粉絲能以興趣方式自製並保存門票。網站僅供非商業用途使用，請勿用於營利或任何違法行為。版權歸©AKB48及株式会社DH所有，製作者恕不承擔相關責任。敬請理解。</p>
-            <div id="buttonContainer">
-                <button id="scaleButton" data-i18n="scale_button">縮放</button>
-                <button id="advancedModeBtn" data-i18n="advanced_mode">詳細設定</button>
-                <button id="reportBugBtn" data-i18n="report_bug" onclick="window.open('https://x.com/sorrysir_gomen','_blank')">報錯</button>
-                <button id="donateBtn" data-i18n="donate" onclick="window.open('https://www.paypal.com/paypalme/gomensensei','_blank')">カンパ</button>
-                <button id="nightModeBtn" data-i18n="night_mode">ダークモード</button>
-                <button id="shareTwitterBtn" data-i18n="share_x_twitter">X(Twitter)でシェア</button>
-            </div>
+    <header class="topbar">
+        <div class="brand-title" data-i18n="site_title">Ticket Generator</div>
+        <div class="topbar-tools">
+            <select class="lang-select" id="languageSelector">
+                <option value="ja" selected>日本語</option>
+                <option value="en">English</option>
+                <option value="zh-TW">中文（繁體）</option>
+                <option value="zh-CN">中文（简体）</option>
+                <option value="ko">한국어</option>
+                <option value="th">ไทย</option>
+                <option value="id">Bahasa Indonesia</option>
+            </select>
+            <button class="tool-btn" id="themeToggleBtn"><i data-lucide="moon"></i></button>
         </div>
-        <div class="divider"></div>
-        <div id="controlsContainer">
-            <h1 data-i18n="custom">オリジナルチケット</h1>
-            <div id="memberGallery">
-                <h2 data-i18n="member_color">メンバーカラー</h2>
-                <select id="memberSelector">
-                    <option value="">選択なし</option>
-                </select>
+    </header>
+
+    <main class="workspace">
+        <section class="canvas-area" id="canvasArea">
+            <div class="member-header glass" id="memberHeader" style="display: none;">
+                <img src="" id="memberAvatar" alt="Avatar">
+                <h2 id="memberName"></h2>
             </div>
-            <div class="input-group">
-                <h3 class="accordion-toggle" data-i18n="logo_settings">ロゴ設定</h3>
-                <div class="accordion-content">
-                    <label data-i18n="logo_line1" for="rect1Line1">ロゴ テキスト (1行目): <input type="text" id="rect1Line1" value="YSS"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="rect1Line1X" value="13.5" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="rect1Line1Y" value="12" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line1Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="rect1Spacing" value="-7000" class="spacing-input"><span class="error-msg" id="rect1Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="rect1Size" value="47" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Size-error"></span>
-                    </div>
-                    <label data-i18n="logo_line2" for="rect1Line2">ロゴ テキスト (2行目): <input type="text" id="rect1Line2" value="48"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="rect1Line2X" value="13.5" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="rect1Line2Y" value="24" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="rect1Line2Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="rect1Line2Spacing" value="-7000" class="spacing-input"><span class="error-msg" id="rect1Line2Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="rect1Line2Size" value="47" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="rect1Line2Size-error"></span>
-                    </div>
-                    <label data-i18n="rect1Color" for="rect1Color">ロゴ 背景色: <input type="color" id="rect1Color" value="#2086D1"></label>
-                    <label data-i18n="rect1TextColor" for="rect1TextColor">ロゴ 文字色: <input type="color" id="rect1TextColor" value="#FFFFFF"></label>
+
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <canvas id="ticketCanvas"></canvas>
+            </div>
+
+            <div class="fab-group">
+                <button class="btn-secondary" id="shareBtn">
+                    <i data-lucide="twitter"></i> <span data-i18n="share_x_twitter">Share</span>
+                </button>
+                <button class="btn-primary" id="downloadBtn">
+                    <i data-lucide="printer"></i> <span data-i18n="download_button">Download</span>
+                </button>
+            </div>
+        </section>
+
+        <aside class="drawer glass" id="settingsDrawer">
+            <!-- 神推設定 -->
+            <div class="drawer-section">
+                <div class="drawer-title" data-i18n="member_color"><i data-lucide="users"></i> Member Color</div>
+                <div class="input-group">
+                    <select class="modern-select" id="memberSelector">
+                        <option value="">...</option>
+                    </select>
+                </div>
+                <!-- 雙色設定區 -->
+                <div class="color-picker-wrap mt-2">
+                    <label data-i18n="rect1Color">Box Color (Color A)</label>
+                    <input type="color" id="rect1Color" value="#2086D1">
+                </div>
+                <div class="color-picker-wrap mt-2">
+                    <label data-i18n="background_gradient_start">BG Color (Color B)</label>
+                    <input type="color" id="bgColor" value="#FDF9FA">
                 </div>
             </div>
-            <div class="input-group">
-                <h3 class="accordion-toggle" data-i18n="event_birthday">公演と生誕祭</h3>
-                <div class="accordion-content">
-                    <label data-i18n="event" for="text2">公演: <input type="text" id="text2" value="「ここからだ」 公演"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="text2X" value="37" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text2X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="text2Y" value="12" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text2Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="text2Spacing" value="2000" class="spacing-input"><span class="error-msg" id="text2Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="text2Size" value="14.2" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="text2Size-error"></span>
-                    </div>
-                    <label data-i18n="birthday_line1" for="text3Line1">生誕祭 (1行目): <input type="text" id="text3Line1" value="秋元康 生誕祭"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="text3Line1X" value="35" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line1X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="text3Line1Y" value="19" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line1Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="text3Spacing" value="2000" class="spacing-input"><span class="error-msg" id="text3Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="text3Size" value="14.2" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="text3Size-error"></span>
-                    </div>
-                    <label data-i18n="birthday_line2" for="text3Line2">生誕祭 (2行目): <input type="text" id="text3Line2" value="YSS48劇場"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="text3Line2X" value="35" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line2X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="text3Line2Y" value="25" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text3Line2Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="text3Line2Spacing" value="2000" class="spacing-input"><span class="error-msg" id="text3Line2Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="text3Line2Size" value="14.2" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="text3Line2Size-error"></span>
-                    </div>
-                    <label data-i18n="text_color" for="textColor">文字色 (2-6): <input type="color" id="textColor" value="#000000"></label>
-                </div>
-            </div>
-            <div class="input-group">
-                <h3 class="accordion-toggle" data-i18n="date_number">日付と番号</h3>
-                <div class="accordion-content">
-                    <label data-i18n="date_line1" for="text4Line1">日付 (1行目): <input type="text" id="text4Line1" value="＜日付＞2025年05月02日（金）"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="text4Line1X" value="13" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="text4Line1Y" value="43" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text4Line1Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="text4Spacing" value="1000" class="spacing-input"><span class="error-msg" id="text4Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="text4Size" value="11" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="text4Size-error"></span>
-                        <label class="advanced-label" data-i18n="lineHeight">行間: </label><input type="number" id="text4LineHeight" value="14" class="line-height-input"><span class="advanced-label">pt</span><span class="error-msg" id="text4LineHeight-error"></span>
-                    </div>
-                    <label data-i18n="date_line2" for="text4Line2">日付 (2行目): <input type="text" id="text4Line2" value="OPEN：18時10分       START：18時30分      ￥3,400"></label>
-                    <label data-i18n="ticket_number" for="text5">番号: <input type="text" id="text5" value="048番"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="text5X" value="13" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text5X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="text5Y" value="55" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text5Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="text5Spacing" value="200" class="spacing-input"><span class="error-msg" id="text5Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="text5Size" value="16" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="text5Size-error"></span>
-                    </div>
-                    <label data-i18n="postal_code" for="text6">郵便番号: <input type="text" id="text6" value="① ❘ 000－0000 ❘ ゴメン先生 様"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="text6X" value="36" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text6X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="text6Y" value="55" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text6Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="text6Spacing" value="311" class="spacing-input"><span class="error-msg" id="text6Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="text6Size" value="13" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="text6Size-error"></span>
+
+            <!-- 標誌設定 -->
+            <div class="drawer-section">
+                <div class="drawer-title" data-i18n="logo_settings"><i data-lucide="type"></i> Logo Settings</div>
+                <div class="input-group">
+                    <label data-i18n="logo_line1">Line 1</label>
+                    <input type="text" class="modern-input" id="rect1Line1" value="YSS">
+                    <div class="slider-group">
+                        <div class="slider-header"><span data-i18n="x">X</span> <span class="slider-val" id="rect1Line1X_val">0</span></div>
+                        <input type="range" id="rect1Line1X_slider" min="-10" max="10" step="0.5" value="0">
                     </div>
                 </div>
-            </div>
-            <div class="input-group">
-                <h3 class="accordion-toggle" data-i18n="background_settings">背景設定</h3>
-                <div class="accordion-content">
-                    <label data-i18n="background_gradient_start" for="bgGradientStart">背景漸變起始色: <input type="color" id="bgGradientStart" value="#E5EDF9"></label>
-                    <label data-i18n="background_gradient_end" for="bgGradientEnd">背景漸變結束色: <input type="color" id="bgGradientEnd" value="#E5EDF9"></label>
-                    <label data-i18n="background_text" for="bgText">背景テキスト: <input type="text" id="bgText" value="YSS48"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="bgTextX" value="-100" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="bgTextX-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="bgTextY" value="0" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="bgTextY-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="bgTextSpacing" value="-6000" class="spacing-input"><span class="error-msg" id="bgTextSpacing-error"></span>
-                        <label class="advanced-label" data-i18n="lineHeight">行間: </label><input type="number" id="bgTextLineHeight" value="46" class="line-height-input"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextLineHeight-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="bgTextSize" value="62" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="bgTextSize-error"></span>
-                        <label class="advanced-label" data-i18n="bgTextOpacity">背景文字透明度: </label><input type="number" id="bgTextOpacity" value="1" min="0" max="1" step="0.1" class="opacity-input"><span class="advanced-label">（0-1）</span><span class="error-msg" id="bgTextOpacity-error"></span>
-                    </div>
-                    <label data-i18n="bgTextColor" for="bgTextColor">背景文字色: <input type="color" id="bgTextColor" value="#FFFFFF"></label>
-                    <label data-i18n="shadow_color" for="bgShadowColor">背景影の色: <input type="color" id="bgShadowColor" value="#5F96ED"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="shadowX">シャドウX: </label><input type="number" id="bgShadowX" value="0.5" step="0.1" class="shadow-input"><span class="advanced-label">mm</span><span class="error-msg" id="bgShadowX-error"></span>
-                        <label class="advanced-label" data-i18n="shadowY">シャドウY: </label><input type="number" id="bgShadowY" value="-0.4" step="0.1" class="shadow-input"><span class="advanced-label">mm</span><span class="error-msg" id="bgShadowY-error"></span>
-                        <label class="advanced-label" data-i18n="shadowOpacity">シャドウ透明度: </label><input type="number" id="bgShadowOpacity" value="0.2" min="0" max="1" step="0.1" class="opacity-input"><span class="advanced-label">（0-1）</span><span class="error-msg" id="bgShadowOpacity-error"></span>
-                    </div>
+                <div class="input-group">
+                    <label data-i18n="logo_line2">Line 2</label>
+                    <input type="text" class="modern-input" id="rect1Line2" value="48">
                 </div>
             </div>
-            <div class="input-group">
-                <h3 class="accordion-toggle" data-i18n="footer_settings">フッター設定</h3>
-                <div class="accordion-content">
-                    <label data-i18n="border_color" for="rect9Color">ボーダー 背景色: <input type="color" id="rect9Color" value="#2086D1"></label>
-                    <label data-i18n="note" for="text10">他: <input type="text" id="text10" value="<主催 ‧ お問い合せ>"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="text10X" value="54" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text10X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="text10Y" value="63.5" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text10Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="text10Spacing" value="236" class="spacing-input"><span class="error-msg" id="text10Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="text10Size" value="7" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="text10Size-error"></span>
-                    </div>
-                    <label data-i18n="venue" for="text11">場所: <input type="text" id="text11" value="YSS48 Theater"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="text11X" value="80.5" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text11X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="text11Y" value="63.5" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text11Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="text11Spacing" value="238" class="spacing-input"><span class="error-msg" id="text11Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="text11Size" value="10" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="text11Size-error"></span>
-                    </div>
-                    <label data-i18n="tel" for="text12">電話番号: <input type="text" id="text12" value="TEL:01-2345-6789"></label>
-                    <div class="advanced-mode">
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="text12X" value="108" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text12X-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="text12Y" value="64" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="text12Y-error"></span>
-                        <label class="advanced-label" data-i18n="spacing">字間: </label><input type="number" id="text12Spacing" value="236" class="spacing-input"><span class="error-msg" id="text12Spacing-error"></span>
-                        <label class="advanced-label" data-i18n="size">サイズ: </label><input type="number" id="text12Size" value="12.5" class="size-input"><span class="advanced-label">pt</span><span class="error-msg" id="text12Size-error"></span>
-                    </div>
-                    <label data-i18n="footerTextColor" for="footerTextColor">ボーダー文字色: <input type="color" id="footerTextColor" value="#FFFFFF"></label>
+
+            <!-- 公演資訊 -->
+            <div class="drawer-section">
+                <div class="drawer-title" data-i18n="event_birthday"><i data-lucide="calendar-heart"></i> Event & Birthday</div>
+                <div class="input-group">
+                    <label data-i18n="event">Event Name</label>
+                    <input type="text" class="modern-input" id="text2" value="「ここからだ」 公演">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="birthday_line1">Birthday (Line 1)</label>
+                    <input type="text" class="modern-input" id="text3Line1" value="秋元康 生誕祭">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="birthday_line2">Birthday (Line 2)</label>
+                    <input type="text" class="modern-input" id="text3Line2" value="YSS48劇場">
                 </div>
             </div>
-            <div class="input-group">
-                <h3 class="accordion-toggle" data-i18n="qr_others">QRコードとその他</h3>
-                <div class="accordion-content">
-                    <label data-i18n="qr_code_url" for="qrCodeUrl">QRコードURL: <input type="text" id="qrCodeUrl" placeholder="https://example.com"></label>
-                    <label data-i18n="show_qr_frame" for="showQR"><input type="checkbox" id="showQR" checked> 顯示 QR 碼</label>
-                    <label data-i18n="border_color" for="qrSquareColor">QR枠の色: <input type="color" id="qrSquareColor" value="#2086D1"></label>
+
+            <!-- 日期與編號 -->
+            <div class="drawer-section">
+                <div class="drawer-title" data-i18n="date_number"><i data-lucide="hash"></i> Date & Number</div>
+                <div class="input-group">
+                    <label data-i18n="date_line1">Date</label>
+                    <input type="text" class="modern-input" id="text4Line1" value="＜日付＞2026年05月02日（金）">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="date_line2">Time</label>
+                    <input type="text" class="modern-input" id="text4Line2" value="OPEN：18時10分       START：18時30分      ￥3,400">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="ticket_number">Ticket Number</label>
+                    <input type="text" class="modern-input" id="text5" value="048番">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="postal_code">Postal Code / Name</label>
+                    <input type="text" class="modern-input" id="text6" value="① ❘ 000－0000 ❘ ゴメン先生 様">
+                </div>
+            </div>
+
+            <!-- Footer 與 QR Code -->
+            <div class="drawer-section">
+                <div class="drawer-title" data-i18n="qr_others"><i data-lucide="qr-code"></i> QR & Footer</div>
+                <div class="input-group">
+                    <label data-i18n="qr_code_url">QR Code URL</label>
+                    <input type="url" class="modern-input" id="qrCodeUrl" placeholder="https://...">
                     <div id="qrPreview"></div>
-                    <div class="advanced-mode">
-                        <label data-i18n="customFontRect1" for="customFontRect1">ロゴ用カスタムフォント: <input type="file" id="customFontRect1" accept=".woff,.woff2,.ttf,.otf"></label>
-                        <label data-i18n="customFontText2_3" for="customFontText2_3">公演-生誕祭用カスタムフォント: <input type="file" id="customFontText2_3" accept=".woff,.woff2,.ttf,.otf"></label>
-                        <label data-i18n="customFontText4_6" for="customFontText4_6">日付-番号-郵便番号用カスタムフォント: <input type="file" id="customFontText4_6" accept=".woff,.woff2,.ttf,.otf"></label>
-                        <label data-i18n="customFontText10_12" for="customFontText10_12">他-場所-電話番号用カスタムフォント: <input type="file" id="customFontText10_12" accept=".woff,.woff2,.ttf,.otf"></label>
-                        <label data-i18n="customBgImageInput" for="customImageInput">カスタム背景画像: <input type="file" id="customImageInput" accept="image/*"></label>
-                        <span class="note" data-i18n="recommendedSize">（推奨サイズ: 65mm x 150mm）</span>
-                        <label class="advanced-label" data-i18n="x">X: </label><input type="number" id="customImageX" value="0" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="customImageX-error"></span>
-                        <label class="advanced-label" data-i18n="y">Y: </label><input type="number" id="customImageY" value="0" class="position-input"><span class="advanced-label">mm</span><span class="error-msg" id="customImageY-error"></span>
-                        <label class="advanced-label" data-i18n="scale">縮放: </label><input type="number" id="customImageScale" value="1" step="0.1" min="0.1" class="size-input"><span class="advanced-label">倍</span><span class="error-msg" id="customImageScale-error"></span>
-                    </div>
-                    <label data-i18n="include_bleed" for="bleedOption"><input type="checkbox" id="bleedOption"> 裁ち落とし付き (+3mm)</label>
+                </div>
+                <div class="input-group">
+                    <label data-i18n="venue">Venue</label>
+                    <input type="text" class="modern-input" id="text11" value="YSS48 Theater">
                 </div>
             </div>
+            
+            <!-- AdSense 預留區塊 -->
+            <div class="ad-wrapper">
+                <!-- 插入 Adsense JS -->
+            </div>
+        </aside>
+
+        <nav class="icon-nav glass">
+            <div class="nav-icon active" data-tooltip="神推設定"><i data-lucide="user"></i></div>
+            <div class="nav-icon" data-tooltip="標誌設定"><i data-lucide="type"></i></div>
+            <div class="nav-icon" data-tooltip="公演資訊"><i data-lucide="calendar-heart"></i></div>
+            <div class="nav-icon" data-tooltip="日期編號"><i data-lucide="hash"></i></div>
+            <div class="nav-icon" data-tooltip="QR 與進階"><i data-lucide="qr-code"></i></div>
+            
+            <div class="nav-icon special-link" data-tooltip="尋找靈魂伴侶 ✨" onclick="window.open('https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank')">
+                <i data-lucide="sparkles"></i>
+            </div>
+        </nav>
+    </main>
+
+    <footer class="global-footer">
+        <div data-i18n="copyright_notice">
+            ©AKB48 / DH Co., Ltd. 僅供非商業興趣使用，製作者恕不承擔相關責任。
         </div>
-    </div>
+        <div class="footer-links">
+            <a href="https://x.com/sorrysir_gomen" target="_blank"><i data-lucide="bug" size="14"></i> <span data-i18n="report_bug">回報錯誤</span></a>
+            <a href="https://www.paypal.com/paypalme/gomensensei" target="_blank"><i data-lucide="heart" size="14"></i> <span data-i18n="donate">捐款支持</span></a>
+        </div>
+    </footer>
 
-    <div class="ad-container">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5661724500759448" data-ad-slot="5661724500759448" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-
-    <div id="loading">生成中...</div>
+    <script src="script.js" defer></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
