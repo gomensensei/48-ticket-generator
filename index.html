@@ -15,28 +15,35 @@
         @font-face { font-family: 'KozGoPr6N'; src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2'); }
 
         :root {
+            /* 極致毛玻璃變數 */
             --bg-color: #FDF9FA;
-            --bg-panel: rgba(255, 255, 255, 0.85);
+            --bg-panel: rgba(255, 255, 255, 0.4);
+            --bg-panel-solid: rgba(255, 255, 255, 0.7);
             --primary: #F676A6;
             --primary-hover: #E55A8C;
             --text-main: #333333;
-            --text-muted: #666666;
+            --text-muted: #555555;
             --border-glass: rgba(255, 255, 255, 0.6);
-            --shadow-soft: 0 8px 32px rgba(246, 118, 166, 0.1);
+            --border-glass-light: rgba(255, 255, 255, 0.8);
+            --shadow-soft: 0 12px 40px rgba(246, 118, 166, 0.15);
+            --color-a: #2086D1; /* 動態成員色 A */
+            --color-b: #E5EDF9; /* 動態成員色 B */
         }
 
         [data-theme="dark"] {
             --bg-color: #121212;
-            --bg-panel: rgba(30, 30, 30, 0.85);
+            --bg-panel: rgba(20, 20, 20, 0.5);
+            --bg-panel-solid: rgba(30, 30, 30, 0.8);
             --text-main: #EEEEEE;
             --text-muted: #AAAAAA;
-            --border-glass: rgba(255, 255, 255, 0.1);
-            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-glass-light: rgba(255, 255, 255, 0.15);
+            --shadow-soft: 0 12px 40px rgba(0, 0, 0, 0.5);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        /* 19. 動態漸變背景 */
+        /* 全局漸變與動態背景 */
         body { 
             font-family: 'KozGoPr6N', 'Noto Sans JP', sans-serif; 
             color: var(--text-main); 
@@ -52,115 +59,133 @@
             background: linear-gradient(-45deg, #1A1214, #121A22, #121212, #181516);
             background-size: 400% 400%;
         }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* 19. 點擊漣漪特效 */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(246, 118, 166, 0.4);
-            transform: scale(0);
-            animation: ripple-anim 0.6s linear;
-            pointer-events: none;
-            z-index: 9999;
-        }
-        @keyframes ripple-anim {
-            to { transform: scale(4); opacity: 0; }
-        }
+        /* 滑鼠漣漪特效 */
+        .ripple { position: absolute; border-radius: 50%; background: rgba(246, 118, 166, 0.4); transform: scale(0); animation: ripple-anim 0.6s ease-out; pointer-events: none; z-index: 9999; }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-        .glass { background: var(--bg-panel); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-glass); box-shadow: var(--shadow-soft); }
-        
-        /* 頂部 */
-        .topbar { height: 60px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-        .brand-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+        /* 毛玻璃共用核心 */
+        .glass { background: var(--bg-panel); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--border-glass); border-top: 1px solid var(--border-glass-light); border-left: 1px solid var(--border-glass-light); box-shadow: var(--shadow-soft); }
+        .glass-solid { background: var(--bg-panel-solid); backdrop-filter: blur(30px); border: 1px solid var(--border-glass); box-shadow: var(--shadow-soft); }
+
+        .topbar { height: 60px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid var(--border-glass); }
+        .brand-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); text-shadow: 0 2px 10px rgba(246,118,166,0.2); }
         .topbar-tools { display: flex; align-items: center; gap: 16px; }
         .tool-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; }
         .tool-btn:hover { background: rgba(246, 118, 166, 0.1); color: var(--primary); }
-        .lang-select { background: transparent; border: 1px solid var(--border-glass); color: var(--text-main); padding: 6px 12px; border-radius: 8px; outline: none; font-family: inherit;}
+        .lang-select { background: rgba(255,255,255,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 6px 12px; border-radius: 8px; outline: none; font-family: inherit; font-weight: 500;}
+        [data-theme="dark"] .lang-select { background: rgba(0,0,0,0.3); }
 
-        /* 工作區 */
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
-        
-        /* 10. 放大畫布區域佔比 */
         .canvas-area { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; overflow: auto; padding: 20px; }
         
-        /* 4 & 19. 成員頭像放大與光暈 */
-        .member-header { position: absolute; top: 20px; display: flex; align-items: center; gap: 16px; padding: 10px 24px; border-radius: 100px; z-index: 10; transition: 0.3s; }
-        .member-header img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 3px solid white; transition: 0.3s; }
-        .member-header h2 { font-size: 1.1rem; font-weight: 700; }
+        /* 雙色呼吸燈頭像 */
+        .member-header { position: absolute; top: 20px; display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-radius: 100px; z-index: 10; transition: 0.3s; }
+        .member-avatar-wrap {
+            position: relative; padding: 4px; border-radius: 50%;
+            background: linear-gradient(45deg, var(--color-a), var(--color-b));
+            animation: breathe 2.5s infinite alternate ease-in-out;
+        }
+        .member-avatar-wrap img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-panel-solid); display: block;}
+        .member-header h2 { font-size: 1.4rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        @keyframes breathe {
+            0% { box-shadow: 0 0 10px var(--color-a); transform: scale(1); }
+            100% { box-shadow: 0 0 25px var(--color-a), 0 0 15px var(--color-b); transform: scale(1.05); }
+        }
 
         .canvas-wrapper { position: relative; transition: transform 0.2s; }
-        canvas { display: block; max-width: 100%; height: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+        canvas { display: block; max-width: 100%; height: auto; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
         
-        /* 12. 分區 Hover 反饋 (覆蓋在 Canvas 上) */
+        /* 隱形分區 Hover 與多語言對應 */
         .hover-zone { position: absolute; border: 2px dashed transparent; border-radius: 8px; cursor: pointer; transition: 0.2s; z-index: 5; }
-        .hover-zone:hover { border-color: var(--primary); background: rgba(246, 118, 166, 0.05); }
-        .hover-zone::after { content: attr(data-label); position: absolute; top: -25px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; }
-        .hover-zone:hover::after { opacity: 1; }
+        .hover-zone:hover { border-color: var(--primary); background: rgba(246, 118, 166, 0.08); }
+        .hover-zone::after { content: attr(data-label); position: absolute; top: -30px; left: 50%; transform: translateX(-50%); background: var(--bg-panel-solid); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--primary); padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .hover-zone:hover::after { opacity: 1; top: -35px; }
         
-        #zone-logo { top: 0%; left: 4%; width: 20%; height: 55%; }
+        #zone-logo { top: -2%; left: 3%; width: 22%; height: 60%; }
         #zone-event { top: 15%; left: 23%; width: 75%; height: 35%; }
         #zone-date { top: 60%; left: 5%; width: 65%; height: 35%; }
         #zone-qr { top: 20%; right: 2%; width: 22%; height: 40%; }
+        #zone-bg { top: 0%; left: 0%; width: 100%; height: 100%; z-index: 1; } 
 
         .fab-group { position: absolute; bottom: 30px; display: flex; gap: 16px; z-index: 10; }
-        .btn-primary, .btn-secondary { padding: 12px 24px; border-radius: 100px; border: none; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 1rem;}
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(246, 118, 166, 0.3); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(246, 118, 166, 0.4); }
-        .btn-secondary { background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border-glass); }
+        .btn-primary, .btn-secondary { padding: 12px 28px; border-radius: 100px; border: none; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 1.05rem; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(246, 118, 166, 0.4); }
+        .btn-primary:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(246, 118, 166, 0.6); }
+        .btn-secondary { background: var(--bg-panel-solid); color: var(--text-main); border: 1px solid var(--border-glass); }
+        .btn-secondary:hover { transform: translateY(-4px); color: var(--primary); }
 
-        /* 15. 側邊抽屜動畫優化 */
-        .drawer { width: 380px; border-left: 1px solid var(--border-glass); padding: 24px; overflow-y: auto; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); background: var(--bg-panel); z-index: 20; }
-        .drawer-section { margin-bottom: 24px; display: none; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        /* 側邊抽屜 */
+        .drawer { width: 420px; border-left: 1px solid var(--border-glass); padding: 24px; overflow-y: auto; transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 20; }
+        .drawer::-webkit-scrollbar { width: 6px; }
+        .drawer::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 10px; }
         
-        .drawer-title { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
-        .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-        .input-group label { font-size: 0.85rem; font-weight: 500; display: flex; justify-content: space-between; align-items: center;}
+        .drawer-section { margin-bottom: 24px; display: none; animation: slideIn 0.4s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
         
-        /* 3. 優化下拉選單外觀 */
-        .modern-input, .modern-select { background: rgba(255,255,255,0.5); border: 1px solid var(--border-glass); color: var(--text-main); padding: 10px 12px; border-radius: 8px; width: 100%; outline: none; font-size: 1rem; font-family: 'Noto Sans JP', sans-serif; transition: 0.2s;}
-        [data-theme="dark"] .modern-input, [data-theme="dark"] .modern-select { background: rgba(0,0,0,0.5); }
-        .modern-input:focus, .modern-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(246, 118, 166, 0.2); }
+        .drawer-title { font-size: 1.1rem; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-weight: 700; text-shadow: 0 2px 5px rgba(246,118,166,0.1); }
+        .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .input-group label { font-size: 0.9rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center;}
+        
+        .modern-input, .modern-select { background: rgba(255,255,255,0.4); border: 1px solid var(--border-glass); color: var(--text-main); padding: 12px 16px; border-radius: 12px; width: 100%; outline: none; font-size: 1rem; font-family: inherit; transition: 0.3s; }
+        [data-theme="dark"] .modern-input, [data-theme="dark"] .modern-select { background: rgba(0,0,0,0.4); }
+        .modern-input:focus, .modern-select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(246, 118, 166, 0.2); background: var(--bg-panel-solid); }
 
-        /* 11. 進階設定區域 */
-        .advanced-options { display: none; background: rgba(0,0,0,0.03); padding: 12px; border-radius: 8px; margin-top: 4px; border: 1px solid var(--border-glass); }
+        /* 簡易與詳細設定切換 */
+        .adv-toggle-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 100px; transition: 0.2s; }
+        .adv-toggle-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
+        [data-theme="dark"] .adv-toggle-btn:hover { background: rgba(255,255,255,0.05); }
+        .advanced-options { display: none; background: rgba(0,0,0,0.03); padding: 16px; border-radius: 12px; margin-top: 6px; border: 1px solid var(--border-glass); }
         [data-theme="dark"] .advanced-options { background: rgba(255,255,255,0.03); }
         .advanced-options.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .adv-row { display: flex; gap: 10px; margin-bottom: 8px; }
-        .adv-row input { width: 100%; }
+        .adv-row { display: flex; gap: 12px; margin-bottom: 10px; align-items: center; }
+        .adv-row label { width: 60px; font-size: 0.8rem; color: var(--text-muted); }
+        .adv-row input { flex: 1; padding: 8px 12px; }
 
-        /* Icon 導航 */
-        .icon-nav { width: 70px; border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 20px; z-index: 30; background: var(--bg-panel); }
-        .nav-icon { color: var(--text-muted); cursor: pointer; padding: 12px; border-radius: 12px; transition: 0.2s; position: relative; }
-        .nav-icon.active, .nav-icon:hover { color: var(--primary); background: rgba(246, 118, 166, 0.1); transform: scale(1.1); }
-        
-        /* 13. Tooltip 綁定 i18n */
-        .nav-icon span.tooltip { position: absolute; right: 100%; top: 50%; transform: translateY(-50%) translateX(-8px); background: var(--text-main); color: var(--bg-color); padding: 6px 10px; font-size: 0.8rem; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.2s; font-weight: 500;}
-        .nav-icon:hover span.tooltip { opacity: 1; transform: translateY(-50%) translateX(-12px); }
+        .color-row { display: flex; gap: 15px; align-items: center; }
+        .color-row .input-group { flex: 1; }
+        input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
+
+        /* 滑出式 Tooltip 導航列 */
+        .icon-nav { width: 80px; border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 20px; z-index: 30; }
+        .nav-icon { 
+            display: flex; align-items: center; gap: 12px;
+            width: 50px; height: 50px; padding: 0 13px;
+            color: var(--text-muted); cursor: pointer; 
+            border-radius: 25px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            overflow: hidden; white-space: nowrap;
+            background: transparent;
+        }
+        .nav-icon span { font-weight: 700; font-size: 0.95rem; opacity: 0; transition: 0.2s; }
+        .nav-icon.active, .nav-icon:hover { color: var(--primary); background: rgba(246, 118, 166, 0.15); width: 160px; box-shadow: 0 4px 15px rgba(246, 118, 166, 0.1); }
+        .nav-icon.active span, .nav-icon:hover span { opacity: 1; }
         
         .special-link { margin-top: auto; color: #FF5C8D; animation: pulse-glow 2s infinite; }
-        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(255,92,141,0.4); } 70% { box-shadow: 0 0 0 15px rgba(255,92,141,0); } 100% { box-shadow: 0 0 0 0 rgba(255,92,141,0); } }
+        .special-link:hover { width: 180px; }
 
-        .global-footer { height: 40px; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; font-size: 0.75rem; color: var(--text-muted); }
-        .footer-links { display: flex; gap: 16px; }
-        .footer-links a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 4px; }
+        .global-footer { height: 45px; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-glass); }
+        .footer-links a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
         .footer-links a:hover { color: var(--primary); }
 
-        /* 5. 手機版適配 */
+        /* 完美下載 Modal */
+        #downloadModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(5px); z-index:1000; justify-content:center; align-items:center; }
+        .modal-card { padding: 40px; border-radius: 24px; text-align: center; display: flex; flex-direction: column; gap: 20px; max-width: 400px; width: 90%; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        .modal-card h3 { color: var(--primary); font-size: 1.5rem; }
+
+        /* 手機版適配 */
         @media (max-width: 800px) {
             .workspace { flex-direction: column; overflow-y: auto; }
             .canvas-area { min-height: 40vh; padding: 10px; order: 1; }
-            .icon-nav { flex-direction: row; width: 100%; height: 60px; padding: 0 20px; border-left: none; border-top: 1px solid var(--border-glass); justify-content: space-between; order: 2; }
-            .nav-icon span.tooltip { display: none; }
+            .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 10px 20px; border-left: none; border-top: 1px solid var(--border-glass); justify-content: space-between; order: 2; overflow-x: auto;}
+            .nav-icon { width: 45px; height: 45px; padding: 0 11px;}
+            .nav-icon.active, .nav-icon:hover { width: 45px; } /* 手機版不展開文字 */
+            .nav-icon span { display: none; }
             .drawer { width: 100%; height: auto; border-left: none; order: 3; }
-            .fab-group { position: static; justify-content: center; margin-top: 10px; }
-            .hover-zone { display: none; /* 手機版關閉 hover zone 避免干擾觸控 */ }
+            .fab-group { position: static; justify-content: center; margin-top: 20px; margin-bottom: 20px;}
+            .hover-zone { display: none; }
         }
     </style>
 </head>
@@ -184,23 +209,26 @@
 
     <main class="workspace">
         <section class="canvas-area" id="canvasArea">
-            <div class="member-header glass" id="memberHeader" style="display: none;">
-                <img src="" id="memberAvatar" alt="Avatar">
+            <div class="member-header glass-solid" id="memberHeader" style="display: none;">
+                <div class="member-avatar-wrap">
+                    <img src="" id="memberAvatar" alt="Avatar">
+                </div>
                 <h2 id="memberName"></h2>
             </div>
 
             <div class="canvas-wrapper" id="canvasWrapper">
                 <canvas id="ticketCanvas"></canvas>
-                <!-- 12. 分區 Hover 隱形按鈕 -->
-                <div class="hover-zone" id="zone-logo" data-label="標誌設定"></div>
-                <div class="hover-zone" id="zone-event" data-label="公演資訊"></div>
-                <div class="hover-zone" id="zone-date" data-label="日期編號"></div>
-                <div class="hover-zone" id="zone-qr" data-label="QR與其他"></div>
+                <!-- Hover 隱形按鈕 -->
+                <div class="hover-zone" id="zone-bg" data-i18n-label="background_settings"></div>
+                <div class="hover-zone" id="zone-logo" data-i18n-label="logo_settings"></div>
+                <div class="hover-zone" id="zone-event" data-i18n-label="event_birthday"></div>
+                <div class="hover-zone" id="zone-date" data-i18n-label="date_number"></div>
+                <div class="hover-zone" id="zone-qr" data-i18n-label="qr_others"></div>
             </div>
 
             <div class="fab-group">
-                <button class="btn-secondary" id="advToggleBtn">
-                    <i data-lucide="sliders"></i> <span data-i18n="advanced_mode">進階設定</span>
+                <button class="btn-secondary" id="advToggleBtnMaster">
+                    <i data-lucide="sliders"></i> <span data-i18n="advanced_mode">詳細設定</span>
                 </button>
                 <button class="btn-primary" id="downloadBtn">
                     <i data-lucide="printer"></i> <span data-i18n="download_button">下載</span>
@@ -208,25 +236,36 @@
             </div>
         </section>
 
-        <!-- 側邊抽屜 -->
         <aside class="drawer glass" id="settingsDrawer">
             <!-- 神推設定 -->
             <div class="drawer-section active" id="sec-member">
                 <div class="drawer-title"><i data-lucide="users"></i> <span data-i18n="member_color">神推設定</span></div>
                 <div class="input-group">
-                    <select class="modern-select" id="memberSelector">
-                        <option value="">...</option>
-                    </select>
+                    <select class="modern-select" id="memberSelector"><option value="">...</option></select>
                 </div>
-                <div class="adv-row mt-2">
-                    <div class="input-group" style="flex:1;">
-                        <label data-i18n="rect1Color">A色 (Logo/框)</label>
-                        <input type="color" id="rect1Color" value="#2086D1" class="modern-input" style="height:40px; padding:2px;">
-                    </div>
-                    <div class="input-group" style="flex:1;">
-                        <label data-i18n="background_gradient_start">B色 (背景)</label>
-                        <input type="color" id="bgColor" value="#E5EDF9" class="modern-input" style="height:40px; padding:2px;">
-                    </div>
+            </div>
+
+            <!-- 背景設定 -->
+            <div class="drawer-section" id="sec-bg">
+                <div class="drawer-title"><i data-lucide="image"></i> <span data-i18n="background_settings">背景設定</span></div>
+                <div class="color-row">
+                    <div class="input-group"><label data-i18n="rect1Color">A色</label><input type="color" id="rect1Color" value="#2086D1" class="modern-input"></div>
+                    <div class="input-group"><label data-i18n="background_gradient_start">B色</label><input type="color" id="bgColor" value="#E5EDF9" class="modern-input"></div>
+                </div>
+                <div class="input-group mt-2">
+                    <label data-i18n="background_text">背景文字</label>
+                    <input type="text" class="modern-input" id="bgText" value="YSS48">
+                </div>
+                <div class="color-row">
+                    <div class="input-group"><label data-i18n="bgTextColor">文字色</label><input type="color" id="bgTextColor" value="#FFFFFF" class="modern-input"></div>
+                    <div class="input-group"><label data-i18n="shadow_color">陰影色</label><input type="color" id="bgShadowColor" value="#5F96ED" class="modern-input"></div>
+                </div>
+                <div class="advanced-options">
+                    <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="bgTextX" value="-100" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="bgTextY" value="0" class="modern-input"></div>
+                    <div class="adv-row"><label data-i18n="spacing">Space</label><input type="number" id="bgTextSpacing" value="-6000" class="modern-input"> <label data-i18n="size">Size</label><input type="number" id="bgTextSize" value="62" class="modern-input"></div>
+                    <div class="adv-row"><label data-i18n="lineHeight">LineH</label><input type="number" id="bgTextLineHeight" value="46" class="modern-input"> <label data-i18n="bgTextOpacity">Alpha</label><input type="number" id="bgTextOpacity" value="1" step="0.1" class="modern-input"></div>
+                    <div class="adv-row"><label data-i18n="shadowX">ShadX</label><input type="number" id="bgShadowX" value="0.5" step="0.1" class="modern-input"> <label data-i18n="shadowY">ShadY</label><input type="number" id="bgShadowY" value="-0.4" step="0.1" class="modern-input"></div>
+                    <div class="adv-row"><label data-i18n="shadowOpacity">ShadA</label><input type="number" id="bgShadowOpacity" value="0.2" step="0.1" class="modern-input"></div>
                 </div>
             </div>
 
@@ -237,52 +276,50 @@
                     <label data-i18n="logo_line1">Line 1</label>
                     <input type="text" class="modern-input" id="rect1Line1" value="YSS">
                     <div class="advanced-options">
-                        <div class="adv-row">
-                            <label>X:</label><input type="number" id="rect1Line1X" value="13.5" class="modern-input">
-                            <label>Y:</label><input type="number" id="rect1Line1Y" value="12" class="modern-input">
-                        </div>
-                        <div class="adv-row">
-                            <label>Size:</label><input type="number" id="rect1Size" value="47" class="modern-input">
-                            <label>Space:</label><input type="number" id="rect1Spacing" value="-7000" class="modern-input">
-                        </div>
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="rect1Line1X" value="13.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="rect1Line1Y" value="12" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="rect1Size" value="47" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="rect1Spacing" value="-7000" class="modern-input"></div>
                     </div>
                 </div>
                 <div class="input-group">
                     <label data-i18n="logo_line2">Line 2</label>
                     <input type="text" class="modern-input" id="rect1Line2" value="48">
                     <div class="advanced-options">
-                        <div class="adv-row">
-                            <label>X:</label><input type="number" id="rect1Line2X" value="13.5" class="modern-input">
-                            <label>Y:</label><input type="number" id="rect1Line2Y" value="24" class="modern-input">
-                        </div>
-                        <div class="adv-row">
-                            <label>Size:</label><input type="number" id="rect1Line2Size" value="47" class="modern-input">
-                            <label>Space:</label><input type="number" id="rect1Line2Spacing" value="-7000" class="modern-input">
-                        </div>
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="rect1Line2X" value="13.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="rect1Line2Y" value="24" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="rect1Line2Size" value="47" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="rect1Line2Spacing" value="-7000" class="modern-input"></div>
                     </div>
+                </div>
+                <div class="color-row mt-2">
+                    <div class="input-group"><label data-i18n="rect1TextColor">Logo文字色</label><input type="color" id="rect1TextColor" value="#FFFFFF" class="modern-input"></div>
                 </div>
             </div>
 
             <!-- 公演資訊 -->
             <div class="drawer-section" id="sec-event">
                 <div class="drawer-title"><i data-lucide="calendar-heart"></i> <span data-i18n="event_birthday">公演資訊</span></div>
+                <div class="input-group"><label data-i18n="text_color">文字色</label><input type="color" id="textColor" value="#000000" class="modern-input" style="height:45px; padding:2px;"></div>
                 <div class="input-group">
                     <label data-i18n="event">Event Name</label>
                     <input type="text" class="modern-input" id="text2" value="「ここからだ」 公演">
                     <div class="advanced-options">
-                        <div class="adv-row">
-                            <label>X:</label><input type="number" id="text2X" value="37" class="modern-input">
-                            <label>Y:</label><input type="number" id="text2Y" value="12" class="modern-input">
-                        </div>
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text2X" value="37" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text2Y" value="12" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text2Size" value="14.2" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text2Spacing" value="2000" class="modern-input"></div>
                     </div>
                 </div>
                 <div class="input-group">
                     <label data-i18n="birthday_line1">Birthday (Line 1)</label>
                     <input type="text" class="modern-input" id="text3Line1" value="秋元康 生誕祭">
+                    <div class="advanced-options">
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text3Line1X" value="35" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text3Line1Y" value="19" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text3Size" value="14.2" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text3Spacing" value="2000" class="modern-input"></div>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label data-i18n="birthday_line2">Birthday (Line 2)</label>
                     <input type="text" class="modern-input" id="text3Line2" value="YSS48劇場">
+                    <div class="advanced-options">
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text3Line2X" value="35" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text3Line2Y" value="25" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text3Line2Size" value="14.2" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text3Line2Spacing" value="2000" class="modern-input"></div>
+                    </div>
                 </div>
             </div>
 
@@ -292,59 +329,91 @@
                 <div class="input-group">
                     <label data-i18n="date_line1">Date</label>
                     <input type="text" class="modern-input" id="text4Line1" value="＜日付＞2026年05月02日（金）">
+                    <div class="advanced-options">
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text4Line1X" value="13" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text4Line1Y" value="43" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text4Size" value="11" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text4Spacing" value="1000" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="lineHeight">LineH</label><input type="number" id="text4LineHeight" value="14" class="modern-input"></div>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label data-i18n="date_line2">Time</label>
                     <input type="text" class="modern-input" id="text4Line2" value="OPEN：18時10分       START：18時30分      ￥3,400">
                 </div>
                 <div class="input-group">
-                    <label data-i18n="ticket_number">Ticket Number</label>
+                    <label data-i18n="ticket_number">Ticket No.</label>
                     <input type="text" class="modern-input" id="text5" value="048番">
+                    <div class="advanced-options">
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text5X" value="13" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text5Y" value="55" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text5Size" value="16" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text5Spacing" value="200" class="modern-input"></div>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label data-i18n="postal_code">Postal / Name</label>
                     <input type="text" class="modern-input" id="text6" value="① ❘ 000－0000 ❘ ゴメン先生 様">
+                    <div class="advanced-options">
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text6X" value="36" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text6Y" value="55" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text6Size" value="13" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text6Spacing" value="311" class="modern-input"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- QR 與其他 -->
+            <!-- QR 與 Footer -->
             <div class="drawer-section" id="sec-qr">
-                <div class="drawer-title"><i data-lucide="qr-code"></i> <span data-i18n="qr_others">QR 與進階</span></div>
-                
-                <!-- 16. QR 開關 -->
+                <div class="drawer-title"><i data-lucide="qr-code"></i> <span data-i18n="qr_others">QR 與其他</span></div>
                 <div class="input-group" style="flex-direction: row; align-items: center; gap:10px;">
                     <input type="checkbox" id="showQR" checked style="width: 20px; height: 20px; accent-color: var(--primary);">
                     <label data-i18n="show_qr_frame">顯示 QR 碼框</label>
                 </div>
-
                 <div class="input-group">
                     <label data-i18n="qr_code_url">QR Code URL</label>
                     <input type="url" class="modern-input" id="qrCodeUrl" placeholder="https://...">
                     <div id="qrPreview" style="display:none;"></div>
                 </div>
+
+                <div class="drawer-title mt-4"><i data-lucide="layout-panel-bottom"></i> <span data-i18n="footer_settings">Footer 設定</span></div>
+                <div class="color-row">
+                    <div class="input-group"><label data-i18n="border_color">邊框色</label><input type="color" id="rect9Color" value="#2086D1" class="modern-input"></div>
+                    <div class="input-group"><label data-i18n="footerTextColor">文字色</label><input type="color" id="footerTextColor" value="#FFFFFF" class="modern-input"></div>
+                </div>
+                <div class="input-group">
+                    <label data-i18n="note">Note</label>
+                    <input type="text" class="modern-input" id="text10" value="<主催 ‧ お問い合せ>">
+                    <div class="advanced-options">
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text10X" value="54" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text10Y" value="63.5" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text10Size" value="7" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text10Spacing" value="236" class="modern-input"></div>
+                    </div>
+                </div>
                 <div class="input-group">
                     <label data-i18n="venue">Venue</label>
                     <input type="text" class="modern-input" id="text11" value="YSS48 Theater">
+                    <div class="advanced-options">
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text11X" value="80.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text11Y" value="63.5" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text11Size" value="10" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text11Spacing" value="238" class="modern-input"></div>
+                    </div>
                 </div>
-                <!-- 18. 出血位選項 -->
-                <div class="input-group" style="flex-direction: row; align-items: center; gap:10px; margin-top:15px;">
-                    <input type="checkbox" id="bleedOption" style="width: 20px; height: 20px; accent-color: var(--primary);">
-                    <label data-i18n="include_bleed">下載時包含出血 (+3mm)</label>
+                <div class="input-group">
+                    <label data-i18n="tel">Phone</label>
+                    <input type="text" class="modern-input" id="text12" value="TEL:01-2345-6789">
+                    <div class="advanced-options">
+                        <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text12X" value="108" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text12Y" value="64" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text12Size" value="12.5" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text12Spacing" value="236" class="modern-input"></div>
+                    </div>
                 </div>
             </div>
             
         </aside>
 
-        <!-- Icon 導航 -->
+        <!-- 滑出式 Nav 導航 -->
         <nav class="icon-nav glass">
-            <div class="nav-icon active" data-target="sec-member"><i data-lucide="user"></i><span class="tooltip" data-i18n="member_color">神推設定</span></div>
-            <div class="nav-icon" data-target="sec-logo"><i data-lucide="type"></i><span class="tooltip" data-i18n="logo_settings">標誌設定</span></div>
-            <div class="nav-icon" data-target="sec-event"><i data-lucide="calendar-heart"></i><span class="tooltip" data-i18n="event_birthday">公演資訊</span></div>
-            <div class="nav-icon" data-target="sec-date"><i data-lucide="hash"></i><span class="tooltip" data-i18n="date_number">日期編號</span></div>
-            <div class="nav-icon" data-target="sec-qr"><i data-lucide="qr-code"></i><span class="tooltip" data-i18n="qr_others">QR與其他</span></div>
+            <div class="nav-icon active" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div>
+            <div class="nav-icon" data-target="sec-bg"><i data-lucide="image"></i><span data-i18n="background_settings">背景設定</span></div>
+            <div class="nav-icon" data-target="sec-logo"><i data-lucide="type"></i><span data-i18n="logo_settings">標誌設定</span></div>
+            <div class="nav-icon" data-target="sec-event"><i data-lucide="calendar-heart"></i><span data-i18n="event_birthday">公演資訊</span></div>
+            <div class="nav-icon" data-target="sec-date"><i data-lucide="hash"></i><span data-i18n="date_number">日期編號</span></div>
+            <div class="nav-icon" data-target="sec-qr"><i data-lucide="qr-code"></i><span data-i18n="qr_others">QR與其他</span></div>
             
             <div class="nav-icon special-link" onclick="window.open('https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank')">
-                <i data-lucide="sparkles"></i><span class="tooltip" data-i18n="download_message">靈魂伴侶</span>
+                <i data-lucide="sparkles"></i><span data-i18n="download_message">靈魂伴侶</span>
             </div>
         </nav>
     </main>
@@ -357,13 +426,17 @@
         </div>
     </footer>
 
-    <!-- 下載選項 Modal -->
-    <div id="downloadModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-        <div class="glass" style="padding: 30px; border-radius: 20px; text-align: center; display: flex; flex-direction: column; gap: 15px;">
-            <h3 style="margin-bottom: 10px; color: var(--primary);">選擇下載格式</h3>
-            <button class="btn-primary" id="dl300">下載 300 DPI (印刷用)</button>
-            <button class="btn-secondary" id="dl70">下載 70 DPI (網絡用)</button>
-            <button class="btn-secondary" style="border:none; background:none; text-decoration:underline;" onclick="document.getElementById('downloadModal').style.display='none'">取消</button>
+    <!-- 高質感下載 Modal -->
+    <div id="downloadModal">
+        <div class="glass-solid modal-card">
+            <h3 data-i18n="download_button">選擇下載格式</h3>
+            <div style="display: flex; align-items: center; justify-content: center; gap:10px; margin-bottom: 10px;">
+                <input type="checkbox" id="bleedOption" style="width: 22px; height: 22px; accent-color: var(--primary);">
+                <label for="bleedOption" data-i18n="include_bleed" style="font-weight: 700;">包含出血 (+3mm)</label>
+            </div>
+            <button class="btn-primary" id="dl300" style="width: 100%; justify-content: center;" data-i18n="download_png_300">下載 300 DPI (印刷用)</button>
+            <button class="btn-secondary" id="dl70" style="width: 100%; justify-content: center;" data-i18n="download_png_70">下載 70 DPI (網絡用)</button>
+            <button class="btn-secondary" style="border:none; background:none; text-decoration:underline; width: 100%; justify-content: center;" onclick="document.getElementById('downloadModal').style.display='none'" data-i18n="cancel">取消</button>
         </div>
     </div>
 
