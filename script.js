@@ -10,39 +10,37 @@ const fonts = {
 };
 
 const dpi = {
-    300: { base: { w: Math.round(150 * 300 / 25.4), h: Math.round(65 * 300 / 25.4) } },
-    70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) } }
+    300: { base: { w: Math.round(150 * 300 / 25.4), h: Math.round(65 * 300 / 25.4) }, bleed: { w: Math.round((150 + 6) * 300 / 25.4), h: Math.round((65 + 6) * 300 / 25.4) } },
+    70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 6) * 70 / 25.4), h: Math.round((65 + 6) * 70 / 25.4) } }
 };
 
-let langs = {}, currentLang = 'ja', previewScale = 1.0;
+let langs = {}, currentLang = 'ja';
+// 10. 桌面版預設比例放大
+let previewScale = window.innerWidth > 800 ? 1.5 : 1.0; 
 let members = [], qrImage = null;
 
-// UI 基礎位移基準點
-const baseLayout = {
-    rect1Line1: { x: 13.5, y: 12, spacing: -7000, size: 47 },
-    rect1Line2: { x: 13.5, y: 24, spacing: -7000, size: 47 },
-    text2: { x: 37, y: 12, spacing: 2000, size: 14.2 },
-    text3Line1: { x: 35, y: 19, spacing: 2000, size: 14.2 },
-    text3Line2: { x: 35, y: 25, spacing: 2000, size: 14.2 },
-    text4Line1: { x: 13, y: 43, spacing: 1000, size: 11 },
-    text4Line2: { x: 13, y: 48, spacing: 1000, size: 11 }, // 假設
-    text5: { x: 13, y: 55, spacing: 200, size: 16 },
-    text6: { x: 36, y: 55, spacing: 311, size: 13 },
-    footerLines: { y: 63.5 }
-};
-
+// 防抖
 const debounce = (func, delay) => {
     let timeoutId;
     return (...args) => { clearTimeout(timeoutId); timeoutId = setTimeout(() => func(...args), delay); };
 };
 
 // ==========================================
-// 1. 多國語言系統 (langs.json 整合)
+// 14. 語言系統與自動偵測
 // ==========================================
 async function loadLanguages() {
     try {
         const response = await fetch('langs.json');
         langs = await response.json();
+        
+        // 自動偵測系統語言
+        let sysLang = navigator.language || navigator.userLanguage;
+        if(sysLang.includes('zh-TW') || sysLang.includes('zh-HK')) currentLang = 'zh-TW';
+        else if(sysLang.includes('zh')) currentLang = 'zh-CN';
+        else if(sysLang.includes('ja')) currentLang = 'ja';
+        else currentLang = 'en'; // 預設英文
+        
+        $('languageSelector').value = currentLang;
         changeLanguage(currentLang);
     } catch (error) {
         console.error('Failed to load langs.json:', error);
@@ -56,9 +54,8 @@ const changeLanguage = (lang) => {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (langs[lang][key]) {
-            if (el.tagName === 'LABEL') {
-                const textNode = Array.from(el.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
-                if (textNode) textNode.textContent = langs[lang][key] + ' ';
+            if (el.classList.contains('tooltip')) {
+                el.textContent = langs[lang][key];
             } else if (el.tagName === 'SPAN' || el.tagName === 'DIV') {
                 const icon = el.querySelector('i');
                 if (icon) {
@@ -66,6 +63,10 @@ const changeLanguage = (lang) => {
                 } else {
                     el.textContent = langs[lang][key];
                 }
+            } else if (el.tagName === 'LABEL') {
+                 // 處理帶有 input 的 label
+                 const textNodes = Array.from(el.childNodes).filter(n => n.nodeType === Node.TEXT_NODE);
+                 if(textNodes.length > 0) textNodes[0].textContent = langs[lang][key] + ' ';
             } else {
                 el.textContent = langs[lang][key];
             }
@@ -75,7 +76,7 @@ const changeLanguage = (lang) => {
 };
 
 // ==========================================
-// 2. 智能色彩對比系統 (分離 A/B 兩色)
+// 9. 極端顏色的可讀性增強 (Smart Contrast)
 // ==========================================
 function getLuminance(hex) {
     hex = hex.replace('#', '');
@@ -89,114 +90,183 @@ function getLuminance(hex) {
 // ==========================================
 // 3. 畫布渲染核心
 // ==========================================
-const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left', altFont, dpiVal, context) => {
+const drawText = (lines, x, y, font, size, spacing, color, context, dpiVal, altFont, enableGlow = false) => {
     if (!context) return;
     const ptPx = dpiVal / 72;
     context.fillStyle = color;
-    context.textAlign = align;
+    context.textAlign = 'left';
     
+    // 9. 如果背景色太亮或太暗，為前景字加入輕微描邊/發光，確保可讀性
+    if (enableGlow) {
+        const bgLum = getLuminance($('bgColor').value);
+        context.shadowColor = bgLum > 0.6 ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.5)';
+        context.shadowBlur = 3;
+        context.shadowOffsetX = 1;
+        context.shadowOffsetY = 1;
+    } else {
+        context.shadowColor = 'transparent';
+    }
+
     lines.forEach((l, i) => {
-        let cx = x, ly = y + i * height * ptPx;
+        let cx = x;
         if (!l) return;
         l.split('').forEach(c => {
             const isAlt = altFont && /[A-Za-z0-9①❘－]/.test(c);
             context.font = `${size * ptPx}px ${isAlt ? altFont : font}`;
-            context.fillText(c, cx, ly);
-            cx += context.measureText(c).width + spacing * ptPx / 1000;
+            context.fillText(c, cx, y);
+            cx += context.measureText(c).width + (spacing * ptPx / 1000);
         });
     });
+    context.shadowColor = 'transparent'; // Reset
 };
 
-const drawTicket = async (dpiVal) => {
-    if (!ctx) return;
-    const w = dpi[dpiVal].base.w;
-    const h = dpi[dpiVal].base.h;
+const drawTicket = async (dpiVal, targetCtx = ctx) => {
+    if (!targetCtx) return;
+    const bleed = $('bleedOption')?.checked || false;
+    const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
+    const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
     const mmPx = dpiVal / 25.4;
+    const bleedOffset = bleed ? 3 * mmPx : 0;
 
-    canvas.width = w; canvas.height = h;
-    canvas.style.width = `${w * previewScale}px`; canvas.style.height = `${h * previewScale}px`;
-    ctx.clearRect(0, 0, w, h);
-
-    // 取得雙色
-    const colorA = $('rect1Color')?.value || '#2086D1'; // 方塊色
-    const colorB = $('bgColor')?.value || '#FDF9FA';    // 背景色
+    if (targetCtx === ctx) {
+        canvas.width = w; canvas.height = h;
+        // 確保手機版不超出版面
+        let actualScale = window.innerWidth < 800 ? Math.min(1, (window.innerWidth - 40) / w) : previewScale;
+        canvas.style.width = `${w * actualScale}px`; 
+        canvas.style.height = `${h * actualScale}px`;
+    }
     
-    // 背景繪製 (Color B)
-    ctx.fillStyle = colorB;
-    ctx.fillRect(0, 0, w, h);
+    targetCtx.clearRect(0, 0, w, h);
 
-    // 背景浮水印 (基於 Color B 對比度)
-    const bgLum = getLuminance(colorB);
-    ctx.fillStyle = bgLum > 0.8 ? '#1A1A1A' : '#FFFFFF';
-    ctx.globalAlpha = bgLum > 0.8 ? 0.03 : 0.1;
-    ctx.font = `${62 * (dpiVal / 72)}px ${fonts.avant}`;
+    // 1. 預設顏色回歸 (Gradient)
+    const colorA = $('rect1Color')?.value || '#2086D1'; 
+    const colorB = $('bgColor')?.value || '#E5EDF9'; // 原始淺藍預設
     
-    const gx = ctx.measureText("YSS48").width - (6000 * (dpiVal/72) / 1000);
-    for (let y = 0; y < h + 46 * (dpiVal/72); y += 46 * (dpiVal/72)) {
-        for (let x = -50 * mmPx; x < w; x += gx) {
-            ctx.fillText("YSS48", x, y);
+    const gradient = targetCtx.createLinearGradient(0, 0, w, 0);
+    gradient.addColorStop(0, colorB);
+    gradient.addColorStop(1, colorB); // 保留漸變結構，方便日後擴展
+    targetCtx.fillStyle = gradient;
+    targetCtx.fillRect(0, 0, w, h);
+
+    // 7 & 8. 恢復背景文字排列與淺藍陰影 Logic
+    const bgText = "YSS48";
+    targetCtx.font = `${62 * (dpiVal / 72)}px ${fonts.avant}`;
+    
+    const cw = targetCtx.measureText("Y").width;
+    const tw = targetCtx.measureText(bgText).width;
+    const gx = tw + (-6000 * (dpiVal/72) / 1000); // 原始字距
+    const gy = 46 * (dpiVal / 72);
+    
+    // 背景陰影層
+    targetCtx.globalAlpha = 0.2;
+    targetCtx.fillStyle = '#5F96ED'; // 原始淺藍
+    targetCtx.shadowColor = '#5F96ED';
+    targetCtx.shadowOffsetX = 0.5 * mmPx;
+    targetCtx.shadowOffsetY = -0.4 * mmPx;
+    
+    let startX = -100 * mmPx + bleedOffset;
+    let startY = 0 + bleedOffset;
+    for (let y = startY, r = 0; y < h; y += gy, r++) {
+        for (let x = startX + (r * cw); x < w; x += gx) {
+            targetCtx.fillText(bgText, x, y);
         }
     }
-    ctx.globalAlpha = 1.0;
+    
+    // 背景文字白字層 (Default)
+    targetCtx.globalAlpha = 1;
+    targetCtx.shadowOffsetX = 0; targetCtx.shadowOffsetY = 0;
+    targetCtx.fillStyle = '#FFFFFF';
+    for (let y = startY, r = 0; y < h; y += gy, r++) {
+        for (let x = startX + (r * cw); x < w; x += gx) {
+            targetCtx.fillText(bgText, x, y);
+        }
+    }
 
     // 方塊繪製 (Color A)
-    ctx.fillStyle = colorA;
-    ctx.fillRect(8 * mmPx, 0, 25 * mmPx, 35 * mmPx); // Logo Box
-    ctx.fillRect(0, 60 * mmPx, 150 * mmPx, 5 * mmPx); // Footer Box
+    targetCtx.fillStyle = colorA;
+    targetCtx.fillRect(8 * mmPx + bleedOffset, 0 + bleedOffset, 25 * mmPx, 35 * mmPx); 
+    targetCtx.fillRect(0 + bleedOffset, 60 * mmPx + bleedOffset, 150 * mmPx, 5 * mmPx); 
     
-    // Logo 顏色 (基於 Color A 對比度)
+    // Logo 顏色對比
     const boxLum = getLuminance(colorA);
     const logoTextColor = boxLum > 0.6 ? '#1A1A1A' : '#FFFFFF';
 
-    // 取得歸一化偏移
-    const offX1 = parseFloat($('rect1Line1X_slider')?.value || 0);
-
-    // 繪製 Logo 文字
-    drawText([$('rect1Line1')?.value || 'YSS'], (baseLayout.rect1Line1.x + offX1) * mmPx, baseLayout.rect1Line1.y * mmPx, fonts.avant, baseLayout.rect1Line1.size, baseLayout.rect1Line1.spacing, 0, logoTextColor, 'center', null, dpiVal, ctx);
-    drawText([$('rect1Line2')?.value || '48'], (baseLayout.rect1Line2.x + offX1) * mmPx, baseLayout.rect1Line2.y * mmPx, fonts.avant, baseLayout.rect1Line2.size, baseLayout.rect1Line2.spacing, 0, logoTextColor, 'center', null, dpiVal, ctx);
-
-    // 繪製主要文字 (深色)
-    const mainTextColor = '#1A1A1A';
-    drawText([$('text2')?.value || ''], baseLayout.text2.x * mmPx, baseLayout.text2.y * mmPx, fonts.kozgo, baseLayout.text2.size, baseLayout.text2.spacing, 0, mainTextColor, 'left', fonts.ar, dpiVal, ctx);
-    drawText([$('text3Line1')?.value || ''], baseLayout.text3Line1.x * mmPx, baseLayout.text3Line1.y * mmPx, fonts.kozgo, baseLayout.text3Line1.size, baseLayout.text3Line1.spacing, 0, mainTextColor, 'left', fonts.ar, dpiVal, ctx);
-    drawText([$('text3Line2')?.value || ''], baseLayout.text3Line2.x * mmPx, baseLayout.text3Line2.y * mmPx, fonts.kozgo, baseLayout.text3Line2.size, baseLayout.text3Line2.spacing, 0, mainTextColor, 'left', fonts.ar, dpiVal, ctx);
+    // 繪製 Logo (置中需特判)
+    targetCtx.fillStyle = logoTextColor;
+    targetCtx.textAlign = 'center';
     
-    drawText([$('text4Line1')?.value || ''], baseLayout.text4Line1.x * mmPx, baseLayout.text4Line1.y * mmPx, fonts.kozgo, baseLayout.text4Line1.size, baseLayout.text4Line1.spacing, 0, mainTextColor, 'left', fonts.ar, dpiVal, ctx);
-    drawText([$('text4Line2')?.value || ''], baseLayout.text4Line2.x * mmPx, baseLayout.text4Line2.y * mmPx, fonts.kozgo, baseLayout.text4Line2.size, baseLayout.text4Line2.spacing, 0, mainTextColor, 'left', fonts.ar, dpiVal, ctx);
-    drawText([$('text5')?.value || ''], baseLayout.text5.x * mmPx, baseLayout.text5.y * mmPx, fonts.kozgo, baseLayout.text5.size, baseLayout.text5.spacing, 0, mainTextColor, 'left', fonts.ar, dpiVal, ctx);
-    drawText([$('text6')?.value || ''], baseLayout.text6.x * mmPx, baseLayout.text6.y * mmPx, fonts.kozgo, baseLayout.text6.size, baseLayout.text6.spacing, 0, mainTextColor, 'left', fonts.ar, dpiVal, ctx);
+    let l1X = parseFloat($('rect1Line1X').value) * mmPx + bleedOffset;
+    let l1Y = parseFloat($('rect1Line1Y').value) * mmPx + bleedOffset;
+    let l1Size = parseFloat($('rect1Size').value);
+    targetCtx.font = `${l1Size * (dpiVal / 72)}px ${fonts.avant}`;
+    targetCtx.fillText($('rect1Line1').value, l1X, l1Y);
 
-    // 繪製 Footer 文字 (使用 Logo 相同嘅對比色)
-    drawText(["<主催 ‧ お問い合せ>"], 54 * mmPx, baseLayout.footerLines.y * mmPx, fonts.kozgo, 7, 236, 0, logoTextColor, 'left', fonts.ar, dpiVal, ctx);
-    drawText([$('text11')?.value || ''], 80.5 * mmPx, baseLayout.footerLines.y * mmPx, fonts.kozgo, 10, 238, 0, logoTextColor, 'left', fonts.ar, dpiVal, ctx);
-    drawText(["TEL:01-2345-6789"], 108 * mmPx, 64 * mmPx, fonts.kozgo, 12.5, 236, 0, logoTextColor, 'left', fonts.ar, dpiVal, ctx);
+    let l2X = parseFloat($('rect1Line2X').value) * mmPx + bleedOffset;
+    let l2Y = parseFloat($('rect1Line2Y').value) * mmPx + bleedOffset;
+    let l2Size = parseFloat($('rect1Line2Size').value);
+    targetCtx.font = `${l2Size * (dpiVal / 72)}px ${fonts.avant}`;
+    targetCtx.fillText($('rect1Line2').value, l2X, l2Y);
 
-    // 繪製 QR 碼
-    const qrUrl = $('qrCodeUrl')?.value;
-    if (qrUrl && qrImage) {
+    // 主要文字 (深色, 啟用可讀性增強)
+    const mainTextColor = '#000000';
+    drawText([$('text2').value], parseFloat($('text2X')?.value || 37) * mmPx + bleedOffset, parseFloat($('text2Y')?.value || 12) * mmPx + bleedOffset, fonts.kozgo, 14.2, 2000, mainTextColor, targetCtx, dpiVal, fonts.ar, true);
+    drawText([$('text3Line1').value], 35 * mmPx + bleedOffset, 19 * mmPx + bleedOffset, fonts.kozgo, 14.2, 2000, mainTextColor, targetCtx, dpiVal, fonts.ar, true);
+    drawText([$('text3Line2').value], 35 * mmPx + bleedOffset, 25 * mmPx + bleedOffset, fonts.kozgo, 14.2, 2000, mainTextColor, targetCtx, dpiVal, fonts.ar, true);
+    drawText([$('text4Line1').value], 13 * mmPx + bleedOffset, 43 * mmPx + bleedOffset, fonts.kozgo, 11, 1000, mainTextColor, targetCtx, dpiVal, fonts.ar, true);
+    drawText([$('text4Line2').value], 13 * mmPx + bleedOffset, 48 * mmPx + bleedOffset, fonts.kozgo, 11, 1000, mainTextColor, targetCtx, dpiVal, fonts.ar, true);
+    drawText([$('text5').value], 13 * mmPx + bleedOffset, 55 * mmPx + bleedOffset, fonts.kozgo, 16, 200, mainTextColor, targetCtx, dpiVal, fonts.ar, true);
+    drawText([$('text6').value], 36 * mmPx + bleedOffset, 55 * mmPx + bleedOffset, fonts.kozgo, 13, 311, mainTextColor, targetCtx, dpiVal, fonts.ar, true);
+
+    // Footer 文字
+    drawText(["<主催 ‧ お問い合せ>"], 54 * mmPx + bleedOffset, 63.5 * mmPx + bleedOffset, fonts.kozgo, 7, 236, logoTextColor, targetCtx, dpiVal, fonts.ar, false);
+    drawText([$('text11').value], 80.5 * mmPx + bleedOffset, 63.5 * mmPx + bleedOffset, fonts.kozgo, 10, 238, logoTextColor, targetCtx, dpiVal, fonts.ar, false);
+    drawText(["TEL:01-2345-6789"], 108 * mmPx + bleedOffset, 64 * mmPx + bleedOffset, fonts.kozgo, 12.5, 236, logoTextColor, targetCtx, dpiVal, fonts.ar, false);
+
+    // 16. QR 碼預設方塊邏輯
+    if ($('showQR').checked) {
         const qs = 23 * mmPx;
-        const qx = w - (8.5 * mmPx) - qs;
-        const qy = 23 * mmPx;
-        ctx.fillStyle = colorA;
-        ctx.fillRect(qx, qy, qs, qs);
-        ctx.drawImage(qrImage, qx, qy, qs, qs);
+        const qx = w - (8.5 * mmPx) - qs - (bleed ? 3*mmPx : 0);
+        const qy = 23 * mmPx + bleedOffset;
+        targetCtx.fillStyle = colorA;
+        targetCtx.fillRect(qx, qy, qs, qs); // Default Colored Box
+        
+        if ($('qrCodeUrl').value && qrImage) {
+            targetCtx.drawImage(qrImage, qx, qy, qs, qs);
+        }
     }
 };
 
 const debouncedDrawTicket = debounce((dpiVal) => drawTicket(dpiVal), 150);
 
 // ==========================================
-// 4. UI 邏輯與成員數據
+// 2. 字體載入等待
+// ==========================================
+async function waitForFonts() {
+    const fontPromises = [
+        document.fonts.load(`400 47px "${fonts.avant}"`),
+        document.fonts.load(`400 14.2px "${fonts.kozgo}"`),
+        document.fonts.load(`400 14.2px "${fonts.ar}"`)
+    ];
+    try {
+        await Promise.all(fontPromises);
+        console.log("Fonts loaded.");
+    } catch (err) {
+        console.error('Font loading failed:', err);
+    }
+}
+
+// ==========================================
+// 4. 成員數據載入與 UI
 // ==========================================
 async function loadMembers() {
     try {
         const response = await fetch('members.json');
         members = await response.json();
-        
         const selector = $('memberSelector');
         const groups = {};
+        
         members.forEach(m => {
-            const gen = m.generation || '其他成員';
+            const gen = m.generation || '其他';
             if(!groups[gen]) groups[gen] = [];
             groups[gen].push(m);
         });
@@ -217,7 +287,6 @@ async function loadMembers() {
     }
 }
 
-// 應用成員專屬配色 (雙色應用)
 $('memberSelector')?.addEventListener('change', (e) => {
     const member = members.find(m => m.name_ja === e.target.value);
     if (member) {
@@ -225,17 +294,74 @@ $('memberSelector')?.addEventListener('change', (e) => {
         $('memberAvatar').src = member.image;
         $('memberName').textContent = member.name_ja;
         
-        // 雙色邏輯應用
-        $('rect1Color').value = member.color_a; // 方塊色
-        $('bgColor').value = member.color_b === '#ffffff' ? '#F5F5F5' : member.color_b; // 背景色避免純白太刺眼
+        // 19. 光暈效果
+        $('memberAvatar').style.boxShadow = `0 0 15px ${member.color_a}`;
         
+        $('rect1Color').value = member.color_a; 
+        $('bgColor').value = member.color_b === '#ffffff' ? '#FDF9FA' : member.color_b; 
         debouncedDrawTicket(70);
     } else {
         $('memberHeader').style.display = 'none';
     }
 });
 
-// QR 碼生成
+// ==========================================
+// 19. 漣漪特效與 12. 分區 Hover 反饋
+// ==========================================
+document.addEventListener('mousedown', function(e) {
+    if(e.target.tagName === 'CANVAS' || e.target.closest('.hover-zone')) {
+        let ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        ripple.style.left = e.clientX - 20 + 'px';
+        ripple.style.top = e.clientY - 20 + 'px';
+        ripple.style.width = '40px'; ripple.style.height = '40px';
+        document.body.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    }
+});
+
+// 畫布上方隱形區塊點擊切換抽屜
+document.querySelectorAll('.hover-zone').forEach(zone => {
+    zone.addEventListener('click', () => {
+        const targetId = zone.id.replace('zone-', 'sec-');
+        const icon = document.querySelector(`.nav-icon[data-target="${targetId}"]`);
+        if(icon) icon.click();
+    });
+});
+
+// ==========================================
+// 15. 抽屜導航與 11. 進階設定
+// ==========================================
+function initSidebarNav() {
+    const navIcons = document.querySelectorAll('.nav-icon:not(.special-link)');
+    const sections = document.querySelectorAll('.drawer-section');
+
+    navIcons.forEach(icon => {
+        icon.addEventListener('click', () => {
+            navIcons.forEach(i => i.classList.remove('active'));
+            icon.classList.add('active');
+            
+            sections.forEach(sec => sec.style.display = 'none');
+            const targetSec = $(icon.getAttribute('data-target'));
+            if(targetSec) {
+                targetSec.style.display = 'block';
+            }
+        });
+    });
+}
+
+$('advToggleBtn')?.addEventListener('click', () => {
+    const advAreas = document.querySelectorAll('.advanced-options');
+    let isActive = false;
+    advAreas.forEach(el => {
+        el.classList.toggle('active');
+        if(el.classList.contains('active')) isActive = true;
+    });
+    $('advToggleBtn').querySelector('span').textContent = isActive ? langs[currentLang].simple_mode : langs[currentLang].advanced_mode;
+});
+
+
+// QR
 $('qrCodeUrl')?.addEventListener('input', debounce(() => {
     const url = $('qrCodeUrl').value;
     const qrContainer = $('qrPreview');
@@ -253,39 +379,10 @@ $('qrCodeUrl')?.addEventListener('input', debounce(() => {
     }, 300);
 }, 500));
 
-// 導航列切換
-function initSidebarNav() {
-    const navIcons = document.querySelectorAll('.nav-icon:not(.special-link)');
-    const sections = document.querySelectorAll('.drawer-section');
-    sections.forEach((sec, i) => sec.style.display = i === 0 ? 'block' : 'none');
+$('showQR').addEventListener('change', () => debouncedDrawTicket(70));
 
-    navIcons.forEach((icon, index) => {
-        icon.addEventListener('click', () => {
-            navIcons.forEach(i => i.classList.remove('active'));
-            icon.classList.add('active');
-            sections.forEach(sec => { sec.style.opacity = '0'; setTimeout(() => sec.style.display = 'none', 150); });
-            setTimeout(() => {
-                if(sections[index]) { sections[index].style.display = 'block'; setTimeout(() => sections[index].style.opacity = '1', 50); }
-            }, 150);
-        });
-    });
-}
-
-// 歸一化 Slider 綁定
-document.querySelectorAll('input[type="range"]').forEach(slider => {
-    slider.addEventListener('input', (e) => {
-        const valSpan = $(e.target.id.replace('_slider', '_val'));
-        if(valSpan) {
-            const val = parseFloat(e.target.value);
-            valSpan.textContent = val > 0 ? `+${val}` : val;
-            valSpan.style.color = val === 0 ? 'var(--text-muted)' : 'var(--primary)';
-        }
-        debouncedDrawTicket(70);
-    });
-});
-
-// 即時更新綁定
-document.querySelectorAll('input[type="text"], input[type="color"]').forEach(el => {
+// Inputs binding
+document.querySelectorAll('input[type="text"], input[type="number"], input[type="color"]').forEach(el => {
     el.addEventListener('input', () => debouncedDrawTicket(70));
 });
 
@@ -295,9 +392,44 @@ $('themeToggleBtn')?.addEventListener('click', () => {
     document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
 });
 
+// ==========================================
+// 17 & 18. 下載與出血位
+// ==========================================
+$('downloadBtn')?.addEventListener('click', () => {
+    $('downloadModal').style.display = 'flex';
+});
+
+$('dl300')?.addEventListener('click', async () => {
+    $('downloadModal').style.display = 'none';
+    const tempCanvas = document.createElement('canvas');
+    await drawTicket(300, tempCanvas.getContext('2d'));
+    triggerDownload(tempCanvas, '300dpi');
+});
+
+$('dl70')?.addEventListener('click', async () => {
+    $('downloadModal').style.display = 'none';
+    const tempCanvas = document.createElement('canvas');
+    await drawTicket(70, tempCanvas.getContext('2d'));
+    triggerDownload(tempCanvas, '70dpi');
+});
+
+$('bleedOption')?.addEventListener('change', () => {
+    debouncedDrawTicket(70);
+});
+
+function triggerDownload(canvasObj, dpiStr) {
+    const link = document.createElement('a');
+    link.download = `Ticket_${dpiStr}_${Date.now()}.png`;
+    link.href = canvasObj.toDataURL('image/png');
+    link.click();
+}
+
+window.addEventListener('resize', () => debouncedDrawTicket(70));
+
 window.onload = async () => {
-    await loadLanguages();
+    await waitForFonts(); // 2. 強制等待字體
+    await loadLanguages(); // 14. 載入語言並自動偵測
     await loadMembers();
     initSidebarNav();
-    drawTicket(70);
+    drawTicket(70); // 初次渲染
 };
