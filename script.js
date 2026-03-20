@@ -10,7 +10,6 @@ const dpi = {
 };
 
 let langs = {}, currentLang = 'ja';
-let previewScale = window.innerWidth > 800 ? 1.5 : 1.0; 
 let members = [], qrImage = null;
 
 const debounce = (func, delay) => {
@@ -121,19 +120,9 @@ const drawTicket = async (dpiVal, targetCtx = ctx) => {
     const mmPx = dpiVal / 25.4;
     const bleedOffset = bleed ? 3 * mmPx : 0;
 
+    // 1. 設定真實解像度 (顯示大小由 CSS 控制)
     targetCtx.canvas.width = w; 
     targetCtx.canvas.height = h;
-
-    if (targetCtx === ctx) {
-        // 7. 手機版 Canvas 比例自動適配，不寫死 px
-        if (window.innerWidth < 800) {
-            canvas.style.width = '100%';
-            canvas.style.height = 'auto';
-        } else {
-            canvas.style.width = `${w * previewScale}px`; 
-            canvas.style.height = `${h * previewScale}px`;
-        }
-    }
     
     targetCtx.clearRect(0, 0, w, h);
 
@@ -251,7 +240,7 @@ $('memberSelector')?.addEventListener('change', (e) => {
         $('rect1Color').value = member.color_a; 
         $('rect9Color').value = member.color_a; 
         
-        // 5. 判斷 A 色是否太亮，決定文字色
+        // 5. 判斷 A 色是否太亮，決定 Logo 與 Footer 文字色 (白色 -> 黑字)
         const lumA = getLuminance(member.color_a);
         const textColorA = lumA > 0.8 ? '#000000' : '#FFFFFF';
         $('rect1TextColor').value = textColorA;
@@ -270,15 +259,15 @@ $('memberSelector')?.addEventListener('change', (e) => {
     }
 });
 
-// 9. 真正全域的點擊漣漪 (忽略按鈕點擊)
+// 9. 全域點擊漣漪
 document.addEventListener('mousedown', function(e) {
-    if(['INPUT', 'BUTTON', 'SELECT', 'A'].includes(e.target.tagName)) return;
+    if(['INPUT', 'BUTTON', 'SELECT', 'A', 'I', 'LABEL'].includes(e.target.tagName)) return;
     let ripple = document.createElement('div');
     ripple.className = 'ripple';
     ripple.style.left = e.clientX - 20 + 'px';
     ripple.style.top = e.clientY - 20 + 'px';
     document.body.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 600);
+    setTimeout(() => ripple.remove(), 500);
 });
 
 function initSidebarNav() {
@@ -323,15 +312,10 @@ $('advToggleBtnMaster')?.addEventListener('click', () => {
     if(span) span.textContent = isActive ? langs[currentLang].simple_mode : langs[currentLang].advanced_mode;
 });
 
-// 6. 綁定簡易模式 Slider
-const sliderSyncs = [
-    { s: 's_rect1X', i: 'rect1Line1X' },
-    { s: 's_text2X', i: 'text2X' },
-    { s: 's_text4X', i: 'text4Line1X' }
-];
-sliderSyncs.forEach(pair => {
-    const slider = $(pair.s); const input = $(pair.i);
-    if(slider && input) {
+// 2. 綁定所有簡易微調 Slider
+document.querySelectorAll('.sync-slider').forEach(slider => {
+    const input = $(slider.getAttribute('data-target'));
+    if (input) {
         slider.addEventListener('input', e => { input.value = e.target.value; debouncedDrawTicket(70); });
         input.addEventListener('input', e => { slider.value = e.target.value; });
     }
@@ -354,9 +338,7 @@ $('qrCodeUrl')?.addEventListener('input', debounce(() => {
 }, 500));
 
 $('showQR').addEventListener('change', () => debouncedDrawTicket(70));
-document.querySelectorAll('input').forEach(el => {
-    if(!el.classList.contains('simple-slider')) el.addEventListener('input', () => debouncedDrawTicket(70));
-});
+document.querySelectorAll('input').forEach(el => { if(!el.classList.contains('sync-slider')) el.addEventListener('input', () => debouncedDrawTicket(70)); });
 $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
 $('themeToggleBtn')?.addEventListener('click', () => { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
 
