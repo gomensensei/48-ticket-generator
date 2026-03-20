@@ -146,7 +146,7 @@ const drawTicket = async (exportDpi = null, exportFormat = 'png') => {
     targetCtx.fillStyle = colorB;
     targetCtx.fillRect(0, 0, w, h);
 
-    const bgTextStr = $('bgText')?.value || 'YSS48';
+    const bgTextStr = $('bgText')?.value || 'AKB48';
     const bgTextX = parseFloat($('bgTextX')?.value || -100) * mmPx + bleedOffset;
     const bgTextY = parseFloat($('bgTextY')?.value || 0) * mmPx + bleedOffset;
     const bgTextSpacing = parseFloat($('bgTextSpacing')?.value || -6000), bgTextSize = parseFloat($('bgTextSize')?.value || 62), bgTextLineHeight = parseFloat($('bgTextLineHeight')?.value || 46);
@@ -277,7 +277,6 @@ $('configFileInput')?.addEventListener('change', (e) => {
     reader.readAsText(file);
 });
 
-// A/B 色互換邏輯
 $('swapBgColors')?.addEventListener('click', () => {
     const temp = $('rect1Color').value;
     $('rect1Color').value = $('bgColor').value;
@@ -285,7 +284,6 @@ $('swapBgColors')?.addEventListener('click', () => {
     debouncedDrawTicket();
 });
 
-// 文字/陰影色互換邏輯
 $('swapTextShadowColors')?.addEventListener('click', () => {
     const temp = $('bgTextColor').value;
     $('bgTextColor').value = $('bgShadowColor').value;
@@ -310,16 +308,14 @@ $('memberSelector')?.addEventListener('change', (e) => {
         let bColor = member.color_b === '#ffffff' ? '#FDF9FA' : member.color_b;
         $('bgColor').value = bColor; 
         
-        // 神推選色邏輯：文字同陰影色互換
         const mutedTextColor = getMutedDarkColor(bColor);
         const lighterColor = getLighterMutedColor(mutedTextColor);
-        $('bgTextColor').value = lighterColor;    // 原本係 muted，而家變 lighter
-        $('bgShadowColor').value = mutedTextColor; // 原本係 lighter，而家變 muted
+        $('bgTextColor').value = lighterColor;    
+        $('bgShadowColor').value = mutedTextColor; 
         
         $('bgTextOpacity').value = 1;     
         $('bgShadowOpacity').value = 0.25; 
         
-        // 同步 Slider 數值
         const opacitySlider = document.querySelector('.sync-slider[data-target="bgTextOpacity"]');
         if (opacitySlider) opacitySlider.value = 1;
         const shadowSlider = document.querySelector('.sync-slider[data-target="bgShadowOpacity"]');
@@ -341,6 +337,32 @@ document.addEventListener('mousedown', function(e) {
 });
 
 function initSidebarNav() {
+    document.querySelectorAll('.hover-zone').forEach(zone => {
+        zone.addEventListener('click', () => {
+            const targetId = zone.id.replace('zone-', 'sec-');
+            const icon = document.querySelector(`.nav-icon[data-target="${targetId}"]`);
+            if(icon) {
+                const drawer = $('settingsDrawer');
+                const sections = document.querySelectorAll('.drawer-section');
+                const navIcons = document.querySelectorAll('.nav-icon:not(.special-link)');
+                
+                navIcons.forEach(i => i.classList.remove('active'));
+                sections.forEach(sec => sec.style.display = 'none');
+                
+                icon.classList.add('active');
+                drawer.classList.add('open');
+                const targetSec = $(targetId);
+                if(targetSec) targetSec.style.display = 'block';
+                
+                if (window.innerWidth <= 800) {
+                    setTimeout(() => {
+                        drawer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 50);
+                }
+            }
+        });
+    });
+
     const navIcons = document.querySelectorAll('.nav-icon:not(.special-link)'), sections = document.querySelectorAll('.drawer-section'), drawer = $('settingsDrawer');
     navIcons.forEach(icon => {
         icon.addEventListener('click', () => {
@@ -364,7 +386,6 @@ $('advToggleBtnMaster')?.addEventListener('click', () => {
     const span = $('advToggleBtnMaster').querySelector('span');
     if(span) span.textContent = isActive ? langs[currentLang].simple_mode : langs[currentLang].advanced_mode;
     
-    // 控制匯出匯入面板的顯示
     const backupActions = $('backupActions');
     if (backupActions) {
         if (isActive) backupActions.classList.add('active');
@@ -420,5 +441,30 @@ function triggerPDFDownload(canvasObj, hasBleed) {
     pdf.save(`Ticket_PrintReady_${Date.now()}.pdf`);
 }
 
+const workspace = document.querySelector('.workspace');
+if (workspace) {
+    workspace.addEventListener('scroll', () => {
+        const hint = document.querySelector('.scroll-hint-mobile');
+        if (hint) {
+            if (workspace.scrollTop > 20) {
+                hint.style.opacity = '0';
+                hint.style.pointerEvents = 'none';
+            } else {
+                hint.style.opacity = '1';
+            }
+        }
+    }, { passive: true });
+}
+
 window.addEventListener('resize', () => debouncedDrawTicket());
-window.onload = async () => { await waitForFonts(); await loadLanguages(); await loadMembers(); initSidebarNav(); drawTicket(); };
+
+window.onload = async () => { 
+    drawTicket(); 
+    await Promise.all([loadLanguages(), loadMembers()]);
+    initSidebarNav();
+    waitForFonts().then(() => debouncedDrawTicket()); 
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+    if(window.lucide) lucide.createIcons();
+});
