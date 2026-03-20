@@ -117,7 +117,7 @@ const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left
     context.shadowColor = 'transparent';
 };
 
-const drawTicket = async (exportDpi = null) => {
+const drawTicket = async (exportDpi = null, exportFormat = 'png') => {
     const isPreview = (exportDpi === null);
     const renderDpi = isPreview ? PREVIEW_DPI : exportDpi;
     const targetCtx = isPreview ? ctx : document.createElement('canvas').getContext('2d');
@@ -155,7 +155,7 @@ const drawTicket = async (exportDpi = null) => {
     const cw = targetCtx.measureText(bgTextStr.charAt(0)).width, tw = targetCtx.measureText(bgTextStr).width;
     const gx = tw + bgTextSpacing * (renderDpi/72) / 1000, gy = bgTextLineHeight * (renderDpi / 72);
     
-    targetCtx.globalAlpha = parseFloat($('bgShadowOpacity')?.value || 0.2);
+    targetCtx.globalAlpha = parseFloat($('bgShadowOpacity')?.value || 0.25);
     targetCtx.fillStyle = $('bgShadowColor')?.value || '#5F96ED';
     targetCtx.shadowColor = $('bgShadowColor')?.value || '#5F96ED';
     targetCtx.shadowOffsetX = parseFloat($('bgShadowX')?.value || 0.5) * mmPx;
@@ -165,7 +165,7 @@ const drawTicket = async (exportDpi = null) => {
         for (let x = bgTextX + (r * cw); x < w; x += gx) { targetCtx.fillText(bgTextStr, x, y); }
     }
     
-    targetCtx.globalAlpha = parseFloat($('bgTextOpacity')?.value || 0.15);
+    targetCtx.globalAlpha = parseFloat($('bgTextOpacity')?.value || 1);
     targetCtx.shadowOffsetX = 0; targetCtx.shadowOffsetY = 0;
     targetCtx.fillStyle = $('bgTextColor')?.value || '#888888';
     for (let y = bgTextY, r = 0; y < h; y += gy, r++) {
@@ -179,22 +179,22 @@ const drawTicket = async (exportDpi = null) => {
     targetCtx.fillRect(bleedOffset, 60 * mmPx + bleedOffset, 150 * mmPx, 5 * mmPx); 
     
     const logoTextColor = $('rect1TextColor')?.value || '#FFFFFF';
-    drawText([$('rect1Line1').value], parseFloat($('rect1Line1X').value) * mmPx + bleedOffset, parseFloat($('rect1Line1Y').value) * mmPx + bleedOffset, fonts.avant, parseFloat($('rect1Size').value), parseFloat($('rect1Spacing').value), 0, logoTextColor, 'center', null, renderDpi, targetCtx, false);
-    drawText([$('rect1Line2').value], parseFloat($('rect1Line2X').value) * mmPx + bleedOffset, parseFloat($('rect1Line2Y').value) * mmPx + bleedOffset, fonts.avant, parseFloat($('rect1Line2Size').value), parseFloat($('rect1Line2Spacing').value), 0, logoTextColor, 'center', null, renderDpi, targetCtx, false);
+    drawText([$('rect1Line1')?.value], parseFloat($('rect1Line1X')?.value || 13.6) * mmPx + bleedOffset, parseFloat($('rect1Line1Y')?.value || 12.5) * mmPx + bleedOffset, fonts.avant, parseFloat($('rect1Size')?.value || 47), parseFloat($('rect1Spacing')?.value || -7000), 0, logoTextColor, 'center', null, renderDpi, targetCtx, false);
+    drawText([$('rect1Line2')?.value], parseFloat($('rect1Line2X')?.value || 13.5) * mmPx + bleedOffset, parseFloat($('rect1Line2Y')?.value || 24.5) * mmPx + bleedOffset, fonts.avant, parseFloat($('rect1Line2Size')?.value || 47), parseFloat($('rect1Line2Spacing')?.value || -5000), 0, logoTextColor, 'center', null, renderDpi, targetCtx, false);
 
     const mainTextColor = $('textColor')?.value || '#000000';
-    drawText([$('text2').value], parseFloat($('text2X').value) * mmPx + bleedOffset, parseFloat($('text2Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text2Size').value), parseFloat($('text2Spacing').value), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
-    drawText([$('text3Line1').value], parseFloat($('text3Line1X').value) * mmPx + bleedOffset, parseFloat($('text3Line1Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text3Size').value), parseFloat($('text3Spacing').value), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
-    drawText([$('text3Line2').value], parseFloat($('text3Line2X').value) * mmPx + bleedOffset, parseFloat($('text3Line2Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text3Line2Size').value), parseFloat($('text3Line2Spacing').value), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
-    drawText([$('text4Line1').value], parseFloat($('text4Line1X').value) * mmPx + bleedOffset, parseFloat($('text4Line1Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text4Size').value), parseFloat($('text4Spacing').value), parseFloat($('text4LineHeight')?.value||14), mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
-    drawText([$('text4Line2').value], 13 * mmPx + bleedOffset, 48 * mmPx + bleedOffset, fonts.kozgo, 11, 1000, 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true); 
-    drawText([$('text5').value], parseFloat($('text5X').value) * mmPx + bleedOffset, parseFloat($('text5Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text5Size').value), parseFloat($('text5Spacing').value), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
-    drawText([$('text6').value], parseFloat($('text6X').value) * mmPx + bleedOffset, parseFloat($('text6Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text6Size').value), parseFloat($('text6Spacing').value), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text2')?.value], parseFloat($('text2X')?.value || 37) * mmPx + bleedOffset, parseFloat($('text2Y')?.value || 12) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text2Size')?.value || 14.2), parseFloat($('text2Spacing')?.value || 2000), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text3Line1')?.value], parseFloat($('text3Line1X')?.value || 35) * mmPx + bleedOffset, parseFloat($('text3Line1Y')?.value || 19) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text3Size')?.value || 14.2), parseFloat($('text3Spacing')?.value || 2000), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text3Line2')?.value], parseFloat($('text3Line2X')?.value || 35) * mmPx + bleedOffset, parseFloat($('text3Line2Y')?.value || 25) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text3Line2Size')?.value || 14.2), parseFloat($('text3Line2Spacing')?.value || 2000), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text4Line1')?.value], parseFloat($('text4Line1X')?.value || 13) * mmPx + bleedOffset, parseFloat($('text4Line1Y')?.value || 43) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text4Size')?.value || 11), parseFloat($('text4Spacing')?.value || 1000), parseFloat($('text4LineHeight')?.value||14), mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text4Line2')?.value], 13 * mmPx + bleedOffset, 48 * mmPx + bleedOffset, fonts.kozgo, 11, 1000, 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true); 
+    drawText([$('text5')?.value], parseFloat($('text5X')?.value || 13) * mmPx + bleedOffset, parseFloat($('text5Y')?.value || 55) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text5Size')?.value || 16), parseFloat($('text5Spacing')?.value || 200), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text6')?.value], parseFloat($('text6X')?.value || 36) * mmPx + bleedOffset, parseFloat($('text6Y')?.value || 55) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text6Size')?.value || 13), parseFloat($('text6Spacing')?.value || 311), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
 
     const footerTextColor = $('footerTextColor')?.value || '#FFFFFF';
-    drawText([$('text10').value], parseFloat($('text10X').value) * mmPx + bleedOffset, parseFloat($('text10Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text10Size').value), parseFloat($('text10Spacing').value), 0, footerTextColor, 'left', fonts.ar, renderDpi, targetCtx, false);
-    drawText([$('text11').value], parseFloat($('text11X').value) * mmPx + bleedOffset, parseFloat($('text11Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text11Size').value), parseFloat($('text11Spacing').value), 0, footerTextColor, 'left', fonts.ar, renderDpi, targetCtx, false);
-    drawText([$('text12').value], parseFloat($('text12X').value) * mmPx + bleedOffset, parseFloat($('text12Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text12Size').value), parseFloat($('text12Spacing').value), 0, footerTextColor, 'left', fonts.ar, renderDpi, targetCtx, false);
+    drawText([$('text10')?.value], parseFloat($('text10X')?.value || 54) * mmPx + bleedOffset, parseFloat($('text10Y')?.value || 63.5) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text10Size')?.value || 7), parseFloat($('text10Spacing')?.value || 236), 0, footerTextColor, 'left', fonts.ar, renderDpi, targetCtx, false);
+    drawText([$('text11')?.value], parseFloat($('text11X')?.value || 80.5) * mmPx + bleedOffset, parseFloat($('text11Y')?.value || 63.5) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text11Size')?.value || 10), parseFloat($('text11Spacing')?.value || 238), 0, footerTextColor, 'left', fonts.ar, renderDpi, targetCtx, false);
+    drawText([$('text12')?.value], parseFloat($('text12X')?.value || 108) * mmPx + bleedOffset, parseFloat($('text12Y')?.value || 64) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text12Size')?.value || 12.5), parseFloat($('text12Spacing')?.value || 236), 0, footerTextColor, 'left', fonts.ar, renderDpi, targetCtx, false);
 
     if ($('showQR').checked) {
         const qs = 23 * mmPx, qx = w - (8.5 * mmPx) - qs - (bleed ? 3*mmPx : 0), qy = 23 * mmPx + bleedOffset;
@@ -203,7 +203,13 @@ const drawTicket = async (exportDpi = null) => {
         if ($('qrCodeUrl').value && qrImage) { targetCtx.drawImage(qrImage, qx, qy, qs, qs); }
     }
 
-    if (!isPreview) triggerDownload(targetCtx.canvas, `${exportDpi}dpi`);
+    if (!isPreview) {
+        if (exportFormat === 'pdf') {
+            triggerPDFDownload(targetCtx.canvas, bleed);
+        } else {
+            triggerDownload(targetCtx.canvas, `${exportDpi}dpi`);
+        }
+    }
 };
 
 const debouncedDrawTicket = debounce(() => drawTicket(), 150);
@@ -290,7 +296,8 @@ $('memberSelector')?.addEventListener('change', (e) => {
         const mutedTextColor = getMutedDarkColor(bColor);
         $('bgTextColor').value = mutedTextColor;
         $('bgShadowColor').value = getLighterMutedColor(mutedTextColor);
-        $('bgTextOpacity').value = 0.15;
+        $('bgTextOpacity').value = 1;     // 預設更新為 1
+        $('bgShadowOpacity').value = 0.25; // 預設更新為 0.25
         debouncedDrawTicket();
     } else {
         $('memberHeader').style.display = 'none';
@@ -358,12 +365,32 @@ $('showQR').addEventListener('change', () => debouncedDrawTicket());
 document.querySelectorAll('input').forEach(el => { if(!el.classList.contains('sync-slider')) el.addEventListener('input', () => debouncedDrawTicket()); });
 $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
 $('themeToggleBtn')?.addEventListener('click', () => { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
+
 $('downloadBtn')?.addEventListener('click', () => $('downloadModal').style.display = 'flex');
-$('dl300')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(300); });
-$('dl70')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(70); });
+$('dlPDF')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(300, 'pdf'); });
+$('dl300')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(300, 'png'); });
+$('dl70')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(70, 'png'); });
 
 function triggerDownload(canvasObj, dpiStr) {
     const link = document.createElement('a'); link.download = `Ticket_${dpiStr}_${Date.now()}.png`; link.href = canvasObj.toDataURL('image/png'); link.click();
+}
+
+// PDF 匯出函數
+function triggerPDFDownload(canvasObj, hasBleed) {
+    const { jsPDF } = window.jspdf;
+    const w_mm = hasBleed ? 156 : 150;
+    const h_mm = hasBleed ? 71 : 65;
+    
+    const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [w_mm, h_mm]
+    });
+    
+    // 使用高畫質 JPEG 可以大大減小 PDF 檔案體積，如果想無損可以用 PNG
+    const imgData = canvasObj.toDataURL('image/jpeg', 1.0);
+    pdf.addImage(imgData, 'JPEG', 0, 0, w_mm, h_mm);
+    pdf.save(`Ticket_PrintReady_${Date.now()}.pdf`);
 }
 
 window.addEventListener('resize', () => debouncedDrawTicket());
