@@ -2,9 +2,8 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title data-i18n="site_title">チケットジェネレーター (Reiwa Edition)</title>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -15,102 +14,102 @@
         @font-face { font-family: 'KozGoPr6N'; src: url('fonts/KozGoPr6N-Medium.woff2') format('woff2'); }
 
         :root {
-            /* 極致毛玻璃變數 */
             --bg-color: #FDF9FA;
-            --bg-panel: rgba(255, 255, 255, 0.4);
-            --bg-panel-solid: rgba(255, 255, 255, 0.7);
+            --bg-panel: rgba(255, 255, 255, 0.45);
+            --bg-panel-solid: rgba(255, 255, 255, 0.8);
             --primary: #F676A6;
             --primary-hover: #E55A8C;
             --text-main: #333333;
-            --text-muted: #555555;
+            --text-muted: #666666;
             --border-glass: rgba(255, 255, 255, 0.6);
-            --border-glass-light: rgba(255, 255, 255, 0.8);
-            --shadow-soft: 0 12px 40px rgba(246, 118, 166, 0.15);
+            --border-glass-light: rgba(255, 255, 255, 0.9);
+            --shadow-soft: 0 8px 32px rgba(246, 118, 166, 0.12);
             --color-a: #2086D1; 
             --color-b: #E5EDF9; 
         }
 
         [data-theme="dark"] {
             --bg-color: #121212;
-            --bg-panel: rgba(20, 20, 20, 0.5);
-            --bg-panel-solid: rgba(30, 30, 30, 0.8);
+            --bg-panel: rgba(20, 20, 20, 0.6);
+            --bg-panel-solid: rgba(30, 30, 30, 0.9);
             --text-main: #EEEEEE;
             --text-muted: #AAAAAA;
-            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-glass: rgba(255, 255, 255, 0.1);
             --border-glass-light: rgba(255, 255, 255, 0.15);
-            --shadow-soft: 0 12px 40px rgba(0, 0, 0, 0.5);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
+        /* 8. 更明顯的動態漸變背景 */
         body { 
             font-family: 'KozGoPr6N', 'Noto Sans JP', sans-serif; 
             color: var(--text-main); 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden;
-            background: linear-gradient(-45deg, #FFF4F6, #E5EDF9, #FDF9FA, #F5F0F2);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+            background: linear-gradient(-45deg, #FFD1DF, #C2D8FA, #FFF0F5, #E8D5F0);
+            background-size: 300% 300%;
+            animation: gradientBG 10s ease infinite;
         }
-        [data-theme="dark"] body { background: linear-gradient(-45deg, #1A1214, #121A22, #121212, #181516); background-size: 400% 400%; }
+        [data-theme="dark"] body { background: linear-gradient(-45deg, #2A151D, #1A2433, #151515, #261A28); background-size: 300% 300%; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* 全域點擊漣漪 */
-        .ripple { position: fixed; border-radius: 50%; background: rgba(246, 118, 166, 0.4); width: 40px; height: 40px; transform: scale(0); animation: ripple-anim 0.6s ease-out; pointer-events: none; z-index: 99999; }
-        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+        /* 9. 全域點擊漣漪 */
+        .ripple { position: fixed; border-radius: 50%; background: rgba(246, 118, 166, 0.5); width: 40px; height: 40px; transform: scale(0); animation: ripple-anim 0.5s ease-out; pointer-events: none; z-index: 99999; }
+        @keyframes ripple-anim { to { transform: scale(3.5); opacity: 0; } }
 
-        .glass { background: var(--bg-panel); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--border-glass); border-top: 1px solid var(--border-glass-light); border-left: 1px solid var(--border-glass-light); box-shadow: var(--shadow-soft); }
-        .glass-solid { background: var(--bg-panel-solid); backdrop-filter: blur(30px); border: 1px solid var(--border-glass); box-shadow: var(--shadow-soft); }
+        .glass { background: var(--bg-panel); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-glass); border-top: 1px solid var(--border-glass-light); border-left: 1px solid var(--border-glass-light); box-shadow: var(--shadow-soft); }
+        .glass-solid { background: var(--bg-panel-solid); backdrop-filter: blur(25px); border: 1px solid var(--border-glass); box-shadow: var(--shadow-soft); }
 
         .topbar { height: 60px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid var(--border-glass); }
-        .brand-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); text-shadow: 0 2px 10px rgba(246,118,166,0.2); }
-        .topbar-tools { display: flex; align-items: center; gap: 16px; }
+        .brand-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); text-shadow: 0 2px 10px rgba(246,118,166,0.2); white-space: nowrap; }
+        .topbar-tools { display: flex; align-items: center; gap: 12px; }
         .tool-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; }
         .tool-btn:hover { background: rgba(246, 118, 166, 0.1); color: var(--primary); }
-        .lang-select { background: rgba(255,255,255,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 6px 12px; border-radius: 8px; outline: none; font-family: inherit; font-weight: 500;}
+        .lang-select { background: rgba(255,255,255,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 6px 10px; border-radius: 8px; outline: none; font-family: inherit; font-weight: 500; font-size: 0.9rem;}
         [data-theme="dark"] .lang-select { background: rgba(0,0,0,0.3); }
 
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
         .canvas-area { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; overflow: auto; padding: 20px; transition: 0.3s;}
         
-        /* 雙色呼吸燈頭像 */
+        /* 9. 成員頭像雙色光暈與反光 */
         .member-header { position: absolute; top: 20px; display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-radius: 100px; z-index: 10; transition: 0.3s; }
-        .member-avatar-wrap { position: relative; padding: 4px; border-radius: 50%; background: linear-gradient(45deg, var(--color-a), var(--color-b)); animation: breathe 2.5s infinite alternate ease-in-out; }
-        .member-avatar-wrap img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-panel-solid); display: block;}
-        .member-header h2 { font-size: 1.4rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        @keyframes breathe { 0% { box-shadow: 0 0 10px var(--color-a); transform: scale(1); } 100% { box-shadow: 0 0 25px var(--color-a), 0 0 15px var(--color-b); transform: scale(1.05); } }
-
-        .canvas-wrapper { position: relative; transition: transform 0.2s; }
-        canvas { display: block; max-width: 100%; height: auto; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
+        .member-avatar-wrap { position: relative; padding: 4px; border-radius: 50%; background: linear-gradient(45deg, var(--color-a), var(--color-b)); animation: breathe 2s infinite alternate ease-in-out; }
+        .member-avatar-wrap img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-panel-solid); display: block; position: relative; z-index: 2;}
+        /* 反光點 */
+        .member-avatar-wrap::after { content: ''; position: absolute; top: 8px; left: 8px; width: 15px; height: 15px; background: rgba(255,255,255,0.6); border-radius: 50%; filter: blur(2px); z-index: 3; }
+        .member-header h2 { font-size: 1.3rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
-        /* 精準 Hover Zones */
+        @keyframes breathe { 0% { box-shadow: 0 0 10px 2px var(--color-a); transform: scale(1); } 100% { box-shadow: 0 0 25px 6px var(--color-b); transform: scale(1.05); } }
+
+        .canvas-wrapper { position: relative; transition: transform 0.2s; max-width: 100%; display: flex; justify-content: center; }
+        canvas { display: block; height: auto; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
+        
+        /* 5. 更精準的 Hover Zones */
         .hover-zone { position: absolute; border: 2px dashed transparent; border-radius: 8px; cursor: pointer; transition: 0.2s; z-index: 5; }
         .hover-zone:hover { border-color: var(--primary); background: rgba(246, 118, 166, 0.08); }
-        .hover-zone::after { content: attr(data-label); position: absolute; top: -35px; left: 50%; transform: translateX(-50%); background: var(--bg-panel-solid); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--primary); padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .hover-zone::after { content: attr(data-label); position: absolute; top: -35px; left: 50%; transform: translateX(-50%); background: var(--bg-panel-solid); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--primary); padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
         .hover-zone:hover::after { opacity: 1; }
         
         #zone-bg { top: 0%; left: 0%; width: 100%; height: 100%; z-index: 1; } 
-        #zone-logo { top: 0%; left: 5.3%; width: 17%; height: 54%; z-index: 2; }
-        #zone-event { top: 18%; left: 24%; width: 50%; height: 38%; z-index: 2; }
+        #zone-logo { top: 0%; left: 5%; width: 17%; height: 55%; z-index: 2; }
+        #zone-event { top: 18%; left: 23%; width: 52%; height: 38%; z-index: 2; }
         #zone-date { top: 66%; left: 8.6%; width: 45%; height: 20%; z-index: 2; }
-        #zone-qr { top: 35%; right: 5%; width: 15.5%; height: 35%; z-index: 2; }
+        #zone-qr { top: 35%; right: 5%; width: 16%; height: 35%; z-index: 2; }
         #zone-others { top: 92.3%; left: 0%; width: 100%; height: 7.7%; z-index: 2; }
 
-        .fab-group { position: absolute; bottom: 30px; display: flex; gap: 16px; z-index: 10; }
-        .btn-primary, .btn-secondary { padding: 12px 28px; border-radius: 100px; border: none; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 1.05rem; }
+        /* 防止按鈕變直立文字 */
+        .fab-group { position: absolute; bottom: 30px; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 16px; z-index: 10; white-space: nowrap; }
+        .btn-primary, .btn-secondary { padding: 12px 28px; border-radius: 100px; border: none; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 1rem; flex-shrink: 0; white-space: nowrap; }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(246, 118, 166, 0.4); }
         .btn-primary:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(246, 118, 166, 0.6); }
         .btn-secondary { background: var(--bg-panel-solid); color: var(--text-main); border: 1px solid var(--border-glass); }
         .btn-secondary:hover { transform: translateY(-4px); color: var(--primary); }
 
-        /* 順滑抽屜面板 */
-        .drawer { width: 0; padding: 24px 0; opacity: 0; border-left: none; overflow-x: hidden; overflow-y: auto; transition: all 0.3s ease-out; z-index: 20; }
+        .drawer { width: 0; padding: 24px 0; opacity: 0; border-left: none; overflow-x: hidden; overflow-y: auto; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 20; }
         .drawer.open { width: 420px; padding: 24px; opacity: 1; border-left: 1px solid var(--border-glass); }
         .drawer::-webkit-scrollbar { width: 6px; }
         .drawer::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 10px; }
-        .drawer-inner { width: 370px; } /* 固定內部寬度，防止動畫期間排版崩塌 */
+        .drawer-inner { width: 370px; } 
         
         .drawer-section { margin-bottom: 24px; display: none; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -126,6 +125,7 @@
         .adv-toggle-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 100px; transition: 0.2s; }
         .adv-toggle-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
         [data-theme="dark"] .adv-toggle-btn:hover { background: rgba(255,255,255,0.05); }
+        
         .advanced-options { display: none; background: rgba(0,0,0,0.03); padding: 16px; border-radius: 12px; margin-top: 6px; border: 1px solid var(--border-glass); }
         [data-theme="dark"] .advanced-options { background: rgba(255,255,255,0.03); }
         .advanced-options.active { display: block; animation: fadeIn 0.3s ease; }
@@ -133,24 +133,30 @@
         .adv-row label { width: 60px; font-size: 0.8rem; color: var(--text-muted); }
         .adv-row input { flex: 1; padding: 8px 12px; }
 
+        /* 6. 簡易微調 Slider */
+        .simple-slider-wrap { display: flex; align-items: center; gap: 10px; margin-top: 8px; background: rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 8px; }
+        [data-theme="dark"] .simple-slider-wrap { background: rgba(0,0,0,0.3); }
+        .simple-slider-wrap span { font-size: 0.8rem; color: var(--text-muted); width: 60px; font-weight: 600;}
+        .simple-slider-wrap input[type="range"] { flex: 1; accent-color: var(--primary); }
+
         .color-row { display: flex; gap: 15px; align-items: center; }
         .color-row .input-group { flex: 1; }
         input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
 
-        /* 導航列完美拉出動畫 (解決見唔到/彈跳問題) */
-        .icon-nav { 
-            width: 80px; flex-shrink: 0; border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; align-items: flex-end; padding: 24px 15px; gap: 12px; z-index: 30; 
-        }
+        /* 1 & 2. 完美滑出動畫 (不干擾排版) */
+        .icon-nav { width: 80px; flex-shrink: 0; border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 16px; z-index: 30; }
+        .nav-item-wrap { width: 50px; height: 50px; position: relative; }
         .nav-icon { 
-            display: flex; align-items: center; flex-direction: row-reverse; justify-content: flex-start;
-            width: 50px; height: 50px; padding: 0 13px;
+            position: absolute; right: 0; top: 0;
+            display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start;
+            width: 50px; height: 50px; 
             color: var(--text-muted); cursor: pointer; 
-            border-radius: 25px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            border-radius: 25px; transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; 
             overflow: hidden; white-space: nowrap; background: transparent;
         }
-        .nav-icon i { flex-shrink: 0; width: 24px; display: flex; justify-content: center; }
-        .nav-icon span { font-weight: 700; font-size: 0.95rem; opacity: 0; margin-right: 12px; transition: opacity 0.2s; }
-        .nav-icon.active, .nav-icon:hover { width: 170px; color: var(--primary); background: rgba(246, 118, 166, 0.15); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.1); }
+        .nav-icon i { min-width: 50px; display: flex; justify-content: center; flex-shrink: 0;}
+        .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; padding-left: 18px; transition: opacity 0.2s; }
+        .nav-icon.active, .nav-icon:hover { width: 170px; color: var(--primary); background: var(--bg-panel-solid); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); border: 1px solid var(--primary); }
         .nav-icon.active span, .nav-icon:hover span { opacity: 1; transition-delay: 0.1s; }
         
         .special-link { margin-top: auto; color: #FF5C8D; animation: pulse-glow 2s infinite; }
@@ -165,17 +171,27 @@
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
         .modal-card h3 { color: var(--primary); font-size: 1.5rem; }
 
+        /* 7. 手機版完美適配 */
         @media (max-width: 800px) {
+            .topbar { padding: 0 12px; }
+            .brand-title { font-size: 1rem; }
             .workspace { flex-direction: column; overflow-y: auto; }
             .canvas-area { min-height: 40vh; padding: 10px; order: 1; }
-            .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 10px 20px; align-items: center; justify-content: space-between; overflow-x: auto; border-left: none; border-top: 1px solid var(--border-glass); order: 2;}
-            .nav-icon { flex-direction: row; justify-content: center; width: 45px; height: 45px; padding: 0; }
+            canvas { width: 100% !important; height: auto !important; max-width: 100%; object-fit: contain;} /* 解決比例壓窄 */
+            
+            .icon-nav { flex-direction: row; width: 100%; height: 70px; padding: 10px 15px; align-items: center; justify-content: flex-start; overflow-x: auto; border-left: none; border-top: 1px solid var(--border-glass); order: 2; gap: 15px;}
+            .nav-item-wrap { width: 45px; height: 45px; flex-shrink: 0; }
+            .nav-icon { flex-direction: row; justify-content: center; width: 45px; height: 45px; padding: 0; right: auto; left: 0;}
+            .nav-icon i { min-width: 45px; }
             .nav-icon.active, .nav-icon:hover { width: 45px; } 
             .nav-icon span { display: none; }
+            
             .drawer.open { width: 100%; height: auto; border-left: none; order: 3; }
             .drawer-inner { width: 100%; }
-            .fab-group { position: static; justify-content: center; margin-top: 20px; margin-bottom: 20px;}
+            .fab-group { position: static; justify-content: center; margin-top: 15px; margin-bottom: 25px; flex-wrap: nowrap;}
             .hover-zone { display: none; }
+            
+            .global-footer { flex-direction: column; height: auto; padding: 15px; gap: 10px; }
         }
     </style>
 </head>
@@ -226,7 +242,6 @@
             </div>
         </section>
 
-        <!-- 初始隱藏的抽屜 -->
         <aside class="drawer glass" id="settingsDrawer">
             <div class="drawer-inner">
                 <div class="drawer-section" id="sec-member">
@@ -239,8 +254,8 @@
                 <div class="drawer-section" id="sec-bg">
                     <div class="drawer-title"><i data-lucide="image"></i> <span data-i18n="background_settings">背景設定</span></div>
                     <div class="color-row">
-                        <div class="input-group"><label data-i18n="rect1Color">A色</label><input type="color" id="rect1Color" value="#2086D1" class="modern-input"></div>
-                        <div class="input-group"><label data-i18n="background_gradient_start">B色</label><input type="color" id="bgColor" value="#E5EDF9" class="modern-input"></div>
+                        <div class="input-group"><label data-i18n="rect1Color">A色 (Logo)</label><input type="color" id="rect1Color" value="#2086D1" class="modern-input"></div>
+                        <div class="input-group"><label data-i18n="background_gradient_start">B色 (背景)</label><input type="color" id="bgColor" value="#E5EDF9" class="modern-input"></div>
                     </div>
                     <div class="input-group mt-2">
                         <label data-i18n="background_text">背景文字</label>
@@ -253,7 +268,7 @@
                     <div class="advanced-options">
                         <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="bgTextX" value="-100" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="bgTextY" value="0" class="modern-input"></div>
                         <div class="adv-row"><label data-i18n="spacing">Space</label><input type="number" id="bgTextSpacing" value="-6000" class="modern-input"> <label data-i18n="size">Size</label><input type="number" id="bgTextSize" value="62" class="modern-input"></div>
-                        <div class="adv-row"><label data-i18n="lineHeight">LineH</label><input type="number" id="bgTextLineHeight" value="46" class="modern-input"> <label data-i18n="bgTextOpacity">Alpha</label><input type="number" id="bgTextOpacity" value="1" step="0.1" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="lineHeight">LineH</label><input type="number" id="bgTextLineHeight" value="46" class="modern-input"> <label data-i18n="bgTextOpacity">Alpha</label><input type="number" id="bgTextOpacity" value="0.15" step="0.05" class="modern-input"></div>
                         <div class="adv-row"><label data-i18n="shadowX">ShadX</label><input type="number" id="bgShadowX" value="0.5" step="0.1" class="modern-input"> <label data-i18n="shadowY">ShadY</label><input type="number" id="bgShadowY" value="-0.4" step="0.1" class="modern-input"></div>
                         <div class="adv-row"><label data-i18n="shadowOpacity">ShadA</label><input type="number" id="bgShadowOpacity" value="0.2" step="0.1" class="modern-input"></div>
                     </div>
@@ -264,6 +279,11 @@
                     <div class="input-group">
                         <label data-i18n="logo_line1">Line 1</label>
                         <input type="text" class="modern-input" id="rect1Line1" value="YSS">
+                        <!-- 6. 簡易模式滑桿 -->
+                        <div class="simple-slider-wrap">
+                            <span data-i18n="x">水平</span>
+                            <input type="range" id="s_rect1X" min="-10" max="40" step="0.5" value="13.5">
+                        </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="rect1Line1X" value="13.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="rect1Line1Y" value="12" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="rect1Size" value="47" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="rect1Spacing" value="-7000" class="modern-input"></div>
@@ -288,6 +308,10 @@
                     <div class="input-group">
                         <label data-i18n="event">Event Name</label>
                         <input type="text" class="modern-input" id="text2" value="「ここからだ」 公演">
+                        <div class="simple-slider-wrap">
+                            <span data-i18n="x">水平</span>
+                            <input type="range" id="s_text2X" min="10" max="60" step="0.5" value="37">
+                        </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text2X" value="37" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text2Y" value="12" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text2Size" value="14.2" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text2Spacing" value="2000" class="modern-input"></div>
@@ -316,6 +340,10 @@
                     <div class="input-group">
                         <label data-i18n="date_line1">Date</label>
                         <input type="text" class="modern-input" id="text4Line1" value="＜日付＞2026年05月02日（金）">
+                        <div class="simple-slider-wrap">
+                            <span data-i18n="x">水平</span>
+                            <input type="range" id="s_text4X" min="0" max="40" step="0.5" value="13">
+                        </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text4Line1X" value="13" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text4Line1Y" value="43" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text4Size" value="11" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text4Spacing" value="1000" class="modern-input"></div>
@@ -357,6 +385,7 @@
                     </div>
                 </div>
 
+                <!-- 3. その他 Icon 對應 -->
                 <div class="drawer-section" id="sec-others">
                     <div class="drawer-title"><i data-lucide="more-horizontal"></i> <span data-i18n="others_settings">その他 (Footer)</span></div>
                     <div class="color-row">
@@ -391,18 +420,20 @@
             </div>
         </aside>
 
-        <!-- 滑出式 Nav 導航 (修復不可見與彈跳問題) -->
+        <!-- 1 & 2. 完美定位導航 (不干擾排版) -->
         <nav class="icon-nav glass">
-            <div class="nav-icon" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div>
-            <div class="nav-icon" data-target="sec-bg"><i data-lucide="image"></i><span data-i18n="background_settings">背景設定</span></div>
-            <div class="nav-icon" data-target="sec-logo"><i data-lucide="type"></i><span data-i18n="logo_settings">標誌設定</span></div>
-            <div class="nav-icon" data-target="sec-event"><i data-lucide="calendar-heart"></i><span data-i18n="event_birthday">公演資訊</span></div>
-            <div class="nav-icon" data-target="sec-date"><i data-lucide="hash"></i><span data-i18n="date_number">日期編號</span></div>
-            <div class="nav-icon" data-target="sec-qr"><i data-lucide="qr-code"></i><span data-i18n="qr_others">QR設定</span></div>
-            <div class="nav-icon" data-target="sec-others"><i data-lucide="more-horizontal"></i><span data-i18n="others_settings">その他</span></div>
+            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div></div>
+            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-bg"><i data-lucide="image"></i><span data-i18n="background_settings">背景設定</span></div></div>
+            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-logo"><i data-lucide="type"></i><span data-i18n="logo_settings">標誌設定</span></div></div>
+            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-event"><i data-lucide="calendar-heart"></i><span data-i18n="event_birthday">公演資訊</span></div></div>
+            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-date"><i data-lucide="hash"></i><span data-i18n="date_number">日期編號</span></div></div>
+            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-qr"><i data-lucide="qr-code"></i><span data-i18n="qr_others">QR設定</span></div></div>
+            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-others"><i data-lucide="more-horizontal"></i><span data-i18n="others_settings">その他</span></div></div>
             
-            <div class="nav-icon special-link" onclick="window.open('https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank')">
-                <i data-lucide="sparkles"></i><span data-i18n="mbti_link">MBTI性格鑑定</span>
+            <div class="nav-item-wrap special-link" style="margin-top:auto;">
+                <div class="nav-icon" onclick="window.open('https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank')">
+                    <i data-lucide="sparkles"></i><span data-i18n="mbti_link">MBTI性格鑑定</span>
+                </div>
             </div>
         </nav>
     </main>
@@ -415,7 +446,6 @@
         </div>
     </footer>
 
-    <!-- 高質感下載 Modal -->
     <div id="downloadModal">
         <div class="glass-solid modal-card">
             <h3 data-i18n="download_button">選擇下載格式</h3>
