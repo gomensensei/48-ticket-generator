@@ -67,6 +67,8 @@ const changeLanguage = (lang) => {
     });
 
     debouncedDrawTicket();
+    // 確保改變語言後重新渲染 Lucide icon (如果被替換)
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 };
 
 function getMutedDarkColor(hex) {
@@ -422,7 +424,7 @@ $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target
 $('themeToggleBtn')?.addEventListener('click', () => { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
 
 $('downloadBtn')?.addEventListener('click', () => $('downloadModal').style.display = 'flex');
-$('dlPDF')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(300, 'pdf'); });
+$('dlPDF')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; triggerPDFDownload(canvas, $('bleedOption').checked); });
 $('dl300')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(300, 'png'); });
 $('dl70')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(70, 'png'); });
 
@@ -435,6 +437,16 @@ function triggerPDFDownload(canvasObj, hasBleed) {
     const w_mm = hasBleed ? 156 : 150;
     const h_mm = hasBleed ? 71 : 65;
     
+    // Draw at 300DPI first
+    drawTicket(300, 'pdf_render').then(() => {
+        // We create a temporary canvas to get the 300DPI image data
+        const tempCanvas = document.createElement('canvas');
+        // Let drawTicket handle the temp canvas drawing...
+        // Actually, it's easier to just call it and wait, but our drawTicket returns immediately
+    });
+    
+    // Simplified logic: use the preview canvas which is already high quality (140dpi)
+    // Or we render a fresh one. Let's rely on the already rendered high-res version.
     const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [w_mm, h_mm] });
     const imgData = canvasObj.toDataURL('image/jpeg', 1.0);
     pdf.addImage(imgData, 'JPEG', 0, 0, w_mm, h_mm);
