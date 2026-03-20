@@ -277,6 +277,22 @@ $('configFileInput')?.addEventListener('change', (e) => {
     reader.readAsText(file);
 });
 
+// A/B 色互換邏輯
+$('swapBgColors')?.addEventListener('click', () => {
+    const temp = $('rect1Color').value;
+    $('rect1Color').value = $('bgColor').value;
+    $('bgColor').value = temp;
+    debouncedDrawTicket();
+});
+
+// 文字/陰影色互換邏輯
+$('swapTextShadowColors')?.addEventListener('click', () => {
+    const temp = $('bgTextColor').value;
+    $('bgTextColor').value = $('bgShadowColor').value;
+    $('bgShadowColor').value = temp;
+    debouncedDrawTicket();
+});
+
 $('memberSelector')?.addEventListener('change', (e) => {
     const member = members.find(m => m.name_ja === e.target.value);
     if (member) {
@@ -293,11 +309,22 @@ $('memberSelector')?.addEventListener('change', (e) => {
         $('footerTextColor').value = textColorA;
         let bColor = member.color_b === '#ffffff' ? '#FDF9FA' : member.color_b;
         $('bgColor').value = bColor; 
+        
+        // 神推選色邏輯：文字同陰影色互換
         const mutedTextColor = getMutedDarkColor(bColor);
-        $('bgTextColor').value = mutedTextColor;
-        $('bgShadowColor').value = getLighterMutedColor(mutedTextColor);
-        $('bgTextOpacity').value = 1;     // 預設更新為 1
-        $('bgShadowOpacity').value = 0.25; // 預設更新為 0.25
+        const lighterColor = getLighterMutedColor(mutedTextColor);
+        $('bgTextColor').value = lighterColor;    // 原本係 muted，而家變 lighter
+        $('bgShadowColor').value = mutedTextColor; // 原本係 lighter，而家變 muted
+        
+        $('bgTextOpacity').value = 1;     
+        $('bgShadowOpacity').value = 0.25; 
+        
+        // 同步 Slider 數值
+        const opacitySlider = document.querySelector('.sync-slider[data-target="bgTextOpacity"]');
+        if (opacitySlider) opacitySlider.value = 1;
+        const shadowSlider = document.querySelector('.sync-slider[data-target="bgShadowOpacity"]');
+        if (shadowSlider) shadowSlider.value = 0.25;
+        
         debouncedDrawTicket();
     } else {
         $('memberHeader').style.display = 'none';
@@ -336,6 +363,13 @@ $('advToggleBtnMaster')?.addEventListener('click', () => {
     advAreas.forEach(el => { el.classList.toggle('active'); if(el.classList.contains('active')) isActive = true; });
     const span = $('advToggleBtnMaster').querySelector('span');
     if(span) span.textContent = isActive ? langs[currentLang].simple_mode : langs[currentLang].advanced_mode;
+    
+    // 控制匯出匯入面板的顯示
+    const backupActions = $('backupActions');
+    if (backupActions) {
+        if (isActive) backupActions.classList.add('active');
+        else backupActions.classList.remove('active');
+    }
 });
 
 document.querySelectorAll('.sync-slider').forEach(slider => {
@@ -375,19 +409,12 @@ function triggerDownload(canvasObj, dpiStr) {
     const link = document.createElement('a'); link.download = `Ticket_${dpiStr}_${Date.now()}.png`; link.href = canvasObj.toDataURL('image/png'); link.click();
 }
 
-// PDF 匯出函數
 function triggerPDFDownload(canvasObj, hasBleed) {
     const { jsPDF } = window.jspdf;
     const w_mm = hasBleed ? 156 : 150;
     const h_mm = hasBleed ? 71 : 65;
     
-    const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: [w_mm, h_mm]
-    });
-    
-    // 使用高畫質 JPEG 可以大大減小 PDF 檔案體積，如果想無損可以用 PNG
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [w_mm, h_mm] });
     const imgData = canvasObj.toDataURL('image/jpeg', 1.0);
     pdf.addImage(imgData, 'JPEG', 0, 0, w_mm, h_mm);
     pdf.save(`Ticket_PrintReady_${Date.now()}.pdf`);
