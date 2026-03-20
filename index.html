@@ -70,6 +70,7 @@
         .canvas-area { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: auto; padding: 30px; transition: background 0.3s;}
         [data-theme="dark"] .canvas-area { background: rgba(0, 0, 0, 0.4); }
         
+        /* 4. 頭像無間斷反光 */
         .member-header { position: absolute; top: 20px; display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-radius: 100px; z-index: 10; transition: 0.3s; }
         .member-avatar-wrap { position: relative; padding: 4px; border-radius: 50%; background: linear-gradient(45deg, var(--color-a), var(--color-b)); animation: breathe 2s infinite alternate ease-in-out; overflow: hidden; }
         .member-avatar-wrap img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-panel-solid); display: block; position: relative; z-index: 2;}
@@ -78,12 +79,13 @@
             background: rgba(255,255,255,0.7); transform: rotate(45deg); filter: blur(3px); z-index: 3; 
             animation: shine 3s infinite linear; 
         }
-        @keyframes shine { 0% { left: -50px; opacity: 0;} 10% { opacity: 1; } 30% { left: 100px; opacity: 0;} 100% { left: 100px; opacity: 0; } }
+        @keyframes shine { 0% { left: -80px; opacity: 0;} 10% { opacity: 1; } 30% { left: 120px; opacity: 0;} 100% { left: 120px; opacity: 0; } }
         @keyframes breathe { 0% { box-shadow: 0 0 10px 2px var(--color-a); transform: scale(1); } 100% { box-shadow: 0 0 25px 6px var(--color-b); transform: scale(1.05); } }
         .member-header h2 { font-size: 1.3rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        .canvas-wrapper { position: relative; transition: transform 0.2s; display: flex; justify-content: center; max-width: 900px; }
-        canvas { display: block; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
+        /* 8. 解決 Canvas 消失與高清縮放 */
+        .canvas-wrapper { position: relative; transition: transform 0.2s; display: inline-block; max-width: 100%; }
+        canvas { display: block; max-width: 100%; height: auto; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
         
         .hover-zone { position: absolute; border: 2px dashed transparent; border-radius: 8px; cursor: pointer; transition: 0.2s; z-index: 5; }
         .hover-zone:hover { border-color: var(--primary); background: rgba(246, 118, 166, 0.08); }
@@ -97,7 +99,7 @@
         #zone-qr { top: 35%; right: 5%; width: 16%; height: 35%; z-index: 2; }
         #zone-others { top: 92.3%; left: 0%; width: 100%; height: 7.7%; z-index: 2; }
 
-        .fab-group { position: absolute; bottom: 30px; display: flex; flex-direction: row; gap: 16px; z-index: 10; justify-content: center; width: 100%; pointer-events: none;}
+        .fab-group { position: absolute; bottom: 30px; left: 0; display: flex; flex-direction: row; gap: 16px; z-index: 10; justify-content: center; width: 100%; pointer-events: none;}
         .fab-group button { pointer-events: auto; }
         .btn-primary, .btn-secondary { width: auto; padding: 12px 28px; border-radius: 30px; border: none; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 1rem; white-space: nowrap; }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(246, 118, 166, 0.4); }
@@ -123,6 +125,9 @@
         .modern-input:focus, .modern-select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(246, 118, 166, 0.2); background: var(--bg-panel-solid); }
 
         .adv-toggle-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 100px; transition: 0.2s; }
+        .adv-toggle-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
+        [data-theme="dark"] .adv-toggle-btn:hover { background: rgba(255,255,255,0.05); }
+        
         .advanced-options { display: none; background: rgba(0,0,0,0.03); padding: 16px; border-radius: 12px; margin-top: 6px; border: 1px solid var(--border-glass); }
         [data-theme="dark"] .advanced-options { background: rgba(255,255,255,0.03); }
         .advanced-options.active { display: block; animation: fadeIn 0.3s ease; }
@@ -130,6 +135,7 @@
         .adv-row label { width: 60px; font-size: 0.8rem; color: var(--text-muted); }
         .adv-row input { flex: 1; padding: 8px 12px; }
 
+        /* 2. 簡易模式全網格滑桿 */
         .simple-slider-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 15px; margin-top: 5px; background: rgba(255,255,255,0.3); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); }
         [data-theme="dark"] .simple-slider-grid { background: rgba(0,0,0,0.3); }
         .slider-item { display: flex; align-items: center; gap: 6px; }
@@ -140,36 +146,51 @@
         .color-row .input-group { flex: 1; }
         input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
 
-        /* 修復：完美可見、不貼邊、滑出式 Icon 導航列 */
+        /* 1 & 4. 解決未 Hover 看不見、呼吸燈引導、遠離邊緣向左滑出 */
         .icon-nav { 
-            width: 80px; flex-shrink: 0; border-left: 1px solid var(--border-glass); z-index: 30; 
-            display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 14px; 
+            width: 100px; flex-shrink: 0; border-left: 1px solid var(--border-glass); z-index: 30; 
+            display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 16px; 
+            position: relative; 
         }
         .nav-item-wrap { width: 100%; height: 50px; position: relative; }
         .nav-icon { 
-            position: absolute; right: 15px; top: 0; /* 遠離邊緣 15px */
+            position: absolute; right: 25px; top: 0; /* 遠離邊緣 */
             display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start;
             width: 50px; height: 50px; border-radius: 25px;
-            background: var(--bg-panel-solid); /* 實體底色，永遠可見 */
-            border: 1px solid var(--border-glass-light);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            background: rgba(240, 240, 240, 0.75); /* 灰色實體底，保證可見 */
+            backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.9);
             color: var(--text-muted); cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s, color 0.3s; 
             overflow: hidden; white-space: nowrap;
+            animation: icon-breathe 2s infinite alternate ease-in-out; /* 呼吸燈引導 */
         }
-        .nav-icon i { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
-        .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; padding-right: 12px; transition: opacity 0.2s; }
+        [data-theme="dark"] .nav-icon { background: rgba(50, 50, 50, 0.75); border-color: rgba(255,255,255,0.1); color: #ccc; }
         
-        .nav-icon.active, .nav-icon:hover { width: 180px; color: var(--primary); border-color: var(--primary); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); z-index: 50;}
-        .nav-icon.active i, .nav-icon:hover i { color: var(--primary); }
-        .nav-icon.active span, .nav-icon:hover span { opacity: 1; transition-delay: 0.1s; }
-        
-        .special-link .nav-icon { border-color: #FF5C8D; box-shadow: 0 0 10px rgba(255,92,141,0.2); }
-        .special-link .nav-icon i { color: #FF5C8D; }
-        .special-link .nav-icon.active, .special-link .nav-icon:hover { width: 250px; background: rgba(255, 92, 141, 0.1); }
+        @keyframes icon-breathe {
+            0% { box-shadow: 0 0 0px rgba(246, 118, 166, 0); transform: scale(1); }
+            100% { box-shadow: 0 0 15px rgba(246, 118, 166, 0.5); transform: scale(1.05); }
+        }
 
+        .nav-icon i { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+        .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; padding-right: 15px; transition: opacity 0.2s; }
+        
+        /* Hover 時停止呼吸並向左展開 */
+        .nav-icon.active, .nav-icon:hover { 
+            width: 200px; color: var(--primary); background: var(--bg-panel-solid); 
+            border-color: var(--primary); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); z-index: 50;
+            animation: none; transform: scale(1);
+        }
+        .nav-icon.active i, .nav-icon:hover i { color: var(--primary); }
+        .nav-icon.active span, .nav-icon:hover span { opacity: 1; transition-delay: 0.15s; }
+        
+        .special-link .nav-icon { border-color: #FF5C8D; color: #FF5C8D; animation: special-breathe 2s infinite alternate ease-in-out; }
+        @keyframes special-breathe { 0% { box-shadow: 0 0 0px rgba(255, 92, 141, 0); transform: scale(1); } 100% { box-shadow: 0 0 20px rgba(255, 92, 141, 0.6); transform: scale(1.08); } }
+        /* 6. MBTI 文字過長，加寬展開寬度 */
+        .special-link .nav-icon.active, .special-link .nav-icon:hover { width: 320px; background: rgba(255, 92, 141, 0.1); animation: none; transform: scale(1);}
+
+        /* 7. Footer 文字更新與置中適配 */
         .global-footer { height: auto; min-height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 10px 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-glass); flex-wrap: wrap; gap: 10px;}
-        .copyright { flex: 1; text-align: left; line-height: 1.5; min-width: 300px;}
+        .copyright { flex: 1; text-align: left; line-height: 1.5; min-width: 300px; word-break: break-word;}
         .footer-links { display: flex; flex-direction: row; gap: 16px; align-items: center; flex-shrink: 0; }
         .footer-links a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.2s; white-space: nowrap; }
         .footer-links a:hover { color: var(--primary); }
@@ -178,6 +199,7 @@
         .modal-card { padding: 40px; border-radius: 24px; text-align: center; display: flex; flex-direction: column; gap: 20px; max-width: 400px; width: 90%; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
 
+        /* 7. 手機版終極修復 (防止變形、確保版面可見) */
         @media (max-width: 800px) {
             .topbar { padding: 0 12px; }
             .brand-title { font-size: 1rem; }
@@ -188,20 +210,22 @@
             
             .fab-group { position: relative; bottom: auto; justify-content: center; margin-top: 15px; margin-bottom: 5px; flex-wrap: nowrap; gap: 10px;}
             
-            .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 10px 15px; align-items: center; justify-content: flex-start; overflow-x: auto; border-left: none; border-top: 1px solid var(--border-glass); order: 2; gap: 15px;}
+            /* Icon 導航圓形固定不變形 */
+            .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 15px; align-items: center; justify-content: flex-start; overflow-x: auto; border-left: none; border-top: 1px solid var(--border-glass); order: 2; gap: 15px;}
             .nav-item-wrap { width: 45px; height: 45px; flex-shrink: 0; padding: 0; justify-content: center;}
-            .nav-icon { flex-direction: row; justify-content: center; width: 45px; height: 45px; padding: 0; right: auto; left: auto; border-radius: 50%;}
+            .nav-icon { position: static; flex-direction: row; justify-content: center; width: 45px; height: 45px; padding: 0; right: auto; border-radius: 50%; animation: none; transform: none;}
             .nav-icon i { min-width: 45px; }
-            .nav-icon.active, .nav-icon:hover { width: 45px; } 
-            .special-link .nav-icon.active, .special-link .nav-icon:hover { width: 45px; }
+            .nav-icon.active, .nav-icon:hover { width: 45px; transform: scale(1.1); animation: none;} 
+            .special-link .nav-icon.active, .special-link .nav-icon:hover { width: 45px; transform: scale(1.1);}
             .nav-icon span { display: none; }
             
             .drawer.open { width: 100%; height: auto; border-left: none; order: 3; flex: 1;}
             .drawer-inner { width: 100%; }
             .hover-zone { display: none; }
             
+            /* Footer 換行置中 */
             .global-footer { flex-direction: column; padding: 15px 20px 25px 20px; text-align: center; justify-content: center;}
-            .copyright { text-align: center; min-width: 100%;}
+            .copyright { text-align: center; min-width: 100%; font-size: 0.75rem;}
             .footer-links { justify-content: center; width: 100%;}
         }
     </style>
@@ -275,6 +299,7 @@
                             <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="bgTextSize" min="20" max="100" step="1" value="62"></div>
                             <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="bgTextSpacing" min="-8000" max="0" step="100" value="-6000"></div>
                             <div class="slider-item" style="grid-column: 1 / -1;"><span data-i18n="bgTextOpacity">Alpha</span><input type="range" class="sync-slider" data-target="bgTextOpacity" min="0" max="1" step="0.05" value="0.15"></div>
+                            <div class="slider-item" style="grid-column: 1 / -1;"><span data-i18n="shadowOpacity">ShadA</span><input type="range" class="sync-slider" data-target="bgShadowOpacity" min="0" max="1" step="0.05" value="0.2"></div>
                         </div>
                     </div>
                     <div class="color-row">
@@ -488,7 +513,7 @@
             </div>
         </aside>
 
-        <!-- 1. 完美實體按鈕與向左滑出導航 -->
+        <!-- 1 & 4. 完美實體按鈕與向左滑出導航 (保證可見) -->
         <nav class="icon-nav glass">
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div></div>
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-bg"><i data-lucide="image"></i><span data-i18n="background_settings">背景設定</span></div></div>
@@ -506,6 +531,7 @@
         </nav>
     </main>
 
+    <!-- 7. Footer 文字更新與置中適配 -->
     <footer class="global-footer glass">
         <div class="copyright" data-i18n="copyright_notice">由粉絲 ゴメン先生 (gomensensei) 製作，與 AKB48 官方無任何關聯。圖片及相關資料版權歸原屬公司所有。</div>
         <div class="footer-links">
