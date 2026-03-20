@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <!-- 加入 jsPDF 庫以支援印刷用 PDF 匯出 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
@@ -66,14 +65,15 @@
         .tool-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; flex-shrink: 0; }
         .tool-btn:hover { background: rgba(246, 118, 166, 0.1); color: var(--primary); }
         
-        /* 解決 g 字被 crop */
-        .lang-select { background: rgba(255,255,255,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 6px 8px; border-radius: 8px; outline: none; font-family: inherit; font-weight: 500; font-size: 0.9rem; line-height: normal;}
+        /* 修復 g 字被 crop 及寬度問題 */
+        .lang-select { background: rgba(255,255,255,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 8px 10px; border-radius: 8px; outline: none; font-family: inherit; font-weight: 500; font-size: 0.9rem; line-height: 1.2; height: auto; min-height: 38px;}
         [data-theme="dark"] .lang-select { background: rgba(0,0,0,0.3); }
 
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; min-height: 0; }
         .canvas-area { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: auto; padding: 30px; transition: background 0.3s;}
         [data-theme="dark"] .canvas-area { background: rgba(0, 0, 0, 0.4); }
         
+        /* 電腦版神推 header 加入 glass-solid 托底 */
         .member-header { position: absolute; top: 20px; display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-radius: 100px; z-index: 10; transition: 0.3s; }
         .member-avatar-wrap { position: relative; padding: 4px; border-radius: 50%; background: linear-gradient(45deg, var(--color-a), var(--color-b)); animation: breathe 2s infinite alternate ease-in-out; overflow: hidden; }
         .member-avatar-wrap img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-panel-solid); display: block; position: relative; z-index: 2;}
@@ -109,6 +109,12 @@
         .btn-secondary { background: var(--bg-panel-solid); color: var(--text-main); border: 1px solid var(--border-glass); }
         .btn-secondary:hover { transform: translateY(-4px); color: var(--primary); }
 
+        /* 匯出匯入懸浮面板 */
+        .backup-actions { position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 9; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 8px 12px; border-radius: 50px;}
+        .backup-actions.active { opacity: 1; pointer-events: auto; bottom: 85px; }
+        .btn-mini { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-glass); font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; background: var(--bg-panel-solid); color: var(--text-main); box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
+        .btn-mini:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-2px);}
+
         .drawer { width: 0; padding: 24px 0; opacity: 0; border-left: none; overflow-x: hidden; overflow-y: auto; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 20; position: relative; }
         .drawer.open { width: 420px; padding: 24px; opacity: 1; border-left: 1px solid var(--border-glass); }
         .drawer::-webkit-scrollbar { width: 6px; }
@@ -137,77 +143,43 @@
         .adv-row label { width: 60px; font-size: 0.8rem; color: var(--text-muted); }
         .adv-row input { flex: 1; padding: 8px 12px; }
 
-        /* 解決 Slider 穿出範圍 */
-        .simple-slider-grid { 
-            display: grid; 
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); 
-            gap: 10px 12px; 
-            margin-top: 5px; background: rgba(255,255,255,0.3); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); 
-        }
+        .simple-slider-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 12px; margin-top: 5px; background: rgba(255,255,255,0.3); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); }
         [data-theme="dark"] .simple-slider-grid { background: rgba(0,0,0,0.3); }
         .slider-item { display: flex; align-items: center; gap: 6px; min-width: 0; }
         .slider-item span { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; width: auto; min-width: 35px; flex-shrink: 0; white-space: nowrap;}
         .slider-item input[type="range"] { flex: 1; accent-color: var(--primary); height: 4px; min-width: 0; width: 100%; }
 
-        .color-row { display: flex; gap: 15px; align-items: center; }
+        .color-row { display: flex; gap: 12px; align-items: flex-start; position: relative;}
         .color-row .input-group { flex: 1; }
         input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
-
-        .icon-nav { 
-            width: 120px; flex-shrink: 0; border-left: 1px solid var(--border-glass); z-index: 30; 
-            display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 16px; 
-            position: relative; 
-        }
-        .nav-item-wrap { width: 100%; height: 50px; position: relative; }
         
-        .nav-icon { 
-            position: absolute; right: 35px; top: 0; 
-            display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start;
-            width: 50px; height: 50px; border-radius: 25px;
-            background: rgba(240, 240, 240, 0.75); 
-            backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.9);
-            color: var(--text-muted); cursor: pointer; 
-            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s, color 0.3s; 
-            overflow: hidden; white-space: nowrap;
-            animation: icon-breathe 2s infinite alternate ease-in-out; 
-        }
+        /* 顏色互換按鈕 */
+        .swap-btn { background: var(--bg-panel-solid); border: 1px solid var(--border-glass); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: 0.2s; flex-shrink: 0; margin-top: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
+        .swap-btn:hover { background: var(--primary); color: white; transform: scale(1.1); border-color: var(--primary);}
+        [data-theme="dark"] .swap-btn { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); color: #aaa;}
+        [data-theme="dark"] .swap-btn:hover { background: var(--primary); color: white; }
+
+        .icon-nav { width: 120px; flex-shrink: 0; border-left: 1px solid var(--border-glass); z-index: 30; display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 16px; position: relative; }
+        .nav-item-wrap { width: 100%; height: 50px; position: relative; }
+        .nav-icon { position: absolute; right: 35px; top: 0; display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start; width: 50px; height: 50px; border-radius: 25px; background: rgba(240, 240, 240, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.9); color: var(--text-muted); cursor: pointer; transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s, color 0.3s; overflow: hidden; white-space: nowrap; animation: icon-breathe 2s infinite alternate ease-in-out; }
         [data-theme="dark"] .nav-icon { background: rgba(50, 50, 50, 0.75); border-color: rgba(255,255,255,0.1); color: #ccc; }
         
-        /* 解決 Icon 震動變形 */
-        @keyframes icon-breathe {
-            0% { box-shadow: 0 0 0px rgba(246, 118, 166, 0); }
-            100% { box-shadow: 0 0 15px rgba(246, 118, 166, 0.5); }
-        }
+        @keyframes icon-breathe { 0% { box-shadow: 0 0 0px rgba(246, 118, 166, 0); } 100% { box-shadow: 0 0 15px rgba(246, 118, 166, 0.5); } }
 
-        /* 固定內部 svg 大小，防止撐爆 */
         .nav-icon i, .nav-icon svg { width: 22px; height: 22px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin: 0 14px; }
         .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; transition: opacity 0.2s; margin-right: 5px;}
         
-        .nav-icon:hover:not(.active) { 
-            width: 200px; color: var(--primary); background: var(--bg-panel-solid); 
-            border-color: var(--primary); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); z-index: 50;
-            animation: none;
-        }
+        .nav-icon:hover:not(.active) { width: 200px; color: var(--primary); background: var(--bg-panel-solid); border-color: var(--primary); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); z-index: 50; animation: none; }
         .nav-icon:hover:not(.active) i, .nav-icon:hover:not(.active) svg { color: var(--primary); }
         .nav-icon:hover:not(.active) span { opacity: 1; transition-delay: 0.15s; }
         
-        .nav-icon.active { 
-            width: 50px; background: var(--primary); border-color: var(--primary); color: white; 
-            box-shadow: 0 4px 15px rgba(246, 118, 166, 0.4); animation: none; z-index: 50; 
-        }
+        .nav-icon.active { width: 50px; background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 4px 15px rgba(246, 118, 166, 0.4); animation: none; z-index: 50; }
         .nav-icon.active i, .nav-icon.active svg { color: white; }
         .nav-icon.active span { opacity: 0; display: none; }
         
         .special-link .nav-icon { border-color: #FF5C8D; color: #FF5C8D; animation: special-breathe 2s infinite alternate ease-in-out; }
-        @keyframes special-breathe { 
-            0% { box-shadow: 0 0 0px rgba(255, 92, 141, 0); } 
-            100% { box-shadow: 0 0 20px rgba(255, 92, 141, 0.6); } 
-        }
+        @keyframes special-breathe { 0% { box-shadow: 0 0 0px rgba(255, 92, 141, 0); } 100% { box-shadow: 0 0 20px rgba(255, 92, 141, 0.6); } }
         .special-link .nav-icon:hover { width: 320px; background: rgba(255, 92, 141, 0.1); animation: none; }
-
-        .backup-group { display: flex; gap: 8px; margin-bottom: 20px; background: rgba(0,0,0,0.05); padding: 8px; border-radius: 12px; border: 1px dashed var(--border-glass); }
-        .btn-mini { flex: 1; padding: 8px; border-radius: 8px; border: none; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; background: var(--bg-panel-solid); color: var(--text-main); }
-        .btn-mini:hover { background: var(--primary); color: white; }
 
         .global-footer { height: auto; min-height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 10px 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-glass); flex-wrap: wrap; gap: 10px; z-index: 10;}
         .copyright { flex: 1; text-align: left; line-height: 1.5; min-width: 300px; word-break: break-word;}
@@ -221,27 +193,25 @@
         
         .scroll-hint-mobile { display: none; }
 
-        /* 手機版排版全面修復 */
+        /* 手機版排版 */
         @media (max-width: 800px) {
             .topbar { padding: 0 10px; gap: 8px; }
             .brand-title { font-size: 0.95rem; white-space: normal; line-height: 1.1; flex: 1; }
             .topbar-tools { gap: 6px; flex-shrink: 0; }
-            /* 防 crop 及寬度適應 */
-            .lang-select { max-width: 110px; padding: 6px 8px; font-size: 0.8rem; line-height: normal;}
+            .lang-select { width: auto; max-width: 150px; padding: 6px 8px; font-size: 0.85rem; line-height: normal; min-height: 34px;}
             .tool-btn { padding: 6px; }
 
             .workspace { flex-direction: column; overflow-y: auto; }
             .canvas-area { padding: 15px 10px; order: 1; flex: 0 0 auto; justify-content: flex-start; }
             .canvas-wrapper { width: 100%; margin-bottom: 10px; }
             
-            /* 神推頭像改為相對位置，避免遮擋門票 */
             .member-header { position: relative; top: 0; margin-bottom: 15px; padding: 8px 16px; border-radius: 50px; background: var(--bg-panel-solid); box-shadow: var(--shadow-soft); }
             .member-avatar-wrap img { width: 40px; height: 40px; }
             .member-header h2 { font-size: 1.1rem; }
 
             .fab-group { position: relative; bottom: auto; justify-content: center; margin-top: 10px; margin-bottom: 5px; flex-wrap: nowrap; gap: 10px;}
+            .backup-actions { display: none !important; }
             
-            /* Icon 均勻分佈一行過 */
             .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 10px 5px; align-items: center; justify-content: space-between; border-left: none; border-top: 1px solid var(--border-glass); order: 2; gap: 0;}
             .nav-item-wrap { width: auto; height: 40px; flex: 1; display: flex; justify-content: center; padding: 0;}
             .nav-icon { position: static; flex-direction: row; justify-content: center; width: 38px; height: 38px; padding: 0; right: auto; border-radius: 50%; animation: none; transform: none;}
@@ -254,11 +224,9 @@
             .drawer-inner { width: 100%; padding-bottom: 50px;}
             .hover-zone { display: none; }
             
-            /* 手機版向下提示動畫箭咀 */
             .drawer.open .scroll-hint-mobile { display: flex; justify-content: center; position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); color: var(--primary); background: var(--bg-panel-solid); padding: 5px 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); animation: bounceHint 1.5s infinite; z-index: 50; pointer-events: none;}
             @keyframes bounceHint { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 5px); } }
 
-            /* Footer 縮細防擁擠 */
             .global-footer { flex-direction: column; padding: 15px 15px 35px 15px; text-align: center; justify-content: center; gap: 6px;}
             .copyright { text-align: center; min-width: 100%; font-size: 0.7rem;}
             .footer-links { justify-content: center; width: 100%;}
@@ -285,7 +253,7 @@
 
     <main class="workspace">
         <section class="canvas-area" id="canvasArea">
-            <div class="member-header" id="memberHeader" style="display: none;">
+            <div class="member-header glass-solid" id="memberHeader" style="display: none;">
                 <div class="member-avatar-wrap"><img src="" id="memberAvatar" alt="Avatar"></div>
                 <h2 id="memberName"></h2>
             </div>
@@ -300,6 +268,13 @@
                 <div class="hover-zone" id="zone-others" data-i18n-label="others_settings"></div>
             </div>
 
+            <!-- 隱藏式匯出匯入懸浮列，喺按詳細設定後滑出 -->
+            <div class="backup-actions glass-solid" id="backupActions">
+                <button class="btn-mini" id="exportConfigBtn"><i data-lucide="download-cloud" size="16"></i> <span data-i18n="export_config">匯出設定</span></button>
+                <button class="btn-mini" id="importConfigBtn"><i data-lucide="upload-cloud" size="16"></i> <span data-i18n="import_config">匯入設定</span></button>
+                <input type="file" id="configFileInput" style="display:none;" accept=".json">
+            </div>
+
             <div class="fab-group">
                 <button class="btn-secondary" id="advToggleBtnMaster">
                     <i data-lucide="sliders"></i> <span data-i18n="advanced_mode">詳細設定</span>
@@ -312,16 +287,6 @@
 
         <aside class="drawer glass" id="settingsDrawer">
             <div class="drawer-inner">
-                <div class="backup-group">
-                    <button class="btn-mini" id="exportConfigBtn">
-                        <i data-lucide="download-cloud" size="16"></i> <span data-i18n="export_config">匯出設定</span>
-                    </button>
-                    <button class="btn-mini" id="importConfigBtn">
-                        <i data-lucide="upload-cloud" size="16"></i> <span data-i18n="import_config">匯入設定</span>
-                    </button>
-                    <input type="file" id="configFileInput" style="display:none;" accept=".json">
-                </div>
-
                 <div class="drawer-section" id="sec-member">
                     <div class="drawer-title"><i data-lucide="users"></i> <span data-i18n="member_color">神推設定</span></div>
                     <div class="input-group">
@@ -333,11 +298,12 @@
                     <div class="drawer-title"><i data-lucide="image"></i> <span data-i18n="background_settings">背景設定</span></div>
                     <div class="color-row">
                         <div class="input-group"><label data-i18n="rect1Color">A色 (Logo)</label><input type="color" id="rect1Color" value="#2086D1" class="modern-input"></div>
+                        <button class="swap-btn" id="swapBgColors" title="Swap A/B"><i data-lucide="arrow-left-right" size="16"></i></button>
                         <div class="input-group"><label data-i18n="background_gradient_start">B色 (背景)</label><input type="color" id="bgColor" value="#E5EDF9" class="modern-input"></div>
                     </div>
                     <div class="input-group mt-2">
                         <label data-i18n="background_text">背景文字</label>
-                        <input type="text" class="modern-input" id="bgText" value="YSS48">
+                        <input type="text" class="modern-input" id="bgText" value="AKB48">
                         <div class="simple-slider-grid">
                             <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="bgTextX" min="-150" max="10" step="0.5" value="-100"></div>
                             <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="bgTextY" min="-50" max="50" step="0.5" value="0"></div>
@@ -348,10 +314,10 @@
                         </div>
                     </div>
                     <div class="color-row">
-                        <div class="input-group"><label data-i18n="bgTextColor">文字色</label><input type="color" id="bgTextColor" value="#888888" class="modern-input"></div>
+                        <div class="input-group"><label data-i18n="bgTextColor">文字色</label><input type="color" id="bgTextColor" value="#FFFFFF" class="modern-input"></div>
+                        <button class="swap-btn" id="swapTextShadowColors" title="Swap Text/Shadow"><i data-lucide="arrow-left-right" size="16"></i></button>
                         <div class="input-group"><label data-i18n="shadow_color">陰影色</label><input type="color" id="bgShadowColor" value="#5F96ED" class="modern-input"></div>
                     </div>
-                    <!-- 找回隱藏的 input 欄位，修復門票無字 Bug -->
                     <div class="advanced-options">
                         <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="bgTextX" value="-100" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="bgTextY" value="0" class="modern-input"></div>
                         <div class="adv-row"><label data-i18n="spacing">Space</label><input type="number" id="bgTextSpacing" value="-6000" class="modern-input"> <label data-i18n="size">Size</label><input type="number" id="bgTextSize" value="62" class="modern-input"></div>
@@ -365,7 +331,7 @@
                     <div class="drawer-title"><i data-lucide="type"></i> <span data-i18n="logo_settings">標誌設定</span></div>
                     <div class="input-group">
                         <label data-i18n="logo_line1">Line 1</label>
-                        <input type="text" class="modern-input" id="rect1Line1" value="YSS">
+                        <input type="text" class="modern-input" id="rect1Line1" value="AKB">
                         <div class="simple-slider-grid">
                             <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="rect1Line1X" min="5" max="30" step="0.1" value="13.6"></div>
                             <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="rect1Line1Y" min="5" max="30" step="0.1" value="12.5"></div>
@@ -392,13 +358,13 @@
                         </div>
                     </div>
                     <div class="color-row mt-2">
-                        <div class="input-group"><label data-i18n="rect1TextColor">Logo文字色</label><input type="color" id="rect1TextColor" value="#FFFFFF" class="modern-input"></div>
+                        <div class="input-group"><label data-i18n="rect1TextColor">Logo文字色</label><input type="color" id="rect1TextColor" value="#FFFFFF" class="modern-input" style="height: 45px;"></div>
                     </div>
                 </div>
 
                 <div class="drawer-section" id="sec-event">
                     <div class="drawer-title"><i data-lucide="calendar-heart"></i> <span data-i18n="event_birthday">公演資訊</span></div>
-                    <div class="input-group"><label data-i18n="text_color">文字色</label><input type="color" id="textColor" value="#000000" class="modern-input"></div>
+                    <div class="input-group"><label data-i18n="text_color">文字色</label><input type="color" id="textColor" value="#000000" class="modern-input" style="height:45px; padding:2px;"></div>
                     <div class="input-group">
                         <label data-i18n="event">Event Name</label>
                         <input type="text" class="modern-input" id="text2" value="「ここからだ」 公演">
@@ -509,9 +475,9 @@
 
                 <div class="drawer-section" id="sec-others">
                     <div class="drawer-title"><i data-lucide="more-horizontal"></i> <span data-i18n="others_settings">その他</span></div>
-                    <div class="color-row">
-                        <div class="input-group"><label data-i18n="border_color">邊框色</label><input type="color" id="rect9Color" value="#2086D1" class="modern-input"></div>
-                        <div class="input-group"><label data-i18n="footerTextColor">文字色</label><input type="color" id="footerTextColor" value="#FFFFFF" class="modern-input"></div>
+                    <div class="color-row" style="margin-bottom: 16px;">
+                        <div class="input-group"><label data-i18n="border_color">邊框色</label><input type="color" id="rect9Color" value="#2086D1" class="modern-input" style="height: 45px;"></div>
+                        <div class="input-group"><label data-i18n="footerTextColor">文字色</label><input type="color" id="footerTextColor" value="#FFFFFF" class="modern-input" style="height: 45px;"></div>
                     </div>
                     <div class="input-group">
                         <label data-i18n="note">Note</label>
