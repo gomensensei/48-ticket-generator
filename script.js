@@ -9,7 +9,7 @@ const dpi = {
     70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 6) * 70 / 25.4), h: Math.round((65 + 6) * 70 / 25.4) } }
 };
 
-// 8. Retina 高清渲染設定 (內部以 140 DPI 繪製，CSS 縮放)
+// 8. Retina 高清渲染設定 (內部以 140 DPI 繪製，外部 CSS 縮放)
 const PREVIEW_DPI = 140; 
 const CSS_BASE_DPI = 70;
 
@@ -70,15 +70,17 @@ const changeLanguage = (lang) => {
 };
 
 function getMutedDarkColor(hex) {
+    if(!hex || hex.length < 7) return '#888888';
     let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
     r = Math.floor(r * 0.5 + 102 * 0.5); g = Math.floor(g * 0.5 + 102 * 0.5); b = Math.floor(b * 0.5 + 102 * 0.5);
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
-// 3. 提取背景色變亮變淡作為陰影
+// 3. 提取背景色變亮變淡作為陰影 (加強淡化效果)
 function getLighterMutedColor(hex) {
+    if(!hex || hex.length < 7) return '#5F96ED';
     let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
-    r = Math.floor(r * 0.4 + 255 * 0.6); g = Math.floor(g * 0.4 + 255 * 0.6); b = Math.floor(b * 0.4 + 255 * 0.6);
+    r = Math.floor(r * 0.25 + 255 * 0.75); g = Math.floor(g * 0.25 + 255 * 0.75); b = Math.floor(b * 0.25 + 255 * 0.75);
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
@@ -117,6 +119,7 @@ const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left
 };
 
 const drawTicket = async (exportDpi = null) => {
+    // 2. 解決畫布消失 Bug：獨立處理預覽與下載，避免 CSS 與 Canvas API 衝突
     const isPreview = (exportDpi === null);
     const renderDpi = isPreview ? PREVIEW_DPI : exportDpi;
     const targetCtx = isPreview ? ctx : document.createElement('canvas').getContext('2d');
@@ -132,13 +135,11 @@ const drawTicket = async (exportDpi = null) => {
     targetCtx.canvas.height = h;
 
     if (isPreview) {
-        // 高清預覽適配：內部高解像度，外部 CSS 控制大小
         const cssW = bleed ? dpi[CSS_BASE_DPI].bleed.w : dpi[CSS_BASE_DPI].base.w;
-        const cssH = bleed ? dpi[CSS_BASE_DPI].bleed.h : dpi[CSS_BASE_DPI].base.h;
         if (window.innerWidth < 800) {
             canvas.style.width = '100%'; canvas.style.height = 'auto';
         } else {
-            canvas.style.width = `${cssW * previewScale}px`; canvas.style.height = `${cssH * previewScale}px`;
+            canvas.style.width = `${cssW * previewScale}px`; canvas.style.height = 'auto';
         }
     }
     
@@ -216,7 +217,7 @@ const drawTicket = async (exportDpi = null) => {
     if (!isPreview) triggerDownload(targetCtx.canvas, `${exportDpi}dpi`);
 };
 
-// 所有預覽事件只呼叫無參數的 debouncedDrawTicket()，避免空白畫布 Bug
+// 確保所有預覽事件只呼叫無參數的 debouncedDrawTicket()
 const debouncedDrawTicket = debounce(() => drawTicket(), 150);
 
 async function waitForFonts() {
@@ -282,6 +283,7 @@ $('memberSelector')?.addEventListener('change', (e) => {
     }
 });
 
+// 全域點擊漣漪
 document.addEventListener('mousedown', function(e) {
     if(['INPUT', 'BUTTON', 'SELECT', 'A', 'I', 'LABEL'].includes(e.target.tagName)) return;
     let ripple = document.createElement('div');
