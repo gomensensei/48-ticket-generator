@@ -9,7 +9,12 @@ const dpi = {
     70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 6) * 70 / 25.4), h: Math.round((65 + 6) * 70 / 25.4) } }
 };
 
+// 8. 預覽用高清 DPI (2倍 Retina 解析度，解決桌面版模糊)
+const PREVIEW_DPI = 140; 
+const CSS_BASE_DPI = 70;
+
 let langs = {}, currentLang = 'ja';
+let previewScale = window.innerWidth > 800 ? 1.5 : 1.0; 
 let members = [], qrImage = null;
 
 const debounce = (func, delay) => {
@@ -61,26 +66,26 @@ const changeLanguage = (lang) => {
         if(langs[lang][key]) el.setAttribute('data-label', langs[lang][key]);
     });
 
-    debouncedDrawTicket(70);
+    debouncedDrawTicket();
 };
 
-// 4. 背景文字變暗邏輯 (降低亮度與飽和度)
 function getMutedDarkColor(hex) {
-    let r = parseInt(hex.substring(1,3), 16);
-    let g = parseInt(hex.substring(3,5), 16);
-    let b = parseInt(hex.substring(5,7), 16);
-    // 與深灰色 #666666 (RGB 102) 混合 50%
-    r = Math.floor(r * 0.5 + 102 * 0.5);
-    g = Math.floor(g * 0.5 + 102 * 0.5);
-    b = Math.floor(b * 0.5 + 102 * 0.5);
+    let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
+    r = Math.floor(r * 0.5 + 102 * 0.5); g = Math.floor(g * 0.5 + 102 * 0.5); b = Math.floor(b * 0.5 + 102 * 0.5);
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+}
+
+// 9. 陰影顏色提取邏輯：將背景文字色大幅調亮並減淡
+function getLighterMutedColor(hex) {
+    let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
+    // 與純白混合 60% 提亮
+    r = Math.floor(r * 0.4 + 255 * 0.6); g = Math.floor(g * 0.4 + 255 * 0.6); b = Math.floor(b * 0.4 + 255 * 0.6);
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
 function getLuminance(hex) {
     hex = hex.replace('#', '');
-    let r = parseInt(hex.substring(0, 2), 16) / 255;
-    let g = parseInt(hex.substring(2, 4), 16) / 255;
-    let b = parseInt(hex.substring(4, 6), 16) / 255;
+    let r = parseInt(hex.substring(0, 2), 16) / 255; let g = parseInt(hex.substring(2, 4), 16) / 255; let b = parseInt(hex.substring(4, 6), 16) / 255;
     let [rs, gs, bs] = [r, g, b].map(c => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
     return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 }
@@ -112,17 +117,32 @@ const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left
     context.shadowColor = 'transparent';
 };
 
-const drawTicket = async (dpiVal, targetCtx = ctx) => {
+const drawTicket = async (exportDpi = null) => {
+    // 判斷是匯出還是預覽
+    const isPreview = (exportDpi === null);
+    const renderDpi = isPreview ? PREVIEW_DPI : exportDpi;
+    const targetCtx = isPreview ? ctx : document.createElement('canvas').getContext('2d');
     if (!targetCtx) return;
+
     const bleed = $('bleedOption')?.checked || false;
-    const w = bleed ? dpi[dpiVal].bleed.w : dpi[dpiVal].base.w;
-    const h = bleed ? dpi[dpiVal].bleed.h : dpi[dpiVal].base.h;
-    const mmPx = dpiVal / 25.4;
+    const w = bleed ? dpi[renderDpi].bleed.w : dpi[renderDpi].base.w;
+    const h = bleed ? dpi[renderDpi].bleed.h : dpi[renderDpi].base.h;
+    const mmPx = renderDpi / 25.4;
     const bleedOffset = bleed ? 3 * mmPx : 0;
 
-    // 1. 設定真實解像度 (顯示大小由 CSS 控制)
     targetCtx.canvas.width = w; 
     targetCtx.canvas.height = h;
+
+    if (isPreview) {
+        // 8. 預覽時 CSS 大小永遠基於 70 DPI 計算，確保物理大小一致但解析度提升
+        const cssW = bleed ? dpi[CSS_BASE_DPI].bleed.w : dpi[CSS_BASE_DPI].base.w;
+        const cssH = bleed ? dpi[CSS_BASE_DPI].bleed.h : dpi[CSS_BASE_DPI].base.h;
+        if (window.innerWidth < 800) {
+            canvas.style.width = '100%'; canvas.style.height = 'auto';
+        } else {
+            canvas.style.width = `${cssW * previewScale}px`; canvas.style.height = `${cssH * previewScale}px`;
+        }
+    }
     
     targetCtx.clearRect(0, 0, w, h);
 
@@ -139,11 +159,11 @@ const drawTicket = async (dpiVal, targetCtx = ctx) => {
     const bgTextSize = parseFloat($('bgTextSize')?.value || 62);
     const bgTextLineHeight = parseFloat($('bgTextLineHeight')?.value || 46);
     
-    targetCtx.font = `${bgTextSize * (dpiVal / 72)}px ${fonts.avant}`;
+    targetCtx.font = `${bgTextSize * (renderDpi / 72)}px ${fonts.avant}`;
     const cw = targetCtx.measureText(bgTextStr.charAt(0)).width;
     const tw = targetCtx.measureText(bgTextStr).width;
-    const gx = tw + bgTextSpacing * (dpiVal/72) / 1000;
-    const gy = bgTextLineHeight * (dpiVal / 72);
+    const gx = tw + bgTextSpacing * (renderDpi/72) / 1000;
+    const gy = bgTextLineHeight * (renderDpi / 72);
     
     targetCtx.globalAlpha = parseFloat($('bgShadowOpacity')?.value || 0.2);
     targetCtx.fillStyle = $('bgShadowColor')?.value || '#5F96ED';
@@ -169,22 +189,22 @@ const drawTicket = async (dpiVal, targetCtx = ctx) => {
     targetCtx.fillRect(bleedOffset, 60 * mmPx + bleedOffset, 150 * mmPx, 5 * mmPx); 
     
     const logoTextColor = $('rect1TextColor')?.value || '#FFFFFF';
-    drawText([$('rect1Line1').value], parseFloat($('rect1Line1X').value) * mmPx + bleedOffset, parseFloat($('rect1Line1Y').value) * mmPx + bleedOffset, fonts.avant, parseFloat($('rect1Size').value), parseFloat($('rect1Spacing').value), 0, logoTextColor, 'center', null, dpiVal, targetCtx, false);
-    drawText([$('rect1Line2').value], parseFloat($('rect1Line2X').value) * mmPx + bleedOffset, parseFloat($('rect1Line2Y').value) * mmPx + bleedOffset, fonts.avant, parseFloat($('rect1Line2Size').value), parseFloat($('rect1Line2Spacing').value), 0, logoTextColor, 'center', null, dpiVal, targetCtx, false);
+    drawText([$('rect1Line1').value], parseFloat($('rect1Line1X').value) * mmPx + bleedOffset, parseFloat($('rect1Line1Y').value) * mmPx + bleedOffset, fonts.avant, parseFloat($('rect1Size').value), parseFloat($('rect1Spacing').value), 0, logoTextColor, 'center', null, renderDpi, targetCtx, false);
+    drawText([$('rect1Line2').value], parseFloat($('rect1Line2X').value) * mmPx + bleedOffset, parseFloat($('rect1Line2Y').value) * mmPx + bleedOffset, fonts.avant, parseFloat($('rect1Line2Size').value), parseFloat($('rect1Line2Spacing').value), 0, logoTextColor, 'center', null, renderDpi, targetCtx, false);
 
     const mainTextColor = $('textColor')?.value || '#000000';
-    drawText([$('text2').value], parseFloat($('text2X').value) * mmPx + bleedOffset, parseFloat($('text2Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text2Size').value), parseFloat($('text2Spacing').value), 0, mainTextColor, 'left', fonts.ar, dpiVal, targetCtx, true);
-    drawText([$('text3Line1').value], parseFloat($('text3Line1X').value) * mmPx + bleedOffset, parseFloat($('text3Line1Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text3Size').value), parseFloat($('text3Spacing').value), 0, mainTextColor, 'left', fonts.ar, dpiVal, targetCtx, true);
-    drawText([$('text3Line2').value], parseFloat($('text3Line2X').value) * mmPx + bleedOffset, parseFloat($('text3Line2Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text3Line2Size').value), parseFloat($('text3Line2Spacing').value), 0, mainTextColor, 'left', fonts.ar, dpiVal, targetCtx, true);
-    drawText([$('text4Line1').value], parseFloat($('text4Line1X').value) * mmPx + bleedOffset, parseFloat($('text4Line1Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text4Size').value), parseFloat($('text4Spacing').value), parseFloat($('text4LineHeight')?.value||14), mainTextColor, 'left', fonts.ar, dpiVal, targetCtx, true);
-    drawText([$('text4Line2').value], 13 * mmPx + bleedOffset, 48 * mmPx + bleedOffset, fonts.kozgo, 11, 1000, 0, mainTextColor, 'left', fonts.ar, dpiVal, targetCtx, true); 
-    drawText([$('text5').value], parseFloat($('text5X').value) * mmPx + bleedOffset, parseFloat($('text5Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text5Size').value), parseFloat($('text5Spacing').value), 0, mainTextColor, 'left', fonts.ar, dpiVal, targetCtx, true);
-    drawText([$('text6').value], parseFloat($('text6X').value) * mmPx + bleedOffset, parseFloat($('text6Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text6Size').value), parseFloat($('text6Spacing').value), 0, mainTextColor, 'left', fonts.ar, dpiVal, targetCtx, true);
+    drawText([$('text2').value], parseFloat($('text2X').value) * mmPx + bleedOffset, parseFloat($('text2Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text2Size').value), parseFloat($('text2Spacing').value), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text3Line1').value], parseFloat($('text3Line1X').value) * mmPx + bleedOffset, parseFloat($('text3Line1Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text3Size').value), parseFloat($('text3Spacing').value), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text3Line2').value], parseFloat($('text3Line2X').value) * mmPx + bleedOffset, parseFloat($('text3Line2Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text3Line2Size').value), parseFloat($('text3Line2Spacing').value), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text4Line1').value], parseFloat($('text4Line1X').value) * mmPx + bleedOffset, parseFloat($('text4Line1Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text4Size').value), parseFloat($('text4Spacing').value), parseFloat($('text4LineHeight')?.value||14), mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text4Line2').value], 13 * mmPx + bleedOffset, 48 * mmPx + bleedOffset, fonts.kozgo, 11, 1000, 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true); 
+    drawText([$('text5').value], parseFloat($('text5X').value) * mmPx + bleedOffset, parseFloat($('text5Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text5Size').value), parseFloat($('text5Spacing').value), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
+    drawText([$('text6').value], parseFloat($('text6X').value) * mmPx + bleedOffset, parseFloat($('text6Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text6Size').value), parseFloat($('text6Spacing').value), 0, mainTextColor, 'left', fonts.ar, renderDpi, targetCtx, true);
 
     const footerTextColor = $('footerTextColor')?.value || '#FFFFFF';
-    drawText([$('text10').value], parseFloat($('text10X').value) * mmPx + bleedOffset, parseFloat($('text10Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text10Size').value), parseFloat($('text10Spacing').value), 0, footerTextColor, 'left', fonts.ar, dpiVal, targetCtx, false);
-    drawText([$('text11').value], parseFloat($('text11X').value) * mmPx + bleedOffset, parseFloat($('text11Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text11Size').value), parseFloat($('text11Spacing').value), 0, footerTextColor, 'left', fonts.ar, dpiVal, targetCtx, false);
-    drawText([$('text12').value], parseFloat($('text12X').value) * mmPx + bleedOffset, parseFloat($('text12Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text12Size').value), parseFloat($('text12Spacing').value), 0, footerTextColor, 'left', fonts.ar, dpiVal, targetCtx, false);
+    drawText([$('text10').value], parseFloat($('text10X').value) * mmPx + bleedOffset, parseFloat($('text10Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text10Size').value), parseFloat($('text10Spacing').value), 0, footerTextColor, 'left', fonts.ar, renderDpi, targetCtx, false);
+    drawText([$('text11').value], parseFloat($('text11X').value) * mmPx + bleedOffset, parseFloat($('text11Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text11Size').value), parseFloat($('text11Spacing').value), 0, footerTextColor, 'left', fonts.ar, renderDpi, targetCtx, false);
+    drawText([$('text12').value], parseFloat($('text12X').value) * mmPx + bleedOffset, parseFloat($('text12Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text12Size').value), parseFloat($('text12Spacing').value), 0, footerTextColor, 'left', fonts.ar, renderDpi, targetCtx, false);
 
     if ($('showQR').checked) {
         const qs = 23 * mmPx;
@@ -194,9 +214,11 @@ const drawTicket = async (dpiVal, targetCtx = ctx) => {
         targetCtx.fillRect(qx, qy, qs, qs);
         if ($('qrCodeUrl').value && qrImage) { targetCtx.drawImage(qrImage, qx, qy, qs, qs); }
     }
+
+    if (!isPreview) triggerDownload(targetCtx.canvas, `${exportDpi}dpi`);
 };
 
-const debouncedDrawTicket = debounce((dpiVal) => drawTicket(dpiVal), 150);
+const debouncedDrawTicket = debounce(() => drawTicket(), 150);
 
 async function waitForFonts() {
     const fontPromises = [
@@ -240,7 +262,7 @@ $('memberSelector')?.addEventListener('change', (e) => {
         $('rect1Color').value = member.color_a; 
         $('rect9Color').value = member.color_a; 
         
-        // 5. 判斷 A 色是否太亮，決定 Logo 與 Footer 文字色 (白色 -> 黑字)
+        // 5. Logo A色黑白字判斷
         const lumA = getLuminance(member.color_a);
         const textColorA = lumA > 0.8 ? '#000000' : '#FFFFFF';
         $('rect1TextColor').value = textColorA;
@@ -249,17 +271,18 @@ $('memberSelector')?.addEventListener('change', (e) => {
         let bColor = member.color_b === '#ffffff' ? '#FDF9FA' : member.color_b;
         $('bgColor').value = bColor; 
         
-        // 4. 背景文字灰化邏輯
-        $('bgTextColor').value = getMutedDarkColor(bColor);
+        // 9. 背景文字與陰影提取
+        const mutedTextColor = getMutedDarkColor(bColor);
+        $('bgTextColor').value = mutedTextColor;
+        $('bgShadowColor').value = getLighterMutedColor(mutedTextColor);
         $('bgTextOpacity').value = 0.15;
 
-        debouncedDrawTicket(70);
+        debouncedDrawTicket();
     } else {
         $('memberHeader').style.display = 'none';
     }
 });
 
-// 9. 全域點擊漣漪
 document.addEventListener('mousedown', function(e) {
     if(['INPUT', 'BUTTON', 'SELECT', 'A', 'I', 'LABEL'].includes(e.target.tagName)) return;
     let ripple = document.createElement('div');
@@ -312,11 +335,11 @@ $('advToggleBtnMaster')?.addEventListener('click', () => {
     if(span) span.textContent = isActive ? langs[currentLang].simple_mode : langs[currentLang].advanced_mode;
 });
 
-// 2. 綁定所有簡易微調 Slider
+// Slider 雙向同步
 document.querySelectorAll('.sync-slider').forEach(slider => {
     const input = $(slider.getAttribute('data-target'));
     if (input) {
-        slider.addEventListener('input', e => { input.value = e.target.value; debouncedDrawTicket(70); });
+        slider.addEventListener('input', e => { input.value = e.target.value; debouncedDrawTicket(); });
         input.addEventListener('input', e => { slider.value = e.target.value; });
     }
 });
@@ -325,30 +348,30 @@ $('qrCodeUrl')?.addEventListener('input', debounce(() => {
     const url = $('qrCodeUrl').value;
     const qrContainer = $('qrPreview');
     qrContainer.innerHTML = '';
-    if (!url) { qrImage = null; debouncedDrawTicket(70); return; }
+    if (!url) { qrImage = null; debouncedDrawTicket(); return; }
     new QRCode(qrContainer, { text: url, width: 128, height: 128 });
     setTimeout(() => {
         const qrElement = qrContainer.querySelector('img') || qrContainer.querySelector('canvas');
         if (qrElement) {
             qrImage = new Image();
-            qrImage.onload = () => debouncedDrawTicket(70);
+            qrImage.onload = () => debouncedDrawTicket();
             qrImage.src = qrElement.tagName === 'IMG' ? qrElement.src : qrElement.toDataURL('image/png');
         }
     }, 300);
 }, 500));
 
-$('showQR').addEventListener('change', () => debouncedDrawTicket(70));
-document.querySelectorAll('input').forEach(el => { if(!el.classList.contains('sync-slider')) el.addEventListener('input', () => debouncedDrawTicket(70)); });
+$('showQR').addEventListener('change', () => debouncedDrawTicket());
+document.querySelectorAll('input').forEach(el => { if(!el.classList.contains('sync-slider')) el.addEventListener('input', () => debouncedDrawTicket()); });
 $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
 $('themeToggleBtn')?.addEventListener('click', () => { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
 
 $('downloadBtn')?.addEventListener('click', () => $('downloadModal').style.display = 'flex');
-$('dl300')?.addEventListener('click', async () => { $('downloadModal').style.display = 'none'; const tempCanvas = document.createElement('canvas'); await drawTicket(300, tempCanvas.getContext('2d')); triggerDownload(tempCanvas, '300dpi'); });
-$('dl70')?.addEventListener('click', async () => { $('downloadModal').style.display = 'none'; const tempCanvas = document.createElement('canvas'); await drawTicket(70, tempCanvas.getContext('2d')); triggerDownload(tempCanvas, '70dpi'); });
+$('dl300')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(300); });
+$('dl70')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(70); });
 
 function triggerDownload(canvasObj, dpiStr) {
     const link = document.createElement('a'); link.download = `Ticket_${dpiStr}_${Date.now()}.png`; link.href = canvasObj.toDataURL('image/png'); link.click();
 }
 
-window.addEventListener('resize', () => debouncedDrawTicket(70));
-window.onload = async () => { await waitForFonts(); await loadLanguages(); await loadMembers(); initSidebarNav(); drawTicket(70); };
+window.addEventListener('resize', () => debouncedDrawTicket());
+window.onload = async () => { await waitForFonts(); await loadLanguages(); await loadMembers(); initSidebarNav(); drawTicket(); };
