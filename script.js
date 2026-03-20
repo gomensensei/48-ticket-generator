@@ -6,7 +6,6 @@ const ctx = canvas ? canvas.getContext('2d') : null;
 const fonts = { avant: 'ITC Avant Garde Gothic Std Extra Light', kozgo: 'KozGoPr6N', ar: 'AR ADGothicJP' };
 const dpi = {
     300: { base: { w: Math.round(150 * 300 / 25.4), h: Math.round(65 * 300 / 25.4) }, bleed: { w: Math.round((150 + 6) * 300 / 25.4), h: Math.round((65 + 6) * 300 / 25.4) } },
-    /* 修復 Bug 2: 補回 140 DPI 的資料，讓預覽時可以正常運算寬度高度 */
     140: { base: { w: Math.round(150 * 140 / 25.4), h: Math.round(65 * 140 / 25.4) }, bleed: { w: Math.round((150 + 6) * 140 / 25.4), h: Math.round((65 + 6) * 140 / 25.4) } },
     70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 6) * 70 / 25.4), h: Math.round((65 + 6) * 70 / 25.4) } }
 };
@@ -46,8 +45,7 @@ const changeLanguage = (lang) => {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (langs[lang][key]) {
-            if (el.tagName === 'SPAN' || el.tagName === 'DIV' || el.tagName === 'H3' || el.tagName === 'BUTTON' || el.tagName === 'OPTION') {
-                /* 修復 Bug 1 (衍生問題): 語言切換時，要兼容被 Lucide 轉換後的 SVG 標籤 */
+            if (['SPAN', 'DIV', 'H3', 'BUTTON', 'OPTION'].includes(el.tagName)) {
                 const icon = el.querySelector('i') || el.querySelector('svg');
                 if (icon) {
                     el.innerHTML = ''; el.appendChild(icon); el.appendChild(document.createTextNode(' ' + langs[lang][key]));
@@ -73,21 +71,21 @@ const changeLanguage = (lang) => {
 
 function getMutedDarkColor(hex) {
     if(!hex || hex.length < 7) return '#888888';
-    let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
+    let r = parseInt(hex.substring(1,3), 16), g = parseInt(hex.substring(3,5), 16), b = parseInt(hex.substring(5,7), 16);
     r = Math.floor(r * 0.5 + 102 * 0.5); g = Math.floor(g * 0.5 + 102 * 0.5); b = Math.floor(b * 0.5 + 102 * 0.5);
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
 function getLighterMutedColor(hex) {
     if(!hex || hex.length < 7) return '#5F96ED';
-    let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
+    let r = parseInt(hex.substring(1,3), 16), g = parseInt(hex.substring(3,5), 16), b = parseInt(hex.substring(5,7), 16);
     r = Math.floor(r * 0.25 + 255 * 0.75); g = Math.floor(g * 0.25 + 255 * 0.75); b = Math.floor(b * 0.25 + 255 * 0.75);
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
 function getLuminance(hex) {
     hex = hex.replace('#', '');
-    let r = parseInt(hex.substring(0, 2), 16) / 255; let g = parseInt(hex.substring(2, 4), 16) / 255; let b = parseInt(hex.substring(4, 6), 16) / 255;
+    let r = parseInt(hex.substring(0, 2), 16) / 255, g = parseInt(hex.substring(2, 4), 16) / 255, b = parseInt(hex.substring(4, 6), 16) / 255;
     let [rs, gs, bs] = [r, g, b].map(c => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
     return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 }
@@ -144,25 +142,18 @@ const drawTicket = async (exportDpi = null) => {
     }
     
     targetCtx.clearRect(0, 0, w, h);
-
-    const colorA = $('rect1Color')?.value || '#2086D1'; 
-    const colorB = $('bgColor')?.value || '#E5EDF9'; 
-    
+    const colorA = $('rect1Color')?.value || '#2086D1', colorB = $('bgColor')?.value || '#E5EDF9'; 
     targetCtx.fillStyle = colorB;
     targetCtx.fillRect(0, 0, w, h);
 
     const bgTextStr = $('bgText')?.value || 'YSS48';
     const bgTextX = parseFloat($('bgTextX')?.value || -100) * mmPx + bleedOffset;
     const bgTextY = parseFloat($('bgTextY')?.value || 0) * mmPx + bleedOffset;
-    const bgTextSpacing = parseFloat($('bgTextSpacing')?.value || -6000);
-    const bgTextSize = parseFloat($('bgTextSize')?.value || 62);
-    const bgTextLineHeight = parseFloat($('bgTextLineHeight')?.value || 46);
+    const bgTextSpacing = parseFloat($('bgTextSpacing')?.value || -6000), bgTextSize = parseFloat($('bgTextSize')?.value || 62), bgTextLineHeight = parseFloat($('bgTextLineHeight')?.value || 46);
     
     targetCtx.font = `${bgTextSize * (renderDpi / 72)}px ${fonts.avant}`;
-    const cw = targetCtx.measureText(bgTextStr.charAt(0)).width;
-    const tw = targetCtx.measureText(bgTextStr).width;
-    const gx = tw + bgTextSpacing * (renderDpi/72) / 1000;
-    const gy = bgTextLineHeight * (renderDpi / 72);
+    const cw = targetCtx.measureText(bgTextStr.charAt(0)).width, tw = targetCtx.measureText(bgTextStr).width;
+    const gx = tw + bgTextSpacing * (renderDpi/72) / 1000, gy = bgTextLineHeight * (renderDpi / 72);
     
     targetCtx.globalAlpha = parseFloat($('bgShadowOpacity')?.value || 0.2);
     targetCtx.fillStyle = $('bgShadowColor')?.value || '#5F96ED';
@@ -206,9 +197,7 @@ const drawTicket = async (exportDpi = null) => {
     drawText([$('text12').value], parseFloat($('text12X').value) * mmPx + bleedOffset, parseFloat($('text12Y').value) * mmPx + bleedOffset, fonts.kozgo, parseFloat($('text12Size').value), parseFloat($('text12Spacing').value), 0, footerTextColor, 'left', fonts.ar, renderDpi, targetCtx, false);
 
     if ($('showQR').checked) {
-        const qs = 23 * mmPx;
-        const qx = w - (8.5 * mmPx) - qs - (bleed ? 3*mmPx : 0);
-        const qy = 23 * mmPx + bleedOffset;
+        const qs = 23 * mmPx, qx = w - (8.5 * mmPx) - qs - (bleed ? 3*mmPx : 0), qy = 23 * mmPx + bleedOffset;
         targetCtx.fillStyle = colorA;
         targetCtx.fillRect(qx, qy, qs, qs);
         if ($('qrCodeUrl').value && qrImage) { targetCtx.drawImage(qrImage, qx, qy, qs, qs); }
@@ -220,11 +209,7 @@ const drawTicket = async (exportDpi = null) => {
 const debouncedDrawTicket = debounce(() => drawTicket(), 150);
 
 async function waitForFonts() {
-    const fontPromises = [
-        document.fonts.load(`400 47px "${fonts.avant}"`),
-        document.fonts.load(`400 14.2px "${fonts.kozgo}"`),
-        document.fonts.load(`400 14.2px "${fonts.ar}"`)
-    ];
+    const fontPromises = [document.fonts.load(`400 47px "${fonts.avant}"`), document.fonts.load(`400 14.2px "${fonts.kozgo}"`), document.fonts.load(`400 14.2px "${fonts.ar}"`)];
     try { await Promise.all(fontPromises); } catch (err) { console.error(err); }
 }
 
@@ -232,8 +217,7 @@ async function loadMembers() {
     try {
         const response = await fetch('members.json');
         members = await response.json();
-        const selector = $('memberSelector');
-        const groups = {};
+        const selector = $('memberSelector'), groups = {};
         members.forEach(m => { const gen = m.generation || '其他'; if(!groups[gen]) groups[gen] = []; groups[gen].push(m); });
         for (const [gen, mems] of Object.entries(groups)) {
             const optgroup = document.createElement('optgroup');
@@ -248,32 +232,65 @@ async function loadMembers() {
     } catch (error) { console.error(error); }
 }
 
+$('exportConfigBtn')?.addEventListener('click', () => {
+    const config = {};
+    document.querySelectorAll('input, select').forEach(el => {
+        if (el.id && el.type !== 'file') {
+            config[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+        }
+    });
+    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `TicketConfig_${Date.now()}.json`;
+    link.click();
+});
+
+$('importConfigBtn')?.addEventListener('click', () => $('configFileInput').click());
+
+$('configFileInput')?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (re) => {
+        try {
+            const config = JSON.parse(re.target.result);
+            Object.keys(config).forEach(id => {
+                const el = $(id);
+                if (el) {
+                    if (el.type === 'checkbox') el.checked = config[id];
+                    else el.value = config[id];
+                    const syncInput = document.querySelector(`.sync-slider[data-target="${id}"]`);
+                    if (syncInput) syncInput.value = config[id];
+                }
+            });
+            debouncedDrawTicket();
+        } catch (err) { console.error("Import failed:", err); }
+    };
+    reader.readAsText(file);
+});
+
 $('memberSelector')?.addEventListener('change', (e) => {
     const member = members.find(m => m.name_ja === e.target.value);
     if (member) {
         $('memberHeader').style.display = 'flex';
         $('memberAvatar').src = member.image;
         $('memberName').textContent = member.name_ja;
-        
         document.documentElement.style.setProperty('--color-a', member.color_a);
         document.documentElement.style.setProperty('--color-b', member.color_b);
-        
         $('rect1Color').value = member.color_a; 
         $('rect9Color').value = member.color_a; 
-        
         const lumA = getLuminance(member.color_a);
         const textColorA = lumA > 0.8 ? '#000000' : '#FFFFFF';
         $('rect1TextColor').value = textColorA;
         $('footerTextColor').value = textColorA;
-        
         let bColor = member.color_b === '#ffffff' ? '#FDF9FA' : member.color_b;
         $('bgColor').value = bColor; 
-        
         const mutedTextColor = getMutedDarkColor(bColor);
         $('bgTextColor').value = mutedTextColor;
         $('bgShadowColor').value = getLighterMutedColor(mutedTextColor);
         $('bgTextOpacity').value = 0.15;
-
         debouncedDrawTicket();
     } else {
         $('memberHeader').style.display = 'none';
@@ -284,41 +301,23 @@ document.addEventListener('mousedown', function(e) {
     if(['INPUT', 'BUTTON', 'SELECT', 'A', 'I', 'svg', 'path', 'LABEL'].includes(e.target.tagName)) return;
     let ripple = document.createElement('div');
     ripple.className = 'ripple';
-    ripple.style.left = e.clientX - 20 + 'px';
-    ripple.style.top = e.clientY - 20 + 'px';
+    ripple.style.left = e.clientX - 20 + 'px', ripple.style.top = e.clientY - 20 + 'px';
     document.body.appendChild(ripple);
     setTimeout(() => ripple.remove(), 500);
 });
 
 function initSidebarNav() {
-    const navIcons = document.querySelectorAll('.nav-icon:not(.special-link)');
-    const sections = document.querySelectorAll('.drawer-section');
-    const drawer = $('settingsDrawer');
-
+    const navIcons = document.querySelectorAll('.nav-icon:not(.special-link)'), sections = document.querySelectorAll('.drawer-section'), drawer = $('settingsDrawer');
     navIcons.forEach(icon => {
         icon.addEventListener('click', () => {
             const isAlreadyActive = icon.classList.contains('active');
-            navIcons.forEach(i => i.classList.remove('active'));
-            sections.forEach(sec => sec.style.display = 'none');
-            
+            navIcons.forEach(i => i.classList.remove('active')), sections.forEach(sec => sec.style.display = 'none');
             if (isAlreadyActive && drawer.classList.contains('open')) {
                 drawer.classList.remove('open');
             } else {
-                icon.classList.add('active');
-                drawer.classList.add('open');
+                icon.classList.add('active'), drawer.classList.add('open');
                 const targetSec = $(icon.getAttribute('data-target'));
                 if(targetSec) targetSec.style.display = 'block';
-            }
-        });
-    });
-
-    document.querySelectorAll('.hover-zone').forEach(zone => {
-        zone.addEventListener('click', () => {
-            const targetId = zone.id.replace('zone-', 'sec-');
-            const icon = document.querySelector(`.nav-icon[data-target="${targetId}"]`);
-            if(icon) {
-                if(!icon.classList.contains('active')) icon.click();
-                else if (!drawer.classList.contains('open')) drawer.classList.add('open');
             }
         });
     });
@@ -341,8 +340,7 @@ document.querySelectorAll('.sync-slider').forEach(slider => {
 });
 
 $('qrCodeUrl')?.addEventListener('input', debounce(() => {
-    const url = $('qrCodeUrl').value;
-    const qrContainer = $('qrPreview');
+    const url = $('qrCodeUrl').value, qrContainer = $('qrPreview');
     qrContainer.innerHTML = '';
     if (!url) { qrImage = null; debouncedDrawTicket(); return; }
     new QRCode(qrContainer, { text: url, width: 128, height: 128 });
@@ -360,7 +358,6 @@ $('showQR').addEventListener('change', () => debouncedDrawTicket());
 document.querySelectorAll('input').forEach(el => { if(!el.classList.contains('sync-slider')) el.addEventListener('input', () => debouncedDrawTicket()); });
 $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
 $('themeToggleBtn')?.addEventListener('click', () => { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
-
 $('downloadBtn')?.addEventListener('click', () => $('downloadModal').style.display = 'flex');
 $('dl300')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(300); });
 $('dl70')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(70); });
