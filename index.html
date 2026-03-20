@@ -70,7 +70,6 @@
         .canvas-area { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: auto; padding: 30px; transition: background 0.3s;}
         [data-theme="dark"] .canvas-area { background: rgba(0, 0, 0, 0.4); }
         
-        /* 4. 頭像無間斷反光 */
         .member-header { position: absolute; top: 20px; display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-radius: 100px; z-index: 10; transition: 0.3s; }
         .member-avatar-wrap { position: relative; padding: 4px; border-radius: 50%; background: linear-gradient(45deg, var(--color-a), var(--color-b)); animation: breathe 2s infinite alternate ease-in-out; overflow: hidden; }
         .member-avatar-wrap img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-panel-solid); display: block; position: relative; z-index: 2;}
@@ -83,7 +82,6 @@
         @keyframes breathe { 0% { box-shadow: 0 0 10px 2px var(--color-a); transform: scale(1); } 100% { box-shadow: 0 0 25px 6px var(--color-b); transform: scale(1.05); } }
         .member-header h2 { font-size: 1.3rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        /* 8. 解決 Canvas 消失與高清縮放 */
         .canvas-wrapper { position: relative; transition: transform 0.2s; display: inline-block; max-width: 100%; }
         canvas { display: block; max-width: 100%; height: auto; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
         
@@ -135,34 +133,36 @@
         .adv-row label { width: 60px; font-size: 0.8rem; color: var(--text-muted); }
         .adv-row input { flex: 1; padding: 8px 12px; }
 
-        /* 2. 簡易模式全網格滑桿 */
+        /* 修復 Bug 4: 確保標籤寬度自動彈性，唔會疊住 Slider */
         .simple-slider-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 15px; margin-top: 5px; background: rgba(255,255,255,0.3); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); }
         [data-theme="dark"] .simple-slider-grid { background: rgba(0,0,0,0.3); }
         .slider-item { display: flex; align-items: center; gap: 6px; }
-        .slider-item span { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; width: 35px; white-space: nowrap;}
+        .slider-item span { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; width: auto; min-width: 45px; flex-shrink: 0; white-space: nowrap;}
         .slider-item input[type="range"] { flex: 1; accent-color: var(--primary); height: 4px; min-width: 50px; }
 
         .color-row { display: flex; gap: 15px; align-items: center; }
         .color-row .input-group { flex: 1; }
         input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
 
-        /* 1 & 4. 解決未 Hover 看不見、呼吸燈引導、遠離邊緣向左滑出 */
+        /* 修復 Bug 5: 加闊 icon-nav 空間，將右邊距推入，避免太貼邊 */
         .icon-nav { 
-            width: 100px; flex-shrink: 0; border-left: 1px solid var(--border-glass); z-index: 30; 
+            width: 120px; flex-shrink: 0; border-left: 1px solid var(--border-glass); z-index: 30; 
             display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 16px; 
             position: relative; 
         }
         .nav-item-wrap { width: 100%; height: 50px; position: relative; }
+        
+        /* 置中及推入 right: 35px */
         .nav-icon { 
-            position: absolute; right: 25px; top: 0; /* 遠離邊緣 */
+            position: absolute; right: 35px; top: 0; 
             display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start;
             width: 50px; height: 50px; border-radius: 25px;
-            background: rgba(240, 240, 240, 0.75); /* 灰色實體底，保證可見 */
+            background: rgba(240, 240, 240, 0.75); 
             backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.9);
             color: var(--text-muted); cursor: pointer; 
-            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s, color 0.3s; 
+            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s, color 0.3s, transform 0.3s; 
             overflow: hidden; white-space: nowrap;
-            animation: icon-breathe 2s infinite alternate ease-in-out; /* 呼吸燈引導 */
+            animation: icon-breathe 2s infinite alternate ease-in-out; 
         }
         [data-theme="dark"] .nav-icon { background: rgba(50, 50, 50, 0.75); border-color: rgba(255,255,255,0.1); color: #ccc; }
         
@@ -171,24 +171,32 @@
             100% { box-shadow: 0 0 15px rgba(246, 118, 166, 0.5); transform: scale(1.05); }
         }
 
-        .nav-icon i { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+        /* 修復 Bug 1: 兼顧 Lucide 將 i 轉換成 svg 後的 CSS 生效 */
+        .nav-icon i, .nav-icon svg { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; padding-right: 15px; transition: opacity 0.2s; }
         
-        /* Hover 時停止呼吸並向左展開 */
-        .nav-icon.active, .nav-icon:hover { 
+        /* 修復 Bug 3: Hover 時先展開，Active 點擊後縮埋做圓形，避免阻住 Drawer */
+        .nav-icon:hover:not(.active) { 
             width: 200px; color: var(--primary); background: var(--bg-panel-solid); 
             border-color: var(--primary); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); z-index: 50;
             animation: none; transform: scale(1);
         }
-        .nav-icon.active i, .nav-icon:hover i { color: var(--primary); }
-        .nav-icon.active span, .nav-icon:hover span { opacity: 1; transition-delay: 0.15s; }
+        .nav-icon:hover:not(.active) i, .nav-icon:hover:not(.active) svg { color: var(--primary); }
+        .nav-icon:hover:not(.active) span { opacity: 1; transition-delay: 0.15s; }
+        
+        /* Active 狀態保持為圓形，變色即可，隱藏文字 */
+        .nav-icon.active { 
+            width: 50px; background: var(--primary); border-color: var(--primary); color: white; 
+            box-shadow: 0 4px 15px rgba(246, 118, 166, 0.4); animation: none; z-index: 50; transform: scale(1.05); 
+        }
+        .nav-icon.active i, .nav-icon.active svg { color: white; }
+        .nav-icon.active span { opacity: 0; display: none; }
         
         .special-link .nav-icon { border-color: #FF5C8D; color: #FF5C8D; animation: special-breathe 2s infinite alternate ease-in-out; }
         @keyframes special-breathe { 0% { box-shadow: 0 0 0px rgba(255, 92, 141, 0); transform: scale(1); } 100% { box-shadow: 0 0 20px rgba(255, 92, 141, 0.6); transform: scale(1.08); } }
-        /* 6. MBTI 文字過長，加寬展開寬度 */
-        .special-link .nav-icon.active, .special-link .nav-icon:hover { width: 320px; background: rgba(255, 92, 141, 0.1); animation: none; transform: scale(1);}
+        /* Special Link 保持 Hover 展開 */
+        .special-link .nav-icon:hover { width: 320px; background: rgba(255, 92, 141, 0.1); animation: none; transform: scale(1);}
 
-        /* 7. Footer 文字更新與置中適配 */
         .global-footer { height: auto; min-height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 10px 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-glass); flex-wrap: wrap; gap: 10px;}
         .copyright { flex: 1; text-align: left; line-height: 1.5; min-width: 300px; word-break: break-word;}
         .footer-links { display: flex; flex-direction: row; gap: 16px; align-items: center; flex-shrink: 0; }
@@ -199,7 +207,6 @@
         .modal-card { padding: 40px; border-radius: 24px; text-align: center; display: flex; flex-direction: column; gap: 20px; max-width: 400px; width: 90%; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
 
-        /* 7. 手機版終極修復 (防止變形、確保版面可見) */
         @media (max-width: 800px) {
             .topbar { padding: 0 12px; }
             .brand-title { font-size: 1rem; }
@@ -210,20 +217,18 @@
             
             .fab-group { position: relative; bottom: auto; justify-content: center; margin-top: 15px; margin-bottom: 5px; flex-wrap: nowrap; gap: 10px;}
             
-            /* Icon 導航圓形固定不變形 */
             .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 15px; align-items: center; justify-content: flex-start; overflow-x: auto; border-left: none; border-top: 1px solid var(--border-glass); order: 2; gap: 15px;}
             .nav-item-wrap { width: 45px; height: 45px; flex-shrink: 0; padding: 0; justify-content: center;}
             .nav-icon { position: static; flex-direction: row; justify-content: center; width: 45px; height: 45px; padding: 0; right: auto; border-radius: 50%; animation: none; transform: none;}
-            .nav-icon i { min-width: 45px; }
-            .nav-icon.active, .nav-icon:hover { width: 45px; transform: scale(1.1); animation: none;} 
-            .special-link .nav-icon.active, .special-link .nav-icon:hover { width: 45px; transform: scale(1.1);}
+            .nav-icon i, .nav-icon svg { min-width: 45px; }
+            .nav-icon.active, .nav-icon:hover:not(.active) { width: 45px; transform: scale(1.1); animation: none;} 
+            .special-link .nav-icon:hover { width: 45px; transform: scale(1.1);}
             .nav-icon span { display: none; }
             
             .drawer.open { width: 100%; height: auto; border-left: none; order: 3; flex: 1;}
             .drawer-inner { width: 100%; }
             .hover-zone { display: none; }
             
-            /* Footer 換行置中 */
             .global-footer { flex-direction: column; padding: 15px 20px 25px 20px; text-align: center; justify-content: center;}
             .copyright { text-align: center; min-width: 100%; font-size: 0.75rem;}
             .footer-links { justify-content: center; width: 100%;}
@@ -513,7 +518,6 @@
             </div>
         </aside>
 
-        <!-- 1 & 4. 完美實體按鈕與向左滑出導航 (保證可見) -->
         <nav class="icon-nav glass">
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div></div>
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-bg"><i data-lucide="image"></i><span data-i18n="background_settings">背景設定</span></div></div>
@@ -531,7 +535,6 @@
         </nav>
     </main>
 
-    <!-- 7. Footer 文字更新與置中適配 -->
     <footer class="global-footer glass">
         <div class="copyright" data-i18n="copyright_notice">由粉絲 ゴメン先生 (gomensensei) 製作，與 AKB48 官方無任何關聯。圖片及相關資料版權歸原屬公司所有。</div>
         <div class="footer-links">
