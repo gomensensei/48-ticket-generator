@@ -9,7 +9,7 @@ const dpi = {
     70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 6) * 70 / 25.4), h: Math.round((65 + 6) * 70 / 25.4) } }
 };
 
-// 8. 預覽用高清 DPI (2倍 Retina 解析度，解決桌面版模糊)
+// 8. Retina 高清渲染設定 (內部以 140 DPI 繪製，CSS 縮放)
 const PREVIEW_DPI = 140; 
 const CSS_BASE_DPI = 70;
 
@@ -75,10 +75,9 @@ function getMutedDarkColor(hex) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
-// 9. 陰影顏色提取邏輯：將背景文字色大幅調亮並減淡
+// 3. 提取背景色變亮變淡作為陰影
 function getLighterMutedColor(hex) {
     let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
-    // 與純白混合 60% 提亮
     r = Math.floor(r * 0.4 + 255 * 0.6); g = Math.floor(g * 0.4 + 255 * 0.6); b = Math.floor(b * 0.4 + 255 * 0.6);
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
@@ -118,7 +117,6 @@ const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left
 };
 
 const drawTicket = async (exportDpi = null) => {
-    // 判斷是匯出還是預覽
     const isPreview = (exportDpi === null);
     const renderDpi = isPreview ? PREVIEW_DPI : exportDpi;
     const targetCtx = isPreview ? ctx : document.createElement('canvas').getContext('2d');
@@ -134,7 +132,7 @@ const drawTicket = async (exportDpi = null) => {
     targetCtx.canvas.height = h;
 
     if (isPreview) {
-        // 8. 預覽時 CSS 大小永遠基於 70 DPI 計算，確保物理大小一致但解析度提升
+        // 高清預覽適配：內部高解像度，外部 CSS 控制大小
         const cssW = bleed ? dpi[CSS_BASE_DPI].bleed.w : dpi[CSS_BASE_DPI].base.w;
         const cssH = bleed ? dpi[CSS_BASE_DPI].bleed.h : dpi[CSS_BASE_DPI].base.h;
         if (window.innerWidth < 800) {
@@ -218,6 +216,7 @@ const drawTicket = async (exportDpi = null) => {
     if (!isPreview) triggerDownload(targetCtx.canvas, `${exportDpi}dpi`);
 };
 
+// 所有預覽事件只呼叫無參數的 debouncedDrawTicket()，避免空白畫布 Bug
 const debouncedDrawTicket = debounce(() => drawTicket(), 150);
 
 async function waitForFonts() {
@@ -271,7 +270,7 @@ $('memberSelector')?.addEventListener('change', (e) => {
         let bColor = member.color_b === '#ffffff' ? '#FDF9FA' : member.color_b;
         $('bgColor').value = bColor; 
         
-        // 9. 背景文字與陰影提取
+        // 3. 背景文字與陰影提取
         const mutedTextColor = getMutedDarkColor(bColor);
         $('bgTextColor').value = mutedTextColor;
         $('bgShadowColor').value = getLighterMutedColor(mutedTextColor);
