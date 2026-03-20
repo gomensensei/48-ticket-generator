@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title data-i18n="site_title">チケットジェネレーター (Reiwa Edition)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <link href="[https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap](https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap)" rel="stylesheet">
     <style>
         @font-face { font-family: 'ITC Avant Garde Gothic Std Extra Light'; src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2') format('woff2'); }
         @font-face { font-family: 'AR ADGothicJP'; src: url('fonts/jadhei01m.woff2') format('woff2'); }
@@ -65,7 +61,6 @@
         .tool-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; flex-shrink: 0; }
         .tool-btn:hover { background: rgba(246, 118, 166, 0.1); color: var(--primary); }
         
-        /* 修復 g 字被 crop 及寬度問題 */
         .lang-select { background: rgba(255,255,255,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 8px 10px; border-radius: 8px; outline: none; font-family: inherit; font-weight: 500; font-size: 0.9rem; line-height: 1.2; height: auto; min-height: 38px;}
         [data-theme="dark"] .lang-select { background: rgba(0,0,0,0.3); }
 
@@ -73,7 +68,6 @@
         .canvas-area { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: auto; padding: 30px; transition: background 0.3s;}
         [data-theme="dark"] .canvas-area { background: rgba(0, 0, 0, 0.4); }
         
-        /* 電腦版神推 header 加入 glass-solid 托底 */
         .member-header { position: absolute; top: 20px; display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-radius: 100px; z-index: 10; transition: 0.3s; }
         .member-avatar-wrap { position: relative; padding: 4px; border-radius: 50%; background: linear-gradient(45deg, var(--color-a), var(--color-b)); animation: breathe 2s infinite alternate ease-in-out; overflow: hidden; }
         .member-avatar-wrap img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-panel-solid); display: block; position: relative; z-index: 2;}
@@ -96,8 +90,8 @@
         
         #zone-bg { top: 0%; left: 0%; width: 100%; height: 100%; z-index: 1; } 
         #zone-logo { top: 0%; left: 5%; width: 17%; height: 55%; z-index: 2; }
-        #zone-event { top: 18%; left: 23%; width: 52%; height: 38%; z-index: 2; }
-        #zone-date { top: 66%; left: 8.6%; width: 45%; height: 20%; z-index: 2; }
+        #zone-event { top: 15%; left: 23%; width: 55%; height: 32%; z-index: 2; }
+        #zone-date { top: 58%; left: 8.6%; width: 50%; height: 28%; z-index: 2; }
         #zone-qr { top: 35%; right: 5%; width: 16%; height: 35%; z-index: 2; }
         #zone-others { top: 92.3%; left: 0%; width: 100%; height: 7.7%; z-index: 2; }
 
@@ -109,7 +103,6 @@
         .btn-secondary { background: var(--bg-panel-solid); color: var(--text-main); border: 1px solid var(--border-glass); }
         .btn-secondary:hover { transform: translateY(-4px); color: var(--primary); }
 
-        /* 匯出匯入懸浮面板 */
         .backup-actions { position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 9; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 8px 12px; border-radius: 50px;}
         .backup-actions.active { opacity: 1; pointer-events: auto; bottom: 85px; }
         .btn-mini { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-glass); font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; background: var(--bg-panel-solid); color: var(--text-main); box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
@@ -153,7 +146,6 @@
         .color-row .input-group { flex: 1; }
         input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
         
-        /* 顏色互換按鈕 */
         .swap-btn { background: var(--bg-panel-solid); border: 1px solid var(--border-glass); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: 0.2s; flex-shrink: 0; margin-top: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
         .swap-btn:hover { background: var(--primary); color: white; transform: scale(1.1); border-color: var(--primary);}
         [data-theme="dark"] .swap-btn { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); color: #aaa;}
@@ -191,9 +183,8 @@
         .modal-card { padding: 40px; border-radius: 24px; text-align: center; display: flex; flex-direction: column; gap: 15px; max-width: 400px; width: 90%; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
         
-        .scroll-hint-mobile { display: none; }
+        .scroll-hint-mobile { display: none; transition: opacity 0.3s ease; }
 
-        /* 手機版排版 */
         @media (max-width: 800px) {
             .topbar { padding: 0 10px; gap: 8px; }
             .brand-title { font-size: 0.95rem; white-space: normal; line-height: 1.1; flex: 1; }
@@ -224,7 +215,7 @@
             .drawer-inner { width: 100%; padding-bottom: 50px;}
             .hover-zone { display: none; }
             
-            .drawer.open .scroll-hint-mobile { display: flex; justify-content: center; position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); color: var(--primary); background: var(--bg-panel-solid); padding: 5px 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); animation: bounceHint 1.5s infinite; z-index: 50; pointer-events: none;}
+            .drawer.open .scroll-hint-mobile { display: flex; justify-content: center; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); color: var(--primary); background: var(--bg-panel-solid); padding: 5px 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); animation: bounceHint 1.5s infinite; z-index: 50; pointer-events: none;}
             @keyframes bounceHint { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 5px); } }
 
             .global-footer { flex-direction: column; padding: 15px 15px 35px 15px; text-align: center; justify-content: center; gap: 6px;}
@@ -268,7 +259,6 @@
                 <div class="hover-zone" id="zone-others" data-i18n-label="others_settings"></div>
             </div>
 
-            <!-- 隱藏式匯出匯入懸浮列，喺按詳細設定後滑出 -->
             <div class="backup-actions glass-solid" id="backupActions">
                 <button class="btn-mini" id="exportConfigBtn"><i data-lucide="download-cloud" size="16"></i> <span data-i18n="export_config">匯出設定</span></button>
                 <button class="btn-mini" id="importConfigBtn"><i data-lucide="upload-cloud" size="16"></i> <span data-i18n="import_config">匯入設定</span></button>
@@ -537,7 +527,7 @@
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-others"><i data-lucide="more-horizontal"></i><span data-i18n="others_settings">その他</span></div></div>
             
             <div class="nav-item-wrap special-link" style="margin-top:auto;">
-                <div class="nav-icon" onclick="window.open('https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank')">
+                <div class="nav-icon" onclick="window.open('[https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank](https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank)')">
                     <i data-lucide="sparkles"></i><span data-i18n="mbti_link">MBTI性格鑑定</span>
                 </div>
             </div>
@@ -547,8 +537,8 @@
     <footer class="global-footer glass">
         <div class="copyright" data-i18n="copyright_notice">由粉絲 ゴメン先生 (gomensensei) 製作，與 AKB48 官方無任何關聯。</div>
         <div class="footer-links">
-            <a href="https://x.com/sorrysir_gomen" target="_blank"><i data-lucide="bug" size="14"></i> <span data-i18n="report_bug">回報錯誤</span></a>
-            <a href="https://www.paypal.com/paypalme/gomensensei" target="_blank"><i data-lucide="heart" size="14"></i> <span data-i18n="donate">捐款支持</span></a>
+            <a href="[https://x.com/sorrysir_gomen](https://x.com/sorrysir_gomen)" target="_blank"><i data-lucide="bug" size="14"></i> <span data-i18n="report_bug">回報錯誤</span></a>
+            <a href="[https://www.paypal.com/paypalme/gomensensei](https://www.paypal.com/paypalme/gomensensei)" target="_blank"><i data-lucide="heart" size="14"></i> <span data-i18n="donate">捐款支持</span></a>
         </div>
     </footer>
 
@@ -566,7 +556,16 @@
         </div>
     </div>
 
+    <!-- 為了提高手機版首次渲染速度，把大型 library 放喺 <body> 最尾 -->
+    <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
+    <script src="[https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js](https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js)"></script>
+    <script src="[https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js](https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js)"></script>
+
     <script src="script.js" defer></script>
-    <script>lucide.createIcons();</script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if(window.lucide) lucide.createIcons();
+        });
+    </script>
 </body>
 </html>
