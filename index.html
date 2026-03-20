@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title data-i18n="site_title">チケットジェネレーター (Reiwa Edition)</title>
-    <link href="[https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap](https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap)" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 引入外部套件 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js" defer></script>
+
     <style>
         @font-face { font-family: 'ITC Avant Garde Gothic Std Extra Light'; src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2') format('woff2'); }
         @font-face { font-family: 'AR ADGothicJP'; src: url('fonts/jadhei01m.woff2') format('woff2'); }
@@ -56,12 +63,11 @@
         .glass-solid { background: var(--bg-panel-solid); backdrop-filter: blur(25px); border: 1px solid var(--border-glass); box-shadow: var(--shadow-soft); }
 
         .topbar { height: 60px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid var(--border-glass); flex-shrink: 0;}
-        .brand-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); text-shadow: 0 2px 10px rgba(246,118,166,0.2); }
+        .brand-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); text-shadow: 0 2px 10px rgba(246,118,166,0.2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .topbar-tools { display: flex; align-items: center; gap: 12px; }
         .tool-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; flex-shrink: 0; }
         .tool-btn:hover { background: rgba(246, 118, 166, 0.1); color: var(--primary); }
-        
-        .lang-select { background: rgba(255,255,255,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 8px 10px; border-radius: 8px; outline: none; font-family: inherit; font-weight: 500; font-size: 0.9rem; line-height: 1.2; height: auto; min-height: 38px;}
+        .lang-select { background: rgba(255,255,255,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 8px 10px; border-radius: 8px; outline: none; font-family: inherit; font-weight: 500; font-size: 0.9rem;}
         [data-theme="dark"] .lang-select { background: rgba(0,0,0,0.3); }
 
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; min-height: 0; }
@@ -153,13 +159,15 @@
 
         .icon-nav { width: 120px; flex-shrink: 0; border-left: 1px solid var(--border-glass); z-index: 30; display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 16px; position: relative; }
         .nav-item-wrap { width: 100%; height: 50px; position: relative; }
-        .nav-icon { position: absolute; right: 35px; top: 0; display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start; width: 50px; height: 50px; border-radius: 25px; background: rgba(240, 240, 240, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.9); color: var(--text-muted); cursor: pointer; transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s, color 0.3s; overflow: hidden; white-space: nowrap; animation: icon-breathe 2s infinite alternate ease-in-out; }
+        
+        /* 修正 Icon 位置及防止被切走 */
+        .nav-icon { position: absolute; right: 0; top: 0; display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start; padding-right: 14px; width: 50px; height: 50px; border-radius: 25px; background: rgba(240, 240, 240, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.9); color: var(--text-muted); cursor: pointer; transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s, color 0.3s; overflow: hidden; white-space: nowrap; animation: icon-breathe 2s infinite alternate ease-in-out; }
         [data-theme="dark"] .nav-icon { background: rgba(50, 50, 50, 0.75); border-color: rgba(255,255,255,0.1); color: #ccc; }
         
         @keyframes icon-breathe { 0% { box-shadow: 0 0 0px rgba(246, 118, 166, 0); } 100% { box-shadow: 0 0 15px rgba(246, 118, 166, 0.5); } }
 
-        .nav-icon i, .nav-icon svg { width: 22px; height: 22px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin: 0 14px; }
-        .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; transition: opacity 0.2s; margin-right: 5px;}
+        .nav-icon i, .nav-icon svg { width: 22px; height: 22px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin: 0; }
+        .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; transition: opacity 0.2s; margin-right: 10px;}
         
         .nav-icon:hover:not(.active) { width: 200px; color: var(--primary); background: var(--bg-panel-solid); border-color: var(--primary); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); z-index: 50; animation: none; }
         .nav-icon:hover:not(.active) i, .nav-icon:hover:not(.active) svg { color: var(--primary); }
@@ -186,17 +194,17 @@
         .scroll-hint-mobile { display: none; transition: opacity 0.3s ease; }
 
         @media (max-width: 800px) {
-            .topbar { padding: 0 10px; gap: 8px; }
-            .brand-title { font-size: 0.95rem; white-space: normal; line-height: 1.1; flex: 1; }
-            .topbar-tools { gap: 6px; flex-shrink: 0; }
-            .lang-select { width: auto; max-width: 150px; padding: 6px 8px; font-size: 0.85rem; line-height: normal; min-height: 34px;}
-            .tool-btn { padding: 6px; }
+            .topbar { padding: 0 10px; gap: 8px; flex-wrap: nowrap;}
+            .brand-title { font-size: 0.95rem; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+            .topbar-tools { gap: 6px; flex-shrink: 0; display: flex; align-items: center;}
+            .lang-select { width: auto; max-width: 140px; padding: 6px 8px; font-size: 0.85rem; line-height: normal; height: auto;}
+            .tool-btn { padding: 6px; flex-shrink: 0; }
 
             .workspace { flex-direction: column; overflow-y: auto; }
             .canvas-area { padding: 15px 10px; order: 1; flex: 0 0 auto; justify-content: flex-start; }
             .canvas-wrapper { width: 100%; margin-bottom: 10px; }
             
-            .member-header { position: relative; top: 0; margin-bottom: 15px; padding: 8px 16px; border-radius: 50px; background: var(--bg-panel-solid); box-shadow: var(--shadow-soft); }
+            .member-header { position: relative; top: 0; margin-bottom: 15px; padding: 8px 16px; border-radius: 50px; background: var(--bg-panel-solid); box-shadow: var(--shadow-soft); border: 1px solid var(--border-glass);}
             .member-avatar-wrap img { width: 40px; height: 40px; }
             .member-header h2 { font-size: 1.1rem; }
 
@@ -527,7 +535,7 @@
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-others"><i data-lucide="more-horizontal"></i><span data-i18n="others_settings">その他</span></div></div>
             
             <div class="nav-item-wrap special-link" style="margin-top:auto;">
-                <div class="nav-icon" onclick="window.open('[https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank](https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank)')">
+                <div class="nav-icon" onclick="window.open('https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank')">
                     <i data-lucide="sparkles"></i><span data-i18n="mbti_link">MBTI性格鑑定</span>
                 </div>
             </div>
@@ -537,8 +545,8 @@
     <footer class="global-footer glass">
         <div class="copyright" data-i18n="copyright_notice">由粉絲 ゴメン先生 (gomensensei) 製作，與 AKB48 官方無任何關聯。</div>
         <div class="footer-links">
-            <a href="[https://x.com/sorrysir_gomen](https://x.com/sorrysir_gomen)" target="_blank"><i data-lucide="bug" size="14"></i> <span data-i18n="report_bug">回報錯誤</span></a>
-            <a href="[https://www.paypal.com/paypalme/gomensensei](https://www.paypal.com/paypalme/gomensensei)" target="_blank"><i data-lucide="heart" size="14"></i> <span data-i18n="donate">捐款支持</span></a>
+            <a href="https://x.com/sorrysir_gomen" target="_blank"><i data-lucide="bug" size="14"></i> <span data-i18n="report_bug">回報錯誤</span></a>
+            <a href="https://www.paypal.com/paypalme/gomensensei" target="_blank"><i data-lucide="heart" size="14"></i> <span data-i18n="donate">捐款支持</span></a>
         </div>
     </footer>
 
@@ -555,17 +563,5 @@
             <button class="btn-secondary" style="border:none; background:none; text-decoration:underline; width: 100%; justify-content: center;" onclick="document.getElementById('downloadModal').style.display='none'" data-i18n="cancel">取消</button>
         </div>
     </div>
-
-    <!-- 為了提高手機版首次渲染速度，把大型 library 放喺 <body> 最尾 -->
-    <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
-    <script src="[https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js](https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js)"></script>
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js](https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js)"></script>
-
-    <script src="script.js" defer></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            if(window.lucide) lucide.createIcons();
-        });
-    </script>
 </body>
 </html>
