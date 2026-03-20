@@ -16,7 +16,7 @@
         :root {
             --bg-color: #FDF9FA;
             --bg-panel: rgba(255, 255, 255, 0.45);
-            --bg-panel-solid: rgba(255, 255, 255, 0.8);
+            --bg-panel-solid: rgba(255, 255, 255, 0.85);
             --primary: #F676A6;
             --primary-hover: #E55A8C;
             --text-main: #333333;
@@ -46,16 +46,15 @@
             font-family: 'KozGoPr6N', 'Noto Sans JP', sans-serif; 
             color: var(--text-main); 
             height: 100vh; display: flex; flex-direction: column; overflow: hidden;
-            background: linear-gradient(-45deg, #FFD1DF, #C2D8FA, #FFF0F5, #E8D5F0);
+            background: linear-gradient(-45deg, #FFD1DF, #92B7F0, #FFF0F5, #D2A8E5, #FFD1DF);
             background-size: 300% 300%;
-            animation: gradientBG 10s ease infinite;
+            animation: gradientBG 12s ease infinite;
         }
-        [data-theme="dark"] body { background: linear-gradient(-45deg, #2A151D, #1A2433, #151515, #261A28); background-size: 300% 300%; }
+        [data-theme="dark"] body { background: linear-gradient(-45deg, #2A151D, #161D2B, #151515, #261A28); background-size: 300% 300%; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* 9. 全域點擊漣漪 */
-        .ripple { position: fixed; border-radius: 50%; background: rgba(246, 118, 166, 0.5); width: 40px; height: 40px; transform: scale(0); animation: ripple-anim 0.5s ease-out; pointer-events: none; z-index: 99999; }
-        @keyframes ripple-anim { to { transform: scale(3.5); opacity: 0; } }
+        .ripple { position: fixed; border-radius: 50%; background: rgba(246, 118, 166, 0.4); width: 40px; height: 40px; transform: scale(0); animation: ripple-anim 0.5s ease-out; pointer-events: none; z-index: 99999; }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
         .glass { background: var(--bg-panel); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-glass); border-top: 1px solid var(--border-glass-light); border-left: 1px solid var(--border-glass-light); box-shadow: var(--shadow-soft); }
         .glass-solid { background: var(--bg-panel-solid); backdrop-filter: blur(25px); border: 1px solid var(--border-glass); box-shadow: var(--shadow-soft); }
@@ -69,22 +68,36 @@
         [data-theme="dark"] .lang-select { background: rgba(0,0,0,0.3); }
 
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
-        .canvas-area { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; overflow: auto; padding: 20px; transition: 0.3s;}
         
-        /* 9. 成員頭像雙色光暈與反光 */
+        /* 6. Dark mode 應用於門票背景區 */
+        .canvas-area { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: auto; padding: 30px; transition: background 0.3s;}
+        [data-theme="dark"] .canvas-area { background: rgba(0, 0, 0, 0.4); }
+        
+        /* 4 & 9. 成員頭像反光效果 (動畫) */
         .member-header { position: absolute; top: 20px; display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-radius: 100px; z-index: 10; transition: 0.3s; }
-        .member-avatar-wrap { position: relative; padding: 4px; border-radius: 50%; background: linear-gradient(45deg, var(--color-a), var(--color-b)); animation: breathe 2s infinite alternate ease-in-out; }
+        .member-avatar-wrap { position: relative; padding: 4px; border-radius: 50%; background: linear-gradient(45deg, var(--color-a), var(--color-b)); animation: breathe 2s infinite alternate ease-in-out; overflow: hidden; }
         .member-avatar-wrap img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-panel-solid); display: block; position: relative; z-index: 2;}
-        /* 反光點 */
-        .member-avatar-wrap::after { content: ''; position: absolute; top: 8px; left: 8px; width: 15px; height: 15px; background: rgba(255,255,255,0.6); border-radius: 50%; filter: blur(2px); z-index: 3; }
-        .member-header h2 { font-size: 1.3rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
+        /* 動態反光 */
+        .member-avatar-wrap::after { 
+            content: ''; position: absolute; top: -30px; left: -30px; width: 20px; height: 150px; 
+            background: rgba(255,255,255,0.6); transform: rotate(45deg); filter: blur(3px); z-index: 3; 
+            animation: shine 4s infinite ease-in-out;
+        }
+        @keyframes shine { 0% { left: -50px; opacity: 0;} 20% { opacity: 1; } 50% { left: 100px; opacity: 0;} 100% { left: 100px; opacity: 0; } }
         @keyframes breathe { 0% { box-shadow: 0 0 10px 2px var(--color-a); transform: scale(1); } 100% { box-shadow: 0 0 25px 6px var(--color-b); transform: scale(1.05); } }
+        .member-header h2 { font-size: 1.3rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        .canvas-wrapper { position: relative; transition: transform 0.2s; max-width: 100%; display: flex; justify-content: center; }
-        canvas { display: block; height: auto; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
+        .canvas-wrapper { position: relative; transition: transform 0.2s; display: flex; justify-content: center; width: 100%; max-width: 900px; }
+        /* 5 & 7. 修復手機版壓窄與自動調整 */
+        canvas { 
+            display: block; 
+            width: 100% !important; /* CSS 負責縮放，JS 負責清晰度 */
+            height: auto !important; 
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2); 
+            object-fit: contain;
+        }
         
-        /* 5. 更精準的 Hover Zones */
         .hover-zone { position: absolute; border: 2px dashed transparent; border-radius: 8px; cursor: pointer; transition: 0.2s; z-index: 5; }
         .hover-zone:hover { border-color: var(--primary); background: rgba(246, 118, 166, 0.08); }
         .hover-zone::after { content: attr(data-label); position: absolute; top: -35px; left: 50%; transform: translateX(-50%); background: var(--bg-panel-solid); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--primary); padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
@@ -97,9 +110,10 @@
         #zone-qr { top: 35%; right: 5%; width: 16%; height: 35%; z-index: 2; }
         #zone-others { top: 92.3%; left: 0%; width: 100%; height: 7.7%; z-index: 2; }
 
-        /* 防止按鈕變直立文字 */
-        .fab-group { position: absolute; bottom: 30px; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 16px; z-index: 10; white-space: nowrap; }
-        .btn-primary, .btn-secondary { padding: 12px 28px; border-radius: 100px; border: none; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 1rem; flex-shrink: 0; white-space: nowrap; }
+        /* 5 & 7. 修復按鈕直立文字 */
+        .fab-group { position: absolute; bottom: 30px; display: flex; flex-direction: row; gap: 16px; z-index: 10; justify-content: center; width: 100%; pointer-events: none;}
+        .fab-group button { pointer-events: auto; }
+        .btn-primary, .btn-secondary { width: auto; padding: 12px 28px; border-radius: 30px; border: none; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 1rem; white-space: nowrap; }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(246, 118, 166, 0.4); }
         .btn-primary:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(246, 118, 166, 0.6); }
         .btn-secondary { background: var(--bg-panel-solid); color: var(--text-main); border: 1px solid var(--border-glass); }
@@ -118,14 +132,11 @@
         .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
         .input-group label { font-size: 0.9rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center;}
         
-        .modern-input, .modern-select { background: rgba(255,255,255,0.4); border: 1px solid var(--border-glass); color: var(--text-main); padding: 12px 16px; border-radius: 12px; width: 100%; outline: none; font-size: 1rem; font-family: inherit; transition: 0.3s; }
+        .modern-input, .modern-select { background: rgba(255,255,255,0.4); border: 1px solid var(--border-glass); color: var(--text-main); padding: 10px 14px; border-radius: 12px; width: 100%; outline: none; font-size: 1rem; font-family: inherit; transition: 0.3s; }
         [data-theme="dark"] .modern-input, [data-theme="dark"] .modern-select { background: rgba(0,0,0,0.4); }
         .modern-input:focus, .modern-select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(246, 118, 166, 0.2); background: var(--bg-panel-solid); }
 
         .adv-toggle-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 100px; transition: 0.2s; }
-        .adv-toggle-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
-        [data-theme="dark"] .adv-toggle-btn:hover { background: rgba(255,255,255,0.05); }
-        
         .advanced-options { display: none; background: rgba(0,0,0,0.03); padding: 16px; border-radius: 12px; margin-top: 6px; border: 1px solid var(--border-glass); }
         [data-theme="dark"] .advanced-options { background: rgba(255,255,255,0.03); }
         .advanced-options.active { display: block; animation: fadeIn 0.3s ease; }
@@ -133,65 +144,71 @@
         .adv-row label { width: 60px; font-size: 0.8rem; color: var(--text-muted); }
         .adv-row input { flex: 1; padding: 8px 12px; }
 
-        /* 6. 簡易微調 Slider */
-        .simple-slider-wrap { display: flex; align-items: center; gap: 10px; margin-top: 8px; background: rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 8px; }
-        [data-theme="dark"] .simple-slider-wrap { background: rgba(0,0,0,0.3); }
-        .simple-slider-wrap span { font-size: 0.8rem; color: var(--text-muted); width: 60px; font-weight: 600;}
-        .simple-slider-wrap input[type="range"] { flex: 1; accent-color: var(--primary); }
+        /* 2. 緊湊型 X/Y 簡易滑桿 */
+        .simple-slider-row { display: flex; gap: 10px; margin-top: 5px; background: rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-glass); align-items: center;}
+        [data-theme="dark"] .simple-slider-row { background: rgba(0,0,0,0.2); }
+        .simple-slider-row span { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; width: 15px;}
+        .simple-slider-row input[type="range"] { flex: 1; accent-color: var(--primary); height: 4px; }
 
         .color-row { display: flex; gap: 15px; align-items: center; }
         .color-row .input-group { flex: 1; }
         input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
 
-        /* 1 & 2. 完美滑出動畫 (不干擾排版) */
-        .icon-nav { width: 80px; flex-shrink: 0; border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 16px; z-index: 30; }
-        .nav-item-wrap { width: 50px; height: 50px; position: relative; }
+        /* 1. 完美導航列：固定寬度、文字隱藏淡入 */
+        .icon-nav { width: 80px; flex-shrink: 0; border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 12px; z-index: 30; }
         .nav-icon { 
-            position: absolute; right: 0; top: 0;
-            display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start;
-            width: 50px; height: 50px; 
+            position: relative; display: flex; align-items: center;
+            width: 50px; height: 50px; border-radius: 25px;
             color: var(--text-muted); cursor: pointer; 
-            border-radius: 25px; transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; 
-            overflow: hidden; white-space: nowrap; background: transparent;
+            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; 
+            overflow: hidden; background: transparent;
         }
-        .nav-icon i { min-width: 50px; display: flex; justify-content: center; flex-shrink: 0;}
-        .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; padding-left: 18px; transition: opacity 0.2s; }
-        .nav-icon.active, .nav-icon:hover { width: 170px; color: var(--primary); background: var(--bg-panel-solid); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); border: 1px solid var(--primary); }
+        .nav-icon i { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+        .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; white-space: nowrap; transition: opacity 0.2s; }
+        
+        .nav-icon.active, .nav-icon:hover { width: 180px; color: var(--primary); background: var(--bg-panel-solid); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); border: 1px solid var(--primary); }
         .nav-icon.active span, .nav-icon:hover span { opacity: 1; transition-delay: 0.1s; }
         
-        .special-link { margin-top: auto; color: #FF5C8D; animation: pulse-glow 2s infinite; }
+        .special-link { margin-top: auto; color: #FF5C8D; animation: pulse-glow 2s infinite; border: 1px solid transparent; }
+        .special-link.active, .special-link:hover { width: 220px; border-color: #FF5C8D; }
 
-        .global-footer { height: 45px; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-glass); }
-        .footer-links { display: flex; flex-direction: row; gap: 16px; align-items: center; }
+        /* 7. Footer 文字斷行與置中 */
+        .global-footer { height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-glass); }
+        .copyright { flex: 1; text-align: left; line-height: 1.4; }
+        .footer-links { display: flex; flex-direction: row; gap: 16px; align-items: center; flex-shrink: 0; }
         .footer-links a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.2s; white-space: nowrap; }
         .footer-links a:hover { color: var(--primary); }
 
         #downloadModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(5px); z-index:1000; justify-content:center; align-items:center; }
         .modal-card { padding: 40px; border-radius: 24px; text-align: center; display: flex; flex-direction: column; gap: 20px; max-width: 400px; width: 90%; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
-        .modal-card h3 { color: var(--primary); font-size: 1.5rem; }
 
-        /* 7. 手機版完美適配 */
+        /* 5 & 7. 手機版完美適配 */
         @media (max-width: 800px) {
             .topbar { padding: 0 12px; }
             .brand-title { font-size: 1rem; }
             .workspace { flex-direction: column; overflow-y: auto; }
-            .canvas-area { min-height: 40vh; padding: 10px; order: 1; }
-            canvas { width: 100% !important; height: auto !important; max-width: 100%; object-fit: contain;} /* 解決比例壓窄 */
             
-            .icon-nav { flex-direction: row; width: 100%; height: 70px; padding: 10px 15px; align-items: center; justify-content: flex-start; overflow-x: auto; border-left: none; border-top: 1px solid var(--border-glass); order: 2; gap: 15px;}
-            .nav-item-wrap { width: 45px; height: 45px; flex-shrink: 0; }
-            .nav-icon { flex-direction: row; justify-content: center; width: 45px; height: 45px; padding: 0; right: auto; left: 0;}
-            .nav-icon i { min-width: 45px; }
+            /* 修正畫布與按鈕區域 */
+            .canvas-area { min-height: auto; padding: 15px 10px; order: 1; flex: 0 0 auto; justify-content: flex-start; }
+            .canvas-wrapper { max-width: 100%; margin-bottom: 10px; }
+            
+            /* 按鈕跟隨畫布下方 */
+            .fab-group { position: relative; bottom: auto; justify-content: center; margin-top: 15px; margin-bottom: 5px; flex-wrap: nowrap; gap: 10px;}
+            
+            .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 10px; align-items: center; justify-content: flex-start; overflow-x: auto; border-left: none; border-top: 1px solid var(--border-glass); order: 2; gap: 10px;}
+            .nav-icon { width: 45px; height: 45px; border-radius: 22.5px; }
+            .nav-icon i { width: 45px; height: 45px; }
             .nav-icon.active, .nav-icon:hover { width: 45px; } 
             .nav-icon span { display: none; }
             
-            .drawer.open { width: 100%; height: auto; border-left: none; order: 3; }
+            .drawer.open { width: 100%; height: auto; border-left: none; order: 3; flex: 1;}
             .drawer-inner { width: 100%; }
-            .fab-group { position: static; justify-content: center; margin-top: 15px; margin-bottom: 25px; flex-wrap: nowrap;}
             .hover-zone { display: none; }
             
-            .global-footer { flex-direction: column; height: auto; padding: 15px; gap: 10px; }
+            /* Footer 換行置中 */
+            .global-footer { flex-direction: column; height: auto; padding: 15px; gap: 12px; text-align: center; }
+            .copyright { text-align: center; }
         }
     </style>
 </head>
@@ -216,9 +233,7 @@
     <main class="workspace">
         <section class="canvas-area" id="canvasArea">
             <div class="member-header glass-solid" id="memberHeader" style="display: none;">
-                <div class="member-avatar-wrap">
-                    <img src="" id="memberAvatar" alt="Avatar">
-                </div>
+                <div class="member-avatar-wrap"><img src="" id="memberAvatar" alt="Avatar"></div>
                 <h2 id="memberName"></h2>
             </div>
 
@@ -260,6 +275,11 @@
                     <div class="input-group mt-2">
                         <label data-i18n="background_text">背景文字</label>
                         <input type="text" class="modern-input" id="bgText" value="YSS48">
+                        <!-- 2. Slider -->
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="bgTextX" min="-150" max="10" step="0.5" value="-100">
+                            <span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="bgTextY" min="-50" max="50" step="0.5" value="0">
+                        </div>
                     </div>
                     <div class="color-row">
                         <div class="input-group"><label data-i18n="bgTextColor">文字色</label><input type="color" id="bgTextColor" value="#FFFFFF" class="modern-input"></div>
@@ -279,22 +299,25 @@
                     <div class="input-group">
                         <label data-i18n="logo_line1">Line 1</label>
                         <input type="text" class="modern-input" id="rect1Line1" value="YSS">
-                        <!-- 6. 簡易模式滑桿 -->
-                        <div class="simple-slider-wrap">
-                            <span data-i18n="x">水平</span>
-                            <input type="range" id="s_rect1X" min="-10" max="40" step="0.5" value="13.5">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="rect1Line1X" min="5" max="30" step="0.1" value="13.5">
+                            <span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="rect1Line1Y" min="5" max="30" step="0.1" value="12.6">
                         </div>
                         <div class="advanced-options">
-                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="rect1Line1X" value="13.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="rect1Line1Y" value="12" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="rect1Line1X" value="12.6" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="rect1Line1Y" value="12.6" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="rect1Size" value="47" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="rect1Spacing" value="-7000" class="modern-input"></div>
                         </div>
                     </div>
                     <div class="input-group">
                         <label data-i18n="logo_line2">Line 2</label>
                         <input type="text" class="modern-input" id="rect1Line2" value="48">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="rect1Line2X" min="5" max="30" step="0.1" value="13.5">
+                            <span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="rect1Line2Y" min="15" max="40" step="0.1" value="24.5">
+                        </div>
                         <div class="advanced-options">
-                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="rect1Line2X" value="13.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="rect1Line2Y" value="24" class="modern-input"></div>
-                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="rect1Line2Size" value="47" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="rect1Line2Spacing" value="-7000" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="rect1Line2X" value="13.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="rect1Line2Y" value="24.5" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="rect1Line2Size" value="47" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="rect1Line2Spacing" value="-5000" class="modern-input"></div>
                         </div>
                     </div>
                     <div class="color-row mt-2">
@@ -308,9 +331,9 @@
                     <div class="input-group">
                         <label data-i18n="event">Event Name</label>
                         <input type="text" class="modern-input" id="text2" value="「ここからだ」 公演">
-                        <div class="simple-slider-wrap">
-                            <span data-i18n="x">水平</span>
-                            <input type="range" id="s_text2X" min="10" max="60" step="0.5" value="37">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text2X" min="10" max="80" step="0.5" value="37">
+                            <span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text2Y" min="5" max="30" step="0.5" value="12">
                         </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text2X" value="37" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text2Y" value="12" class="modern-input"></div>
@@ -320,6 +343,10 @@
                     <div class="input-group">
                         <label data-i18n="birthday_line1">Birthday (Line 1)</label>
                         <input type="text" class="modern-input" id="text3Line1" value="秋元康 生誕祭">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text3Line1X" min="10" max="80" step="0.5" value="35">
+                            <span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text3Line1Y" min="10" max="30" step="0.5" value="19">
+                        </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text3Line1X" value="35" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text3Line1Y" value="19" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text3Size" value="14.2" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text3Spacing" value="2000" class="modern-input"></div>
@@ -328,6 +355,10 @@
                     <div class="input-group">
                         <label data-i18n="birthday_line2">Birthday (Line 2)</label>
                         <input type="text" class="modern-input" id="text3Line2" value="YSS48劇場">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text3Line2X" min="10" max="80" step="0.5" value="35">
+                            <span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text3Line2Y" min="15" max="40" step="0.5" value="25">
+                        </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text3Line2X" value="35" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text3Line2Y" value="25" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text3Line2Size" value="14.2" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text3Line2Spacing" value="2000" class="modern-input"></div>
@@ -340,9 +371,9 @@
                     <div class="input-group">
                         <label data-i18n="date_line1">Date</label>
                         <input type="text" class="modern-input" id="text4Line1" value="＜日付＞2026年05月02日（金）">
-                        <div class="simple-slider-wrap">
-                            <span data-i18n="x">水平</span>
-                            <input type="range" id="s_text4X" min="0" max="40" step="0.5" value="13">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text4Line1X" min="0" max="50" step="0.5" value="13">
+                            <span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text4Line1Y" min="30" max="60" step="0.5" value="43">
                         </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text4Line1X" value="13" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text4Line1Y" value="43" class="modern-input"></div>
@@ -357,6 +388,10 @@
                     <div class="input-group">
                         <label data-i18n="ticket_number">Ticket No.</label>
                         <input type="text" class="modern-input" id="text5" value="048番">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text5X" min="0" max="50" step="0.5" value="13">
+                            <span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text5Y" min="40" max="65" step="0.5" value="55">
+                        </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text5X" value="13" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text5Y" value="55" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text5Size" value="16" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text5Spacing" value="200" class="modern-input"></div>
@@ -365,6 +400,10 @@
                     <div class="input-group">
                         <label data-i18n="postal_code">Postal / Name</label>
                         <input type="text" class="modern-input" id="text6" value="① ❘ 000－0000 ❘ ゴメン先生 様">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text6X" min="10" max="80" step="0.5" value="36">
+                            <span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text6Y" min="40" max="65" step="0.5" value="55">
+                        </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text6X" value="36" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text6Y" value="55" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text6Size" value="13" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text6Spacing" value="311" class="modern-input"></div>
@@ -385,7 +424,6 @@
                     </div>
                 </div>
 
-                <!-- 3. その他 Icon 對應 -->
                 <div class="drawer-section" id="sec-others">
                     <div class="drawer-title"><i data-lucide="more-horizontal"></i> <span data-i18n="others_settings">その他 (Footer)</span></div>
                     <div class="color-row">
@@ -395,6 +433,9 @@
                     <div class="input-group">
                         <label data-i18n="note">Note</label>
                         <input type="text" class="modern-input" id="text10" value="<主催 ‧ お問い合せ>">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text10X" min="20" max="100" step="0.5" value="54">
+                        </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text10X" value="54" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text10Y" value="63.5" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text10Size" value="7" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text10Spacing" value="236" class="modern-input"></div>
@@ -403,6 +444,9 @@
                     <div class="input-group">
                         <label data-i18n="venue">Venue</label>
                         <input type="text" class="modern-input" id="text11" value="YSS48 Theater">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text11X" min="40" max="120" step="0.5" value="80.5">
+                        </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text11X" value="80.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text11Y" value="63.5" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text11Size" value="10" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text11Spacing" value="238" class="modern-input"></div>
@@ -411,6 +455,9 @@
                     <div class="input-group">
                         <label data-i18n="tel">Phone</label>
                         <input type="text" class="modern-input" id="text12" value="TEL:01-2345-6789">
+                        <div class="simple-slider-row">
+                            <span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text12X" min="60" max="140" step="0.5" value="108">
+                        </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text12X" value="108" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text12Y" value="64" class="modern-input"></div>
                             <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text12Size" value="12.5" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text12Spacing" value="236" class="modern-input"></div>
@@ -420,26 +467,25 @@
             </div>
         </aside>
 
-        <!-- 1 & 2. 完美定位導航 (不干擾排版) -->
+        <!-- 1. 完美無推擠 Icon 導航列 -->
         <nav class="icon-nav glass">
-            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div></div>
-            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-bg"><i data-lucide="image"></i><span data-i18n="background_settings">背景設定</span></div></div>
-            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-logo"><i data-lucide="type"></i><span data-i18n="logo_settings">標誌設定</span></div></div>
-            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-event"><i data-lucide="calendar-heart"></i><span data-i18n="event_birthday">公演資訊</span></div></div>
-            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-date"><i data-lucide="hash"></i><span data-i18n="date_number">日期編號</span></div></div>
-            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-qr"><i data-lucide="qr-code"></i><span data-i18n="qr_others">QR設定</span></div></div>
-            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-others"><i data-lucide="more-horizontal"></i><span data-i18n="others_settings">その他</span></div></div>
+            <div class="nav-icon" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div>
+            <div class="nav-icon" data-target="sec-bg"><i data-lucide="image"></i><span data-i18n="background_settings">背景設定</span></div>
+            <div class="nav-icon" data-target="sec-logo"><i data-lucide="type"></i><span data-i18n="logo_settings">標誌設定</span></div>
+            <div class="nav-icon" data-target="sec-event"><i data-lucide="calendar-heart"></i><span data-i18n="event_birthday">公演資訊</span></div>
+            <div class="nav-icon" data-target="sec-date"><i data-lucide="hash"></i><span data-i18n="date_number">日期編號</span></div>
+            <div class="nav-icon" data-target="sec-qr"><i data-lucide="qr-code"></i><span data-i18n="qr_others">QR設定</span></div>
+            <div class="nav-icon" data-target="sec-others"><i data-lucide="more-horizontal"></i><span data-i18n="others_settings">その他</span></div>
             
-            <div class="nav-item-wrap special-link" style="margin-top:auto;">
-                <div class="nav-icon" onclick="window.open('https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank')">
-                    <i data-lucide="sparkles"></i><span data-i18n="mbti_link">MBTI性格鑑定</span>
-                </div>
+            <div class="nav-icon special-link" onclick="window.open('https://gomensensei.github.io/AKB-MBTI-with-wota/','_blank')">
+                <i data-lucide="sparkles"></i><span data-i18n="mbti_link">MBTI性格鑑定</span>
             </div>
         </nav>
     </main>
 
+    <!-- 7. Footer 文字更新與置中適配 -->
     <footer class="global-footer glass">
-        <div data-i18n="copyright_notice">©AKB48 / DH Co., Ltd. 僅供非商業興趣使用。</div>
+        <div class="copyright" data-i18n="copyright_notice">由粉絲 ゴメン先生 (gomensensei) 製作，與 AKB48 官方無任何關聯。圖片及相關資料版權歸原屬公司所有。</div>
         <div class="footer-links">
             <a href="https://x.com/sorrysir_gomen" target="_blank"><i data-lucide="bug" size="14"></i> <span data-i18n="report_bug">回報錯誤</span></a>
             <a href="https://www.paypal.com/paypalme/gomensensei" target="_blank"><i data-lucide="heart" size="14"></i> <span data-i18n="donate">捐款支持</span></a>
