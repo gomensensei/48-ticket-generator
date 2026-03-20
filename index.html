@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <!-- 加入 jsPDF 庫以支援印刷用 PDF 匯出 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         @font-face { font-family: 'ITC Avant Garde Gothic Std Extra Light'; src: url('fonts/ITC Avant Garde Gothic Std Extra Light.woff2') format('woff2'); }
@@ -41,7 +43,6 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        /* 修改點：使用 100dvh 解決手機瀏覽器高度被 crop 的問題 */
         body { 
             font-family: 'KozGoPr6N', 'Noto Sans JP', sans-serif; 
             color: var(--text-main); 
@@ -59,12 +60,14 @@
         .glass { background: var(--bg-panel); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-glass); border-top: 1px solid var(--border-glass-light); border-left: 1px solid var(--border-glass-light); box-shadow: var(--shadow-soft); }
         .glass-solid { background: var(--bg-panel-solid); backdrop-filter: blur(25px); border: 1px solid var(--border-glass); box-shadow: var(--shadow-soft); }
 
-        .topbar { height: 60px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid var(--border-glass); }
+        .topbar { height: 60px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid var(--border-glass); flex-shrink: 0;}
         .brand-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); text-shadow: 0 2px 10px rgba(246,118,166,0.2); }
         .topbar-tools { display: flex; align-items: center; gap: 12px; }
         .tool-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; flex-shrink: 0; }
         .tool-btn:hover { background: rgba(246, 118, 166, 0.1); color: var(--primary); }
-        .lang-select { background: rgba(255,255,255,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 6px 10px; border-radius: 8px; outline: none; font-family: inherit; font-weight: 500; font-size: 0.9rem;}
+        
+        /* 解決 g 字被 crop */
+        .lang-select { background: rgba(255,255,255,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 6px 8px; border-radius: 8px; outline: none; font-family: inherit; font-weight: 500; font-size: 0.9rem; line-height: normal;}
         [data-theme="dark"] .lang-select { background: rgba(0,0,0,0.3); }
 
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; min-height: 0; }
@@ -80,7 +83,6 @@
             animation: shine 3s infinite linear; 
         }
         @keyframes shine { 0% { left: -80px; opacity: 0;} 10% { opacity: 1; } 30% { left: 120px; opacity: 0;} 100% { left: 120px; opacity: 0; } }
-        /* 修改點：避免 avatar 呼吸時影響版面 */
         @keyframes breathe { 0% { box-shadow: 0 0 10px 2px var(--color-a); } 100% { box-shadow: 0 0 25px 6px var(--color-b); } }
         .member-header h2 { font-size: 1.3rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
@@ -107,11 +109,11 @@
         .btn-secondary { background: var(--bg-panel-solid); color: var(--text-main); border: 1px solid var(--border-glass); }
         .btn-secondary:hover { transform: translateY(-4px); color: var(--primary); }
 
-        .drawer { width: 0; padding: 24px 0; opacity: 0; border-left: none; overflow-x: hidden; overflow-y: auto; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 20; }
+        .drawer { width: 0; padding: 24px 0; opacity: 0; border-left: none; overflow-x: hidden; overflow-y: auto; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 20; position: relative; }
         .drawer.open { width: 420px; padding: 24px; opacity: 1; border-left: 1px solid var(--border-glass); }
         .drawer::-webkit-scrollbar { width: 6px; }
         .drawer::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 10px; }
-        .drawer-inner { width: 370px; } 
+        .drawer-inner { width: 370px; padding-bottom: 40px; } 
         
         .drawer-section { margin-bottom: 24px; display: none; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -135,17 +137,17 @@
         .adv-row label { width: 60px; font-size: 0.8rem; color: var(--text-muted); }
         .adv-row input { flex: 1; padding: 8px 12px; }
 
-        /* 修改點：徹底解決 Slider 穿出範圍的問題 */
+        /* 解決 Slider 穿出範圍 */
         .simple-slider-grid { 
             display: grid; 
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* 確保列可收縮 */
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); 
             gap: 10px 12px; 
             margin-top: 5px; background: rgba(255,255,255,0.3); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); 
         }
         [data-theme="dark"] .simple-slider-grid { background: rgba(0,0,0,0.3); }
-        .slider-item { display: flex; align-items: center; gap: 6px; min-width: 0; /* 讓 flex item 可縮 */ }
+        .slider-item { display: flex; align-items: center; gap: 6px; min-width: 0; }
         .slider-item span { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; width: auto; min-width: 35px; flex-shrink: 0; white-space: nowrap;}
-        .slider-item input[type="range"] { flex: 1; accent-color: var(--primary); height: 4px; min-width: 0; width: 100%; /* 防止 input 撐爆 */ }
+        .slider-item input[type="range"] { flex: 1; accent-color: var(--primary); height: 4px; min-width: 0; width: 100%; }
 
         .color-row { display: flex; gap: 15px; align-items: center; }
         .color-row .input-group { flex: 1; }
@@ -171,14 +173,15 @@
         }
         [data-theme="dark"] .nav-icon { background: rgba(50, 50, 50, 0.75); border-color: rgba(255,255,255,0.1); color: #ccc; }
         
-        /* 修改點：移除 transform scale，只保留陰影，避免 Icon 震動變形撐爆圓框 */
+        /* 解決 Icon 震動變形 */
         @keyframes icon-breathe {
             0% { box-shadow: 0 0 0px rgba(246, 118, 166, 0); }
             100% { box-shadow: 0 0 15px rgba(246, 118, 166, 0.5); }
         }
 
-        .nav-icon i, .nav-icon svg { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
-        .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; padding-right: 15px; transition: opacity 0.2s; }
+        /* 固定內部 svg 大小，防止撐爆 */
+        .nav-icon i, .nav-icon svg { width: 22px; height: 22px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin: 0 14px; }
+        .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; transition: opacity 0.2s; margin-right: 5px;}
         
         .nav-icon:hover:not(.active) { 
             width: 200px; color: var(--primary); background: var(--bg-panel-solid); 
@@ -213,36 +216,51 @@
         .footer-links a:hover { color: var(--primary); }
 
         #downloadModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(5px); z-index:1000; justify-content:center; align-items:center; }
-        .modal-card { padding: 40px; border-radius: 24px; text-align: center; display: flex; flex-direction: column; gap: 20px; max-width: 400px; width: 90%; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-card { padding: 40px; border-radius: 24px; text-align: center; display: flex; flex-direction: column; gap: 15px; max-width: 400px; width: 90%; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        
+        .scroll-hint-mobile { display: none; }
 
-        /* 修改點：手機版排版修正，確保語言選單、黑夜模式及 Footer 顯示正常 */
+        /* 手機版排版全面修復 */
         @media (max-width: 800px) {
             .topbar { padding: 0 10px; gap: 8px; }
             .brand-title { font-size: 0.95rem; white-space: normal; line-height: 1.1; flex: 1; }
             .topbar-tools { gap: 6px; flex-shrink: 0; }
-            .lang-select { max-width: 105px; padding: 4px 6px; font-size: 0.8rem; }
+            /* 防 crop 及寬度適應 */
+            .lang-select { max-width: 110px; padding: 6px 8px; font-size: 0.8rem; line-height: normal;}
             .tool-btn { padding: 6px; }
 
             .workspace { flex-direction: column; overflow-y: auto; }
             .canvas-area { padding: 15px 10px; order: 1; flex: 0 0 auto; justify-content: flex-start; }
             .canvas-wrapper { width: 100%; margin-bottom: 10px; }
-            .fab-group { position: relative; bottom: auto; justify-content: center; margin-top: 15px; margin-bottom: 5px; flex-wrap: nowrap; gap: 10px;}
             
-            .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 15px; align-items: center; justify-content: flex-start; overflow-x: auto; border-left: none; border-top: 1px solid var(--border-glass); order: 2; gap: 15px;}
-            .nav-item-wrap { width: 45px; height: 45px; flex-shrink: 0; padding: 0; justify-content: center;}
-            .nav-icon { position: static; flex-direction: row; justify-content: center; width: 45px; height: 45px; padding: 0; right: auto; border-radius: 50%; animation: none; transform: none;}
-            .nav-icon i, .nav-icon svg { min-width: 45px; }
-            .nav-icon.active, .nav-icon:hover:not(.active) { width: 45px; transform: scale(1.1); animation: none;} 
+            /* 神推頭像改為相對位置，避免遮擋門票 */
+            .member-header { position: relative; top: 0; margin-bottom: 15px; padding: 8px 16px; border-radius: 50px; background: var(--bg-panel-solid); box-shadow: var(--shadow-soft); }
+            .member-avatar-wrap img { width: 40px; height: 40px; }
+            .member-header h2 { font-size: 1.1rem; }
+
+            .fab-group { position: relative; bottom: auto; justify-content: center; margin-top: 10px; margin-bottom: 5px; flex-wrap: nowrap; gap: 10px;}
+            
+            /* Icon 均勻分佈一行過 */
+            .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 10px 5px; align-items: center; justify-content: space-between; border-left: none; border-top: 1px solid var(--border-glass); order: 2; gap: 0;}
+            .nav-item-wrap { width: auto; height: 40px; flex: 1; display: flex; justify-content: center; padding: 0;}
+            .nav-icon { position: static; flex-direction: row; justify-content: center; width: 38px; height: 38px; padding: 0; right: auto; border-radius: 50%; animation: none; transform: none;}
+            .nav-icon i, .nav-icon svg { width: 18px; height: 18px; margin: 0; }
+            .nav-icon.active, .nav-icon:hover:not(.active) { width: 38px; transform: scale(1.1); animation: none;} 
+            .special-link .nav-icon:hover { width: 38px; transform: scale(1.1);}
             .nav-icon span { display: none; }
             
             .drawer.open { width: 100%; height: auto; border-left: none; order: 3; flex: 1;}
-            .drawer-inner { width: 100%; }
+            .drawer-inner { width: 100%; padding-bottom: 50px;}
             .hover-zone { display: none; }
             
-            /* 加入底部安全邊距，防止被 Crop */
-            .global-footer { flex-direction: column; padding: 15px 15px 35px 15px; text-align: center; justify-content: center;}
-            .copyright { text-align: center; min-width: 100%; font-size: 0.75rem;}
+            /* 手機版向下提示動畫箭咀 */
+            .drawer.open .scroll-hint-mobile { display: flex; justify-content: center; position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); color: var(--primary); background: var(--bg-panel-solid); padding: 5px 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); animation: bounceHint 1.5s infinite; z-index: 50; pointer-events: none;}
+            @keyframes bounceHint { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 5px); } }
+
+            /* Footer 縮細防擁擠 */
+            .global-footer { flex-direction: column; padding: 15px 15px 35px 15px; text-align: center; justify-content: center; gap: 6px;}
+            .copyright { text-align: center; min-width: 100%; font-size: 0.7rem;}
             .footer-links { justify-content: center; width: 100%;}
         }
     </style>
@@ -267,7 +285,7 @@
 
     <main class="workspace">
         <section class="canvas-area" id="canvasArea">
-            <div class="member-header glass-solid" id="memberHeader" style="display: none;">
+            <div class="member-header" id="memberHeader" style="display: none;">
                 <div class="member-avatar-wrap"><img src="" id="memberAvatar" alt="Avatar"></div>
                 <h2 id="memberName"></h2>
             </div>
@@ -325,20 +343,21 @@
                             <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="bgTextY" min="-50" max="50" step="0.5" value="0"></div>
                             <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="bgTextSize" min="20" max="100" step="1" value="62"></div>
                             <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="bgTextSpacing" min="-8000" max="0" step="100" value="-6000"></div>
-                            <div class="slider-item" style="grid-column: 1 / -1;"><span data-i18n="bgTextOpacity">Alpha</span><input type="range" class="sync-slider" data-target="bgTextOpacity" min="0" max="1" step="0.05" value="0.15"></div>
-                            <div class="slider-item" style="grid-column: 1 / -1;"><span data-i18n="shadowOpacity">ShadA</span><input type="range" class="sync-slider" data-target="bgShadowOpacity" min="0" max="1" step="0.05" value="0.2"></div>
+                            <div class="slider-item" style="grid-column: 1 / -1;"><span data-i18n="bgTextOpacity">Alpha</span><input type="range" class="sync-slider" data-target="bgTextOpacity" min="0" max="1" step="0.05" value="1"></div>
+                            <div class="slider-item" style="grid-column: 1 / -1;"><span data-i18n="shadowOpacity">ShadA</span><input type="range" class="sync-slider" data-target="bgShadowOpacity" min="0" max="1" step="0.05" value="0.25"></div>
                         </div>
                     </div>
                     <div class="color-row">
                         <div class="input-group"><label data-i18n="bgTextColor">文字色</label><input type="color" id="bgTextColor" value="#888888" class="modern-input"></div>
                         <div class="input-group"><label data-i18n="shadow_color">陰影色</label><input type="color" id="bgShadowColor" value="#5F96ED" class="modern-input"></div>
                     </div>
+                    <!-- 找回隱藏的 input 欄位，修復門票無字 Bug -->
                     <div class="advanced-options">
                         <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="bgTextX" value="-100" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="bgTextY" value="0" class="modern-input"></div>
                         <div class="adv-row"><label data-i18n="spacing">Space</label><input type="number" id="bgTextSpacing" value="-6000" class="modern-input"> <label data-i18n="size">Size</label><input type="number" id="bgTextSize" value="62" class="modern-input"></div>
-                        <div class="adv-row"><label data-i18n="lineHeight">LineH</label><input type="number" id="bgTextLineHeight" value="46" class="modern-input"> <label data-i18n="bgTextOpacity">Alpha</label><input type="number" id="bgTextOpacity" value="0.15" step="0.05" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="lineHeight">LineH</label><input type="number" id="bgTextLineHeight" value="46" class="modern-input"> <label data-i18n="bgTextOpacity">Alpha</label><input type="number" id="bgTextOpacity" value="1" step="0.05" class="modern-input"></div>
                         <div class="adv-row"><label data-i18n="shadowX">ShadX</label><input type="number" id="bgShadowX" value="0.5" step="0.1" class="modern-input"> <label data-i18n="shadowY">ShadY</label><input type="number" id="bgShadowY" value="-0.4" step="0.1" class="modern-input"></div>
-                        <div class="adv-row"><label data-i18n="shadowOpacity">ShadA</label><input type="number" id="bgShadowOpacity" value="0.2" step="0.1" class="modern-input"></div>
+                        <div class="adv-row"><label data-i18n="shadowOpacity">ShadA</label><input type="number" id="bgShadowOpacity" value="0.25" step="0.1" class="modern-input"></div>
                     </div>
                 </div>
 
@@ -353,6 +372,10 @@
                             <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="rect1Size" min="20" max="80" step="1" value="47"></div>
                             <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="rect1Spacing" min="-9000" max="0" step="100" value="-7000"></div>
                         </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="rect1Line1X" value="13.6" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="rect1Line1Y" value="12.5" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="rect1Size" value="47" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="rect1Spacing" value="-7000" class="modern-input"></div>
+                        </div>
                     </div>
                     <div class="input-group">
                         <label data-i18n="logo_line2">Line 2</label>
@@ -362,6 +385,10 @@
                             <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="rect1Line2Y" min="15" max="40" step="0.1" value="24.5"></div>
                             <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="rect1Line2Size" min="20" max="80" step="1" value="47"></div>
                             <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="rect1Line2Spacing" min="-9000" max="0" step="100" value="-5000"></div>
+                        </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="rect1Line2X" value="13.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="rect1Line2Y" value="24.5" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="rect1Line2Size" value="47" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="rect1Line2Spacing" value="-5000" class="modern-input"></div>
                         </div>
                     </div>
                     <div class="color-row mt-2">
@@ -379,6 +406,39 @@
                             <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text2X" min="10" max="80" step="0.5" value="37"></div>
                             <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text2Y" min="5" max="30" step="0.5" value="12"></div>
                             <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text2Size" min="8" max="30" step="0.5" value="14.2"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text2Spacing" min="0" max="5000" step="100" value="2000"></div>
+                        </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text2X" value="37" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text2Y" value="12" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text2Size" value="14.2" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text2Spacing" value="2000" class="modern-input"></div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="birthday_line1">Birthday (Line 1)</label>
+                        <input type="text" class="modern-input" id="text3Line1" value="秋元康 生誕祭">
+                        <div class="simple-slider-grid">
+                            <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text3Line1X" min="10" max="80" step="0.5" value="35"></div>
+                            <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text3Line1Y" min="10" max="30" step="0.5" value="19"></div>
+                            <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text3Size" min="8" max="30" step="0.5" value="14.2"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text3Spacing" min="0" max="5000" step="100" value="2000"></div>
+                        </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text3Line1X" value="35" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text3Line1Y" value="19" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text3Size" value="14.2" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text3Spacing" value="2000" class="modern-input"></div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="birthday_line2">Birthday (Line 2)</label>
+                        <input type="text" class="modern-input" id="text3Line2" value="YSS48劇場">
+                        <div class="simple-slider-grid">
+                            <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text3Line2X" min="10" max="80" step="0.5" value="35"></div>
+                            <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text3Line2Y" min="15" max="40" step="0.5" value="25"></div>
+                            <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text3Line2Size" min="8" max="30" step="0.5" value="14.2"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text3Line2Spacing" min="0" max="5000" step="100" value="2000"></div>
+                        </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text3Line2X" value="35" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text3Line2Y" value="25" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text3Line2Size" value="14.2" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text3Line2Spacing" value="2000" class="modern-input"></div>
                         </div>
                     </div>
                 </div>
@@ -391,11 +451,46 @@
                         <div class="simple-slider-grid">
                             <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text4Line1X" min="0" max="50" step="0.5" value="13"></div>
                             <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text4Line1Y" min="30" max="60" step="0.5" value="43"></div>
+                            <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text4Size" min="6" max="20" step="0.5" value="11"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text4Spacing" min="0" max="3000" step="100" value="1000"></div>
                         </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text4Line1X" value="13" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text4Line1Y" value="43" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text4Size" value="11" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text4Spacing" value="1000" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="lineHeight">LineH</label><input type="number" id="text4LineHeight" value="14" class="modern-input"></div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="date_line2">Time</label>
+                        <input type="text" class="modern-input" id="text4Line2" value="OPEN：18時10分       START：18時30分      ￥3,400">
                     </div>
                     <div class="input-group">
                         <label data-i18n="ticket_number">Ticket No.</label>
                         <input type="text" class="modern-input" id="text5" value="048番">
+                        <div class="simple-slider-grid">
+                            <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text5X" min="0" max="50" step="0.5" value="13"></div>
+                            <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text5Y" min="40" max="65" step="0.5" value="55"></div>
+                            <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text5Size" min="8" max="30" step="0.5" value="16"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text5Spacing" min="0" max="2000" step="50" value="200"></div>
+                        </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text5X" value="13" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text5Y" value="55" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text5Size" value="16" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text5Spacing" value="200" class="modern-input"></div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="postal_code">Postal / Name</label>
+                        <input type="text" class="modern-input" id="text6" value="① ❘ 000－0000 ❘ ゴメン先生 様">
+                        <div class="simple-slider-grid">
+                            <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text6X" min="10" max="80" step="0.5" value="36"></div>
+                            <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text6Y" min="40" max="65" step="0.5" value="55"></div>
+                            <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text6Size" min="8" max="25" step="0.5" value="13"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text6Spacing" min="0" max="2000" step="50" value="311"></div>
+                        </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text6X" value="36" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text6Y" value="55" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text6Size" value="13" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text6Spacing" value="311" class="modern-input"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -418,7 +513,51 @@
                         <div class="input-group"><label data-i18n="border_color">邊框色</label><input type="color" id="rect9Color" value="#2086D1" class="modern-input"></div>
                         <div class="input-group"><label data-i18n="footerTextColor">文字色</label><input type="color" id="footerTextColor" value="#FFFFFF" class="modern-input"></div>
                     </div>
+                    <div class="input-group">
+                        <label data-i18n="note">Note</label>
+                        <input type="text" class="modern-input" id="text10" value="<主催 ‧ お問い合せ>">
+                        <div class="simple-slider-grid">
+                            <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text10X" min="20" max="100" step="0.5" value="54"></div>
+                            <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text10Y" min="50" max="70" step="0.5" value="63.5"></div>
+                            <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text10Size" min="4" max="15" step="0.5" value="7"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text10Spacing" min="0" max="1000" step="50" value="236"></div>
+                        </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text10X" value="54" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text10Y" value="63.5" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text10Size" value="7" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text10Spacing" value="236" class="modern-input"></div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="venue">Venue</label>
+                        <input type="text" class="modern-input" id="text11" value="YSS48 Theater">
+                        <div class="simple-slider-grid">
+                            <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text11X" min="40" max="120" step="0.5" value="80.5"></div>
+                            <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text11Y" min="50" max="70" step="0.5" value="63.5"></div>
+                            <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text11Size" min="6" max="20" step="0.5" value="10"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text11Spacing" min="0" max="1000" step="50" value="238"></div>
+                        </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text11X" value="80.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text11Y" value="63.5" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text11Size" value="10" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text11Spacing" value="238" class="modern-input"></div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="tel">Phone</label>
+                        <input type="text" class="modern-input" id="text12" value="TEL:01-2345-6789">
+                        <div class="simple-slider-grid">
+                            <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text12X" min="60" max="140" step="0.5" value="108"></div>
+                            <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text12Y" min="50" max="70" step="0.5" value="64"></div>
+                            <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text12Size" min="8" max="20" step="0.5" value="12.5"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text12Spacing" min="0" max="1000" step="50" value="236"></div>
+                        </div>
+                        <div class="advanced-options">
+                            <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text12X" value="108" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text12Y" value="64" class="modern-input"></div>
+                            <div class="adv-row"><label data-i18n="size">Size</label><input type="number" id="text12Size" value="12.5" class="modern-input"> <label data-i18n="spacing">Space</label><input type="number" id="text12Spacing" value="236" class="modern-input"></div>
+                        </div>
+                    </div>
                 </div>
+                
+                <div class="scroll-hint-mobile"><i data-lucide="chevrons-down"></i></div>
             </div>
         </aside>
 
@@ -454,8 +593,9 @@
                 <input type="checkbox" id="bleedOption" style="width: 22px; height: 22px; accent-color: var(--primary);">
                 <label for="bleedOption" data-i18n="include_bleed" style="font-weight: 700;">包含出血 (+3mm)</label>
             </div>
-            <button class="btn-primary" id="dl300" style="width: 100%; justify-content: center;" data-i18n="download_png_300">下載 300 DPI (印刷用)</button>
-            <button class="btn-secondary" id="dl70" style="width: 100%; justify-content: center;" data-i18n="download_png_70">下載 70 DPI (網絡用)</button>
+            <button class="btn-primary" id="dlPDF" style="width: 100%; justify-content: center; background: #9c27b0;" data-i18n="download_pdf">下載 PDF (印刷用標準)</button>
+            <button class="btn-primary" id="dl300" style="width: 100%; justify-content: center;" data-i18n="download_png_300">下載 300 DPI (高品質圖片)</button>
+            <button class="btn-secondary" id="dl70" style="width: 100%; justify-content: center;" data-i18n="download_png_70">下載 70 DPI (網絡分享)</button>
             <button class="btn-secondary" style="border:none; background:none; text-decoration:underline; width: 100%; justify-content: center;" onclick="document.getElementById('downloadModal').style.display='none'" data-i18n="cancel">取消</button>
         </div>
     </div>
