@@ -18,7 +18,6 @@ const debounce = (func, delay) => {
     return (...args) => { clearTimeout(timeoutId); timeoutId = setTimeout(() => func(...args), delay); };
 };
 
-// 語言系統
 async function loadLanguages() {
     try {
         const response = await fetch('langs.json');
@@ -65,6 +64,18 @@ const changeLanguage = (lang) => {
 
     debouncedDrawTicket(70);
 };
+
+// 4. 背景文字變暗邏輯 (降低亮度與飽和度)
+function getMutedDarkColor(hex) {
+    let r = parseInt(hex.substring(1,3), 16);
+    let g = parseInt(hex.substring(3,5), 16);
+    let b = parseInt(hex.substring(5,7), 16);
+    // 與深灰色 #666666 (RGB 102) 混合 50%
+    r = Math.floor(r * 0.5 + 102 * 0.5);
+    g = Math.floor(g * 0.5 + 102 * 0.5);
+    b = Math.floor(b * 0.5 + 102 * 0.5);
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+}
 
 function getLuminance(hex) {
     hex = hex.replace('#', '');
@@ -114,9 +125,14 @@ const drawTicket = async (dpiVal, targetCtx = ctx) => {
     targetCtx.canvas.height = h;
 
     if (targetCtx === ctx) {
-        let actualScale = window.innerWidth < 800 ? Math.min(1, (window.innerWidth - 40) / w) : previewScale;
-        canvas.style.width = `${w * actualScale}px`; 
-        canvas.style.height = `${h * actualScale}px`;
+        // 7. 手機版 Canvas 比例自動適配，不寫死 px
+        if (window.innerWidth < 800) {
+            canvas.style.width = '100%';
+            canvas.style.height = 'auto';
+        } else {
+            canvas.style.width = `${w * previewScale}px`; 
+            canvas.style.height = `${h * previewScale}px`;
+        }
     }
     
     targetCtx.clearRect(0, 0, w, h);
@@ -150,9 +166,9 @@ const drawTicket = async (dpiVal, targetCtx = ctx) => {
         for (let x = bgTextX + (r * cw); x < w; x += gx) { targetCtx.fillText(bgTextStr, x, y); }
     }
     
-    targetCtx.globalAlpha = parseFloat($('bgTextOpacity')?.value || 1);
+    targetCtx.globalAlpha = parseFloat($('bgTextOpacity')?.value || 0.15);
     targetCtx.shadowOffsetX = 0; targetCtx.shadowOffsetY = 0;
-    targetCtx.fillStyle = $('bgTextColor')?.value || '#FFFFFF';
+    targetCtx.fillStyle = $('bgTextColor')?.value || '#888888';
     for (let y = bgTextY, r = 0; y < h; y += gy, r++) {
         for (let x = bgTextX + (r * cw); x < w; x += gx) { targetCtx.fillText(bgTextStr, x, y); }
     }
@@ -235,13 +251,18 @@ $('memberSelector')?.addEventListener('change', (e) => {
         $('rect1Color').value = member.color_a; 
         $('rect9Color').value = member.color_a; 
         
-        let bColor = member.color_b;
-        if(bColor === '#ffffff') bColor = '#FDF9FA';
+        // 5. 判斷 A 色是否太亮，決定文字色
+        const lumA = getLuminance(member.color_a);
+        const textColorA = lumA > 0.8 ? '#000000' : '#FFFFFF';
+        $('rect1TextColor').value = textColorA;
+        $('footerTextColor').value = textColorA;
+        
+        let bColor = member.color_b === '#ffffff' ? '#FDF9FA' : member.color_b;
         $('bgColor').value = bColor; 
         
-        const lum = getLuminance(bColor);
-        $('bgTextColor').value = lum > 0.8 ? '#1A1A1A' : '#FFFFFF';
-        $('bgTextOpacity').value = lum > 0.8 ? '0.03' : '1';
+        // 4. 背景文字灰化邏輯
+        $('bgTextColor').value = getMutedDarkColor(bColor);
+        $('bgTextOpacity').value = 0.15;
 
         debouncedDrawTicket(70);
     } else {
@@ -249,8 +270,9 @@ $('memberSelector')?.addEventListener('change', (e) => {
     }
 });
 
-// 全域點擊漣漪
+// 9. 真正全域的點擊漣漪 (忽略按鈕點擊)
 document.addEventListener('mousedown', function(e) {
+    if(['INPUT', 'BUTTON', 'SELECT', 'A'].includes(e.target.tagName)) return;
     let ripple = document.createElement('div');
     ripple.className = 'ripple';
     ripple.style.left = e.clientX - 20 + 'px';
@@ -259,7 +281,6 @@ document.addEventListener('mousedown', function(e) {
     setTimeout(() => ripple.remove(), 600);
 });
 
-// 隱形區塊與抽屜控制
 function initSidebarNav() {
     const navIcons = document.querySelectorAll('.nav-icon:not(.special-link)');
     const sections = document.querySelectorAll('.drawer-section');
@@ -268,7 +289,6 @@ function initSidebarNav() {
     navIcons.forEach(icon => {
         icon.addEventListener('click', () => {
             const isAlreadyActive = icon.classList.contains('active');
-            
             navIcons.forEach(i => i.classList.remove('active'));
             sections.forEach(sec => sec.style.display = 'none');
             
@@ -288,11 +308,8 @@ function initSidebarNav() {
             const targetId = zone.id.replace('zone-', 'sec-');
             const icon = document.querySelector(`.nav-icon[data-target="${targetId}"]`);
             if(icon) {
-                if(!icon.classList.contains('active')) {
-                    icon.click();
-                } else if (!drawer.classList.contains('open')) {
-                    drawer.classList.add('open');
-                }
+                if(!icon.classList.contains('active')) icon.click();
+                else if (!drawer.classList.contains('open')) drawer.classList.add('open');
             }
         });
     });
@@ -304,6 +321,20 @@ $('advToggleBtnMaster')?.addEventListener('click', () => {
     advAreas.forEach(el => { el.classList.toggle('active'); if(el.classList.contains('active')) isActive = true; });
     const span = $('advToggleBtnMaster').querySelector('span');
     if(span) span.textContent = isActive ? langs[currentLang].simple_mode : langs[currentLang].advanced_mode;
+});
+
+// 6. 綁定簡易模式 Slider
+const sliderSyncs = [
+    { s: 's_rect1X', i: 'rect1Line1X' },
+    { s: 's_text2X', i: 'text2X' },
+    { s: 's_text4X', i: 'text4Line1X' }
+];
+sliderSyncs.forEach(pair => {
+    const slider = $(pair.s); const input = $(pair.i);
+    if(slider && input) {
+        slider.addEventListener('input', e => { input.value = e.target.value; debouncedDrawTicket(70); });
+        input.addEventListener('input', e => { slider.value = e.target.value; });
+    }
 });
 
 $('qrCodeUrl')?.addEventListener('input', debounce(() => {
@@ -323,41 +354,19 @@ $('qrCodeUrl')?.addEventListener('input', debounce(() => {
 }, 500));
 
 $('showQR').addEventListener('change', () => debouncedDrawTicket(70));
-document.querySelectorAll('input').forEach(el => el.addEventListener('input', () => debouncedDrawTicket(70)));
-$('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
-$('themeToggleBtn')?.addEventListener('click', () => {
-    document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+document.querySelectorAll('input').forEach(el => {
+    if(!el.classList.contains('simple-slider')) el.addEventListener('input', () => debouncedDrawTicket(70));
 });
+$('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
+$('themeToggleBtn')?.addEventListener('click', () => { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
 
 $('downloadBtn')?.addEventListener('click', () => $('downloadModal').style.display = 'flex');
-
-$('dl300')?.addEventListener('click', async () => {
-    $('downloadModal').style.display = 'none';
-    const tempCanvas = document.createElement('canvas');
-    await drawTicket(300, tempCanvas.getContext('2d'));
-    triggerDownload(tempCanvas, '300dpi');
-});
-
-$('dl70')?.addEventListener('click', async () => {
-    $('downloadModal').style.display = 'none';
-    const tempCanvas = document.createElement('canvas');
-    await drawTicket(70, tempCanvas.getContext('2d'));
-    triggerDownload(tempCanvas, '70dpi');
-});
+$('dl300')?.addEventListener('click', async () => { $('downloadModal').style.display = 'none'; const tempCanvas = document.createElement('canvas'); await drawTicket(300, tempCanvas.getContext('2d')); triggerDownload(tempCanvas, '300dpi'); });
+$('dl70')?.addEventListener('click', async () => { $('downloadModal').style.display = 'none'; const tempCanvas = document.createElement('canvas'); await drawTicket(70, tempCanvas.getContext('2d')); triggerDownload(tempCanvas, '70dpi'); });
 
 function triggerDownload(canvasObj, dpiStr) {
-    const link = document.createElement('a');
-    link.download = `Ticket_${dpiStr}_${Date.now()}.png`;
-    link.href = canvasObj.toDataURL('image/png');
-    link.click();
+    const link = document.createElement('a'); link.download = `Ticket_${dpiStr}_${Date.now()}.png`; link.href = canvasObj.toDataURL('image/png'); link.click();
 }
 
 window.addEventListener('resize', () => debouncedDrawTicket(70));
-
-window.onload = async () => {
-    await waitForFonts(); 
-    await loadLanguages(); 
-    await loadMembers();
-    initSidebarNav();
-    drawTicket(70); 
-};
+window.onload = async () => { await waitForFonts(); await loadLanguages(); await loadMembers(); initSidebarNav(); drawTicket(70); };
