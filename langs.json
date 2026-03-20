@@ -44,7 +44,7 @@
         "tel": "電話番号",
         "report_bug": "バグ報告",
         "donate": "カンパ",
-        "copyright_notice": "ファン(gomensensei)による非公式の制作物であり、AKB48公式とは一切関係ありません。画像等の著作権は原権利者に帰属します。",
+        "copyright_notice": "ファン(gomensensei)による非公式の制作物であり、AKB48公式とは一切関係ありません。",
         "download_message": "ダウンロード完了",
         "mbti_link": "AKB48ファンMBTI性格診断",
         "advanced_mode": "詳細設定",
@@ -52,7 +52,9 @@
         "download_png_300": "ダウンロード 300 DPI (印刷用)",
         "download_png_70": "ダウンロード 70 DPI (ウェブ用)",
         "cancel": "キャンセル",
-        "include_bleed": "裁ち落とし付き (+3mm)"
+        "include_bleed": "裁ち落とし付き (+3mm)",
+        "export_config": "設定を保存",
+        "import_config": "設定を読込"
     },
     "zh-TW": {
         "site_title": "48 票券生成器",
@@ -99,7 +101,7 @@
         "tel": "聯絡電話",
         "report_bug": "回報錯誤",
         "donate": "捐款支持",
-        "copyright_notice": "由粉絲 ゴメン先生 (gomensensei) 製作，與 AKB48 官方無任何關聯。圖片及相關資料版權歸原屬公司所有。",
+        "copyright_notice": "由粉絲 ゴメン先生 (gomensensei) 製作，與 AKB48 官方無任何關聯。",
         "download_message": "下載完成",
         "mbti_link": "AKB48粉絲深度MBTI性格鑑定",
         "advanced_mode": "詳細設定",
@@ -107,7 +109,9 @@
         "download_png_300": "下載 300 DPI (高品質印刷)",
         "download_png_70": "下載 70 DPI (網絡分享)",
         "cancel": "取消",
-        "include_bleed": "下載時包含出血位 (+3mm)"
+        "include_bleed": "下載時包含出血位 (+3mm)",
+        "export_config": "匯出設定",
+        "import_config": "匯入設定"
     },
     "en": {
         "site_title": "48 Ticket Generator",
@@ -154,7 +158,7 @@
         "tel": "Phone",
         "report_bug": "Report Bug",
         "donate": "Donate",
-        "copyright_notice": "Created by fan gomensensei, unaffiliated with official AKB48. Image copyrights belong to their respective owners.",
+        "copyright_notice": "Created by fan gomensensei, unaffiliated with official AKB48.",
         "download_message": "Download Complete",
         "mbti_link": "AKB48 Fan MBTI Test",
         "advanced_mode": "Advanced",
@@ -162,7 +166,9 @@
         "download_png_300": "Download 300 DPI (Print)",
         "download_png_70": "Download 70 DPI (Web)",
         "cancel": "Cancel",
-        "include_bleed": "Include Bleed (+3mm)"
+        "include_bleed": "Include Bleed (+3mm)",
+        "export_config": "Export Config",
+        "import_config": "Import Config"
     },
     "zh-CN": {
         "site_title": "48 票券生成器",
@@ -209,7 +215,7 @@
         "tel": "联系电话",
         "report_bug": "报告错误",
         "donate": "捐款支持",
-        "copyright_notice": "由粉丝 ゴメン先生 (gomensensei) 制作，与 AKB48 官方无任何关联。图片及相关资料版权归原属公司所有。",
+        "copyright_notice": "由粉丝 ゴメン先生 (gomensensei) 制作，与 AKB48 官方无任何关联。",
         "download_message": "下载完成",
         "mbti_link": "AKB48粉丝深度MBTI性格鉴定",
         "advanced_mode": "详细设置",
@@ -217,7 +223,9 @@
         "download_png_300": "下载 300 DPI (印刷)",
         "download_png_70": "下载 70 DPI (网络)",
         "cancel": "取消",
-        "include_bleed": "包含出血位 (+3mm)"
+        "include_bleed": "包含出血位 (+3mm)",
+        "export_config": "导出设置",
+        "import_config": "导入设置"
     },
     "ko": {
         "site_title": "48 티켓 생성기",
@@ -264,7 +272,7 @@
         "tel": "전화번호",
         "report_bug": "버그 신고",
         "donate": "후원하기",
-        "copyright_notice": "팬(gomensensei)이 제작한 비공식 생성기로, AKB48 공식과 무관합니다. 이미지 등의 저작권은 원작자에게 있습니다.",
+        "copyright_notice": "팬(gomensensei)이 제작한 비공식 생성기로, AKB48 공식과 무관합니다.",
         "download_message": "다운로드 완료",
         "mbti_link": "AKB48 팬 MBTI 성격 진단",
         "advanced_mode": "고급 설정",
@@ -272,7 +280,9 @@
         "download_png_300": "다운로드 300 DPI (인쇄용)",
         "download_png_70": "다운로드 70 DPI (웹용)",
         "cancel": "취소",
-        "include_bleed": "블리드 포함 (+3mm)"
+        "include_bleed": "블리드 포함 (+3mm)",
+        "export_config": "설정 내보내기",
+        "import_config": "설정 가져오기"
     },
     "th": {
         "site_title": "เครื่องสร้างตั๋ว 48",
@@ -319,7 +329,7 @@
         "tel": "เบอร์โทร",
         "report_bug": "รายงานข้อผิดพลาด",
         "donate": "สนับสนุน",
-        "copyright_notice": "สร้างโดยแฟนคลับ (gomensensei) ไม่มีส่วนเกี่ยวข้องกับ AKB48 อย่างเป็นทางการ ลิขสิทธิ์ภาพเป็นของเจ้าของเดิม",
+        "copyright_notice": "สร้างโดยแฟนคลับ (gomensensei) ไม่มีส่วนเกี่ยวข้องกับ AKB48 อย่างเป็นทางการ",
         "download_message": "ดาวน์โหลดเสร็จสมบูรณ์",
         "mbti_link": "AKB48 Fan MBTI Test",
         "advanced_mode": "ขั้นสูง",
@@ -327,7 +337,9 @@
         "download_png_300": "ดาวน์โหลด 300 DPI (พิมพ์)",
         "download_png_70": "ดาวน์โหลด 70 DPI (เว็บ)",
         "cancel": "ยกเลิก",
-        "include_bleed": "รวมระยะตัดตก (+3mm)"
+        "include_bleed": "รวมระยะตัดตก (+3mm)",
+        "export_config": "ส่งออกการตั้งค่า",
+        "import_config": "นำเข้าการตั้งค่า"
     },
     "id": {
         "site_title": "Pembuat Tiket 48",
@@ -374,7 +386,7 @@
         "tel": "Telepon",
         "report_bug": "Laporkan Bug",
         "donate": "Donasi",
-        "copyright_notice": "Dibuat oleh penggemar (gomensensei), tidak berafiliasi dengan AKB48 resmi. Hak cipta gambar milik pemiliknya masing-masing.",
+        "copyright_notice": "Dibuat oleh penggemar (gomensensei), tidak berafiliasi dengan AKB48 resmi.",
         "download_message": "Unduhan Selesai",
         "mbti_link": "AKB48 Fan MBTI Test",
         "advanced_mode": "Lanjutan",
@@ -382,6 +394,8 @@
         "download_png_300": "Unduh 300 DPI (Cetak)",
         "download_png_70": "Unduh 70 DPI (Web)",
         "cancel": "Batal",
-        "include_bleed": "Sertakan Bleed (+3mm)"
+        "include_bleed": "Sertakan Bleed (+3mm)",
+        "export_config": "Ekspor Konfigurasi",
+        "import_config": "Impor Konfigurasi"
     }
 }
