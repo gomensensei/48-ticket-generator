@@ -6,10 +6,11 @@ const ctx = canvas ? canvas.getContext('2d') : null;
 const fonts = { avant: 'ITC Avant Garde Gothic Std Extra Light', kozgo: 'KozGoPr6N', ar: 'AR ADGothicJP' };
 const dpi = {
     300: { base: { w: Math.round(150 * 300 / 25.4), h: Math.round(65 * 300 / 25.4) }, bleed: { w: Math.round((150 + 6) * 300 / 25.4), h: Math.round((65 + 6) * 300 / 25.4) } },
+    /* 修復 Bug 2: 補回 140 DPI 的資料，讓預覽時可以正常運算寬度高度 */
+    140: { base: { w: Math.round(150 * 140 / 25.4), h: Math.round(65 * 140 / 25.4) }, bleed: { w: Math.round((150 + 6) * 140 / 25.4), h: Math.round((65 + 6) * 140 / 25.4) } },
     70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 6) * 70 / 25.4), h: Math.round((65 + 6) * 70 / 25.4) } }
 };
 
-// 8. Retina 高清渲染設定 (內部以 140 DPI 繪製，外部 CSS 縮放)
 const PREVIEW_DPI = 140; 
 const CSS_BASE_DPI = 70;
 
@@ -46,7 +47,8 @@ const changeLanguage = (lang) => {
         const key = el.getAttribute('data-i18n');
         if (langs[lang][key]) {
             if (el.tagName === 'SPAN' || el.tagName === 'DIV' || el.tagName === 'H3' || el.tagName === 'BUTTON' || el.tagName === 'OPTION') {
-                const icon = el.querySelector('i');
+                /* 修復 Bug 1 (衍生問題): 語言切換時，要兼容被 Lucide 轉換後的 SVG 標籤 */
+                const icon = el.querySelector('i') || el.querySelector('svg');
                 if (icon) {
                     el.innerHTML = ''; el.appendChild(icon); el.appendChild(document.createTextNode(' ' + langs[lang][key]));
                 } else {
@@ -76,7 +78,6 @@ function getMutedDarkColor(hex) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
-// 3. 提取背景色變亮變淡作為陰影 (加強淡化效果)
 function getLighterMutedColor(hex) {
     if(!hex || hex.length < 7) return '#5F96ED';
     let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
@@ -119,7 +120,6 @@ const drawText = (lines, x, y, font, size, spacing, height, color, align = 'left
 };
 
 const drawTicket = async (exportDpi = null) => {
-    // 2. 解決畫布消失 Bug：獨立處理預覽與下載，避免 CSS 與 Canvas API 衝突
     const isPreview = (exportDpi === null);
     const renderDpi = isPreview ? PREVIEW_DPI : exportDpi;
     const targetCtx = isPreview ? ctx : document.createElement('canvas').getContext('2d');
@@ -217,7 +217,6 @@ const drawTicket = async (exportDpi = null) => {
     if (!isPreview) triggerDownload(targetCtx.canvas, `${exportDpi}dpi`);
 };
 
-// 確保所有預覽事件只呼叫無參數的 debouncedDrawTicket()
 const debouncedDrawTicket = debounce(() => drawTicket(), 150);
 
 async function waitForFonts() {
@@ -262,7 +261,6 @@ $('memberSelector')?.addEventListener('change', (e) => {
         $('rect1Color').value = member.color_a; 
         $('rect9Color').value = member.color_a; 
         
-        // 5. Logo A色黑白字判斷
         const lumA = getLuminance(member.color_a);
         const textColorA = lumA > 0.8 ? '#000000' : '#FFFFFF';
         $('rect1TextColor').value = textColorA;
@@ -271,7 +269,6 @@ $('memberSelector')?.addEventListener('change', (e) => {
         let bColor = member.color_b === '#ffffff' ? '#FDF9FA' : member.color_b;
         $('bgColor').value = bColor; 
         
-        // 3. 背景文字與陰影提取
         const mutedTextColor = getMutedDarkColor(bColor);
         $('bgTextColor').value = mutedTextColor;
         $('bgShadowColor').value = getLighterMutedColor(mutedTextColor);
@@ -283,9 +280,8 @@ $('memberSelector')?.addEventListener('change', (e) => {
     }
 });
 
-// 全域點擊漣漪
 document.addEventListener('mousedown', function(e) {
-    if(['INPUT', 'BUTTON', 'SELECT', 'A', 'I', 'LABEL'].includes(e.target.tagName)) return;
+    if(['INPUT', 'BUTTON', 'SELECT', 'A', 'I', 'svg', 'path', 'LABEL'].includes(e.target.tagName)) return;
     let ripple = document.createElement('div');
     ripple.className = 'ripple';
     ripple.style.left = e.clientX - 20 + 'px';
@@ -336,7 +332,6 @@ $('advToggleBtnMaster')?.addEventListener('click', () => {
     if(span) span.textContent = isActive ? langs[currentLang].simple_mode : langs[currentLang].advanced_mode;
 });
 
-// Slider 雙向同步
 document.querySelectorAll('.sync-slider').forEach(slider => {
     const input = $(slider.getAttribute('data-target'));
     if (input) {
