@@ -67,34 +67,23 @@
         [data-theme="dark"] .lang-select { background: rgba(0,0,0,0.3); }
 
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
-        
-        /* 畫布與 Dark Mode 適配 */
         .canvas-area { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: auto; padding: 30px; transition: background 0.3s;}
         [data-theme="dark"] .canvas-area { background: rgba(0, 0, 0, 0.4); }
         
-        /* 4. 頭像反光無間斷循環 */
         .member-header { position: absolute; top: 20px; display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-radius: 100px; z-index: 10; transition: 0.3s; }
         .member-avatar-wrap { position: relative; padding: 4px; border-radius: 50%; background: linear-gradient(45deg, var(--color-a), var(--color-b)); animation: breathe 2s infinite alternate ease-in-out; overflow: hidden; }
         .member-avatar-wrap img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-panel-solid); display: block; position: relative; z-index: 2;}
         .member-avatar-wrap::after { 
             content: ''; position: absolute; top: -30px; left: -50px; width: 20px; height: 150px; 
             background: rgba(255,255,255,0.7); transform: rotate(45deg); filter: blur(3px); z-index: 3; 
-            animation: shine 3s infinite linear; /* 無間斷平滑閃過 */
+            animation: shine 3s infinite linear; 
         }
         @keyframes shine { 0% { left: -50px; opacity: 0;} 10% { opacity: 1; } 30% { left: 100px; opacity: 0;} 100% { left: 100px; opacity: 0; } }
         @keyframes breathe { 0% { box-shadow: 0 0 10px 2px var(--color-a); transform: scale(1); } 100% { box-shadow: 0 0 25px 6px var(--color-b); transform: scale(1.05); } }
         .member-header h2 { font-size: 1.3rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        .canvas-wrapper { position: relative; transition: transform 0.2s; display: flex; justify-content: center; width: 100%; max-width: 900px; }
-        
-        /* 高清 Canvas CSS 縮放控制 */
-        canvas { 
-            display: block; 
-            width: 100% !important; /* CSS 強制控制大小 */
-            height: auto !important; 
-            box-shadow: 0 15px 50px rgba(0,0,0,0.2); 
-            object-fit: contain;
-        }
+        .canvas-wrapper { position: relative; transition: transform 0.2s; display: flex; justify-content: center; max-width: 900px; }
+        canvas { display: block; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
         
         .hover-zone { position: absolute; border: 2px dashed transparent; border-radius: 8px; cursor: pointer; transition: 0.2s; z-index: 5; }
         .hover-zone:hover { border-color: var(--primary); background: rgba(246, 118, 166, 0.08); }
@@ -108,7 +97,7 @@
         #zone-qr { top: 35%; right: 5%; width: 16%; height: 35%; z-index: 2; }
         #zone-others { top: 92.3%; left: 0%; width: 100%; height: 7.7%; z-index: 2; }
 
-        .fab-group { position: absolute; bottom: 30px; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 16px; z-index: 10; justify-content: center; width: 100%; pointer-events: none;}
+        .fab-group { position: absolute; bottom: 30px; display: flex; flex-direction: row; gap: 16px; z-index: 10; justify-content: center; width: 100%; pointer-events: none;}
         .fab-group button { pointer-events: auto; }
         .btn-primary, .btn-secondary { width: auto; padding: 12px 28px; border-radius: 30px; border: none; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 1rem; white-space: nowrap; }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(246, 118, 166, 0.4); }
@@ -134,9 +123,6 @@
         .modern-input:focus, .modern-select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(246, 118, 166, 0.2); background: var(--bg-panel-solid); }
 
         .adv-toggle-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 100px; transition: 0.2s; }
-        .adv-toggle-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
-        [data-theme="dark"] .adv-toggle-btn:hover { background: rgba(255,255,255,0.05); }
-        
         .advanced-options { display: none; background: rgba(0,0,0,0.03); padding: 16px; border-radius: 12px; margin-top: 6px; border: 1px solid var(--border-glass); }
         [data-theme="dark"] .advanced-options { background: rgba(255,255,255,0.03); }
         .advanced-options.active { display: block; animation: fadeIn 0.3s ease; }
@@ -144,9 +130,8 @@
         .adv-row label { width: 60px; font-size: 0.8rem; color: var(--text-muted); }
         .adv-row input { flex: 1; padding: 8px 12px; }
 
-        /* 2. 簡易微調網格化 Slider (包含大小與字距) */
-        .simple-slider-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 15px; margin-top: 5px; background: rgba(255,255,255,0.2); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); }
-        [data-theme="dark"] .simple-slider-grid { background: rgba(0,0,0,0.2); }
+        .simple-slider-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 15px; margin-top: 5px; background: rgba(255,255,255,0.3); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); }
+        [data-theme="dark"] .simple-slider-grid { background: rgba(0,0,0,0.3); }
         .slider-item { display: flex; align-items: center; gap: 6px; }
         .slider-item span { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; width: 35px; white-space: nowrap;}
         .slider-item input[type="range"] { flex: 1; accent-color: var(--primary); height: 4px; min-width: 50px; }
@@ -155,33 +140,34 @@
         .color-row .input-group { flex: 1; }
         input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
 
-        /* 1 & 4 & 6. 向左伸展的完美導航列 */
+        /* 修復：完美可見、不貼邊、滑出式 Icon 導航列 */
         .icon-nav { 
             width: 80px; flex-shrink: 0; border-left: 1px solid var(--border-glass); z-index: 30; 
-            display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 12px; 
-            position: relative; /* Container 保持固定寬度 */
+            display: flex; flex-direction: column; align-items: center; padding: 24px 0; gap: 14px; 
         }
-        .nav-item-wrap { width: 100%; height: 50px; position: relative; display: flex; justify-content: flex-end; padding-right: 15px;}
+        .nav-item-wrap { width: 100%; height: 50px; position: relative; }
         .nav-icon { 
-            position: absolute; right: 15px; top: 0;
+            position: absolute; right: 15px; top: 0; /* 遠離邊緣 15px */
             display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start;
             width: 50px; height: 50px; border-radius: 25px;
+            background: var(--bg-panel-solid); /* 實體底色，永遠可見 */
+            border: 1px solid var(--border-glass-light);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             color: var(--text-muted); cursor: pointer; 
-            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; 
-            overflow: hidden; white-space: nowrap; background: transparent;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            overflow: hidden; white-space: nowrap;
         }
         .nav-icon i { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .nav-icon span { opacity: 0; font-weight: 700; font-size: 0.95rem; padding-right: 12px; transition: opacity 0.2s; }
         
-        .nav-icon.active, .nav-icon:hover { width: 180px; color: var(--primary); background: var(--bg-panel-solid); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); border: 1px solid var(--primary); z-index: 50;}
+        .nav-icon.active, .nav-icon:hover { width: 180px; color: var(--primary); border-color: var(--primary); box-shadow: 0 4px 15px rgba(246, 118, 166, 0.2); z-index: 50;}
+        .nav-icon.active i, .nav-icon:hover i { color: var(--primary); }
         .nav-icon.active span, .nav-icon:hover span { opacity: 1; transition-delay: 0.1s; }
         
-        /* MBTI 按鈕更長以顯示全部文字 */
-        .special-link .nav-icon { color: #FF5C8D; box-shadow: 0 0 0 0 rgba(255,92,141,0.4); animation: pulse-border 2s infinite; }
-        .special-link .nav-icon.active, .special-link .nav-icon:hover { width: 280px; background: rgba(255, 92, 141, 0.1); border-color: #FF5C8D; animation: none;}
-        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255,92,141,0.4); } 70% { box-shadow: 0 0 0 10px rgba(255,92,141,0); } 100% { box-shadow: 0 0 0 0 rgba(255,92,141,0); } }
+        .special-link .nav-icon { border-color: #FF5C8D; box-shadow: 0 0 10px rgba(255,92,141,0.2); }
+        .special-link .nav-icon i { color: #FF5C8D; }
+        .special-link .nav-icon.active, .special-link .nav-icon:hover { width: 250px; background: rgba(255, 92, 141, 0.1); }
 
-        /* 7. Footer 文字更新與置中適配 */
         .global-footer { height: auto; min-height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 10px 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-glass); flex-wrap: wrap; gap: 10px;}
         .copyright { flex: 1; text-align: left; line-height: 1.5; min-width: 300px;}
         .footer-links { display: flex; flex-direction: row; gap: 16px; align-items: center; flex-shrink: 0; }
@@ -192,22 +178,19 @@
         .modal-card { padding: 40px; border-radius: 24px; text-align: center; display: flex; flex-direction: column; gap: 20px; max-width: 400px; width: 90%; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
 
-        /* 7. 手機版終極修復 (防止變形、確保版面可見) */
         @media (max-width: 800px) {
             .topbar { padding: 0 12px; }
             .brand-title { font-size: 1rem; }
             .workspace { flex-direction: column; overflow-y: auto; }
             
-            /* 修正畫布與按鈕區域 */
             .canvas-area { padding: 15px 10px; order: 1; flex: 0 0 auto; justify-content: flex-start; }
             .canvas-wrapper { width: 100%; margin-bottom: 10px; }
             
             .fab-group { position: relative; bottom: auto; justify-content: center; margin-top: 15px; margin-bottom: 5px; flex-wrap: nowrap; gap: 10px;}
             
-            /* Icon 導航圓形固定不變形 */
             .icon-nav { flex-direction: row; width: 100%; height: auto; padding: 10px 15px; align-items: center; justify-content: flex-start; overflow-x: auto; border-left: none; border-top: 1px solid var(--border-glass); order: 2; gap: 15px;}
             .nav-item-wrap { width: 45px; height: 45px; flex-shrink: 0; padding: 0; justify-content: center;}
-            .nav-icon { flex-direction: row; justify-content: center; width: 45px; height: 45px; padding: 0; right: auto; left: 0; border-radius: 50%;}
+            .nav-icon { flex-direction: row; justify-content: center; width: 45px; height: 45px; padding: 0; right: auto; left: auto; border-radius: 50%;}
             .nav-icon i { min-width: 45px; }
             .nav-icon.active, .nav-icon:hover { width: 45px; } 
             .special-link .nav-icon.active, .special-link .nav-icon:hover { width: 45px; }
@@ -217,7 +200,6 @@
             .drawer-inner { width: 100%; }
             .hover-zone { display: none; }
             
-            /* Footer 換行置中 */
             .global-footer { flex-direction: column; padding: 15px 20px 25px 20px; text-align: center; justify-content: center;}
             .copyright { text-align: center; min-width: 100%;}
             .footer-links { justify-content: center; width: 100%;}
@@ -287,7 +269,6 @@
                     <div class="input-group mt-2">
                         <label data-i18n="background_text">背景文字</label>
                         <input type="text" class="modern-input" id="bgText" value="YSS48">
-                        <!-- 2. 全方位網格 Slider -->
                         <div class="simple-slider-grid">
                             <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="bgTextX" min="-150" max="10" step="0.5" value="-100"></div>
                             <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="bgTextY" min="-50" max="50" step="0.5" value="0"></div>
@@ -297,7 +278,7 @@
                         </div>
                     </div>
                     <div class="color-row">
-                        <div class="input-group"><label data-i18n="bgTextColor">文字色</label><input type="color" id="bgTextColor" value="#FFFFFF" class="modern-input"></div>
+                        <div class="input-group"><label data-i18n="bgTextColor">文字色</label><input type="color" id="bgTextColor" value="#888888" class="modern-input"></div>
                         <div class="input-group"><label data-i18n="shadow_color">陰影色</label><input type="color" id="bgShadowColor" value="#5F96ED" class="modern-input"></div>
                     </div>
                     <div class="advanced-options">
@@ -466,7 +447,9 @@
                         <input type="text" class="modern-input" id="text10" value="<主催 ‧ お問い合せ>">
                         <div class="simple-slider-grid">
                             <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text10X" min="20" max="100" step="0.5" value="54"></div>
+                            <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text10Y" min="50" max="70" step="0.5" value="63.5"></div>
                             <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text10Size" min="4" max="15" step="0.5" value="7"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text10Spacing" min="0" max="1000" step="50" value="236"></div>
                         </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text10X" value="54" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text10Y" value="63.5" class="modern-input"></div>
@@ -478,7 +461,9 @@
                         <input type="text" class="modern-input" id="text11" value="YSS48 Theater">
                         <div class="simple-slider-grid">
                             <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text11X" min="40" max="120" step="0.5" value="80.5"></div>
+                            <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text11Y" min="50" max="70" step="0.5" value="63.5"></div>
                             <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text11Size" min="6" max="20" step="0.5" value="10"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text11Spacing" min="0" max="1000" step="50" value="238"></div>
                         </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text11X" value="80.5" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text11Y" value="63.5" class="modern-input"></div>
@@ -490,7 +475,9 @@
                         <input type="text" class="modern-input" id="text12" value="TEL:01-2345-6789">
                         <div class="simple-slider-grid">
                             <div class="slider-item"><span data-i18n="x">X</span><input type="range" class="sync-slider" data-target="text12X" min="60" max="140" step="0.5" value="108"></div>
+                            <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="text12Y" min="50" max="70" step="0.5" value="64"></div>
                             <div class="slider-item"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="text12Size" min="8" max="20" step="0.5" value="12.5"></div>
+                            <div class="slider-item"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="text12Spacing" min="0" max="1000" step="50" value="236"></div>
                         </div>
                         <div class="advanced-options">
                             <div class="adv-row"><label data-i18n="x">X</label><input type="number" id="text12X" value="108" class="modern-input"> <label data-i18n="y">Y</label><input type="number" id="text12Y" value="64" class="modern-input"></div>
@@ -501,7 +488,7 @@
             </div>
         </aside>
 
-        <!-- 向左延伸不推擠的完美 Nav -->
+        <!-- 1. 完美實體按鈕與向左滑出導航 -->
         <nav class="icon-nav glass">
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div></div>
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-bg"><i data-lucide="image"></i><span data-i18n="background_settings">背景設定</span></div></div>
