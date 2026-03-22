@@ -282,6 +282,8 @@ $('swapBgColors')?.addEventListener('click', () => {
     const temp = $('rect1Color').value;
     $('rect1Color').value = $('bgColor').value;
     $('bgColor').value = temp;
+    document.documentElement.style.setProperty('--color-a', $('rect1Color').value);
+    document.documentElement.style.setProperty('--color-b', $('bgColor').value);
     debouncedDrawTicket();
 });
 
@@ -309,10 +311,11 @@ $('memberSelector')?.addEventListener('change', (e) => {
         let bColor = member.color_b === '#ffffff' ? '#FDF9FA' : member.color_b;
         $('bgColor').value = bColor; 
         
+        // 顏色互換：背景文字為深色、陰影為淺色發光
         const mutedTextColor = getMutedDarkColor(bColor);
         const lighterColor = getLighterMutedColor(mutedTextColor);
-        $('bgTextColor').value = lighterColor;    
-        $('bgShadowColor').value = mutedTextColor; 
+        $('bgTextColor').value = mutedTextColor;    
+        $('bgShadowColor').value = lighterColor; 
         
         $('bgTextOpacity').value = 1;     
         $('bgShadowOpacity').value = 0.25; 
@@ -358,6 +361,12 @@ function initSidebarNav() {
                 if (window.innerWidth <= 800) {
                     setTimeout(() => {
                         drawer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // 展開時顯示箭咀
+                        const hint = $('mobileScrollHint');
+                        if (hint) {
+                            hint.classList.add('show');
+                            hint.classList.remove('fade-out');
+                        }
                     }, 50);
                 }
             }
@@ -375,6 +384,14 @@ function initSidebarNav() {
                 icon.classList.add('active'), drawer.classList.add('open');
                 const targetSec = $(icon.getAttribute('data-target'));
                 if(targetSec) targetSec.style.display = 'block';
+                
+                if (window.innerWidth <= 800) {
+                    const hint = $('mobileScrollHint');
+                    if (hint) {
+                        hint.classList.add('show');
+                        hint.classList.remove('fade-out');
+                    }
+                }
             }
         });
     });
@@ -393,7 +410,6 @@ $('advToggleBtnMaster')?.addEventListener('click', () => {
         else backupActions.classList.remove('active');
     }
     
-    // 背景文字設定：隱藏 / 顯示 Size 同 Space 的 Slider
     const advSliders = document.querySelectorAll('.adv-slider');
     advSliders.forEach(el => { el.style.display = isActive ? 'flex' : 'none'; });
 });
@@ -445,19 +461,19 @@ function triggerPDFDownload(canvasObj, hasBleed) {
     pdf.save(`Ticket_PrintReady_${Date.now()}.pdf`);
 }
 
+// 捲動偵測自動淡出浮動箭咀
+const hideHint = () => {
+    const hint = $('mobileScrollHint');
+    if (hint && hint.classList.contains('show')) {
+        hint.classList.add('fade-out');
+        setTimeout(() => hint.classList.remove('show'), 300);
+    }
+};
+
 const workspace = document.querySelector('.workspace');
 if (workspace) {
-    workspace.addEventListener('scroll', () => {
-        const hint = document.querySelector('.scroll-hint-mobile');
-        if (hint) {
-            if (workspace.scrollTop > 5) {
-                hint.style.opacity = '0';
-                hint.style.pointerEvents = 'none';
-            } else {
-                hint.style.opacity = '1';
-            }
-        }
-    }, { passive: true });
+    workspace.addEventListener('scroll', () => { if (workspace.scrollTop > 5) hideHint(); }, { passive: true });
+    workspace.addEventListener('touchmove', hideHint, { passive: true });
 }
 
 window.addEventListener('resize', () => debouncedDrawTicket());
@@ -468,3 +484,7 @@ window.onload = async () => {
     initSidebarNav();
     waitForFonts().then(() => debouncedDrawTicket()); 
 };
+
+window.addEventListener('DOMContentLoaded', () => {
+    if(window.lucide) lucide.createIcons();
+});
