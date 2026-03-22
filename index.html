@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title data-i18n="site_title">チケットジェネレーター (Reiwa Edition)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- 引入獨立的 CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -84,8 +82,6 @@
                             <div class="slider-item"><span data-i18n="y">Y</span><input type="range" class="sync-slider" data-target="bgTextY" min="-50" max="50" step="0.5" value="0"></div>
                             <div class="slider-item" style="grid-column: 1 / -1;"><span data-i18n="bgTextOpacity">Alpha</span><input type="range" class="sync-slider" data-target="bgTextOpacity" min="0" max="1" step="0.05" value="1"></div>
                             <div class="slider-item" style="grid-column: 1 / -1;"><span data-i18n="shadowOpacity">ShadA</span><input type="range" class="sync-slider" data-target="bgShadowOpacity" min="0" max="1" step="0.05" value="0.25"></div>
-                            
-                            <!-- 進階選項才顯示的 Slider -->
                             <div class="slider-item adv-slider" style="display:none;"><span data-i18n="size">Size</span><input type="range" class="sync-slider" data-target="bgTextSize" min="20" max="100" step="1" value="62"></div>
                             <div class="slider-item adv-slider" style="display:none;"><span data-i18n="spacing">Space</span><input type="range" class="sync-slider" data-target="bgTextSpacing" min="-8000" max="0" step="100" value="-6000"></div>
                         </div>
@@ -299,10 +295,10 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="scroll-hint-mobile"><i data-lucide="chevrons-down"></i></div>
             </div>
         </aside>
+
+        <div id="mobileScrollHint" class="scroll-hint-mobile"><i data-lucide="chevrons-down"></i></div>
 
         <nav class="icon-nav glass">
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div></div>
@@ -343,15 +339,9 @@
         </div>
     </div>
 
-    <!-- 延遲載入 JS -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js" defer></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            if(window.lucide) lucide.createIcons();
-        });
-    </script>
 </body>
 </html>
