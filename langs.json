@@ -1,6 +1,6 @@
 {
     "ja": {
-        "site_title": "48チケットジェネレーター",
+        "site_title": "AKB48劇場チケットジェネレーター",
         "download_button": "ダウンロード",
         "share_x_twitter": "X(Twitter)でシェア",
         "select_member": "メンバーを選択してください...",
@@ -58,7 +58,7 @@
         "import_config": "設定を読込"
     },
     "zh-TW": {
-        "site_title": "48 票券生成器",
+        "site_title": "AKB48劇場門票生成器",
         "download_button": "列印下載",
         "share_x_twitter": "在 X 上分享",
         "select_member": "請選擇神推成員...",
@@ -116,7 +116,7 @@
         "import_config": "匯入設定"
     },
     "en": {
-        "site_title": "48 Ticket Generator",
+        "site_title": "AKB48 Theater Ticket Generator",
         "download_button": "Download",
         "share_x_twitter": "Share on X",
         "select_member": "Select a member...",
@@ -174,7 +174,7 @@
         "import_config": "Import Config"
     },
     "zh-CN": {
-        "site_title": "48 票券生成器",
+        "site_title": "AKB48劇場門票生成器",
         "download_button": "打印下载",
         "share_x_twitter": "在 X 上分享",
         "select_member": "请选择首推成员...",
