@@ -1,63 +1,83 @@
-# 🎟️ 48 Ticket Generator (Reiwa Edition)
+# 🎟️ 48 Ticket Generator
 
 一個結合復刻美學與現代 Web 技術的 AKB48 劇場門票產生器。  
-支援極致自訂化、智能配色與 300 DPI 印刷品質輸出，旨在為每位粉絲提供最具質感的應援體驗。
+支援極致自訂化、智能配色與 300 DPI 印刷品質輸出，旨在為每位粉絲提供最具質感的應援體驗。  
+
+AKB48劇場チケットを再現したジェネレーター。  
+高度なカスタマイズ、スマート配色、300 DPI印刷品質に対応し、最高の応援体験を提供します。  
 
 A premium AKB48 Ticket Generator blending retro aesthetics with modern UI/UX.  
-Features smart contrast engine, interactive design, and high-resolution output for print.
+Supports full customization, smart color system, and high-resolution (300 DPI) output for print.
 
 ---
 
-## ✨ 核心亮點 / Technical Highlights
+## ✨ 核心亮點 / 技術的特徴 / Technical Highlights
 
-### 🎨 智能顯色與配色系統
+### 🎨 智能顯色與配色系統  
+### 🎨 スマート配色システム  
+### 🎨 Smart Color System  
+
 - **Smart Contrast Engine**  
-  系統自動計算背景亮度，動態切換文字色彩與浮水印透明度，確保配色多樣化且清晰易讀。  
+  系統自動計算背景亮度，動態切換文字色彩與浮水印透明度，確保清晰易讀。  
+  背景の明度を自動計算し、文字色と透かしの透明度を最適化。  
+  Automatically adjusts text color and watermark opacity based on background luminance.
 
 - **Color Swap System**  
-  支援一鍵對調 Logo A/B 色或背景文字 / 陰影色，大幅節省手動調校時間。  
+  一鍵對調 Logo / 文字 / 陰影色。  
+  ロゴやテキストカラーをワンクリックで入れ替え可能。  
+  Instantly swap logo, text, and shadow colors.
 
 - **Member Preset**  
-  內建包含 **21 期研究生** 在內的完整資料庫。  
-  選擇成員即可套用官方推色，並附帶專屬「雙色呼吸燈」頭像特效。  
+  內建完整成員資料，套用官方推色與雙色特效。  
+  メンバープリセットで公式カラーとエフェクトを即適用。  
+  Apply official member colors with dual-color lighting effects instantly.
 
 ---
 
-### 🚀 極致 UI/UX 互動
+## 🚀 極致 UI/UX 互動 / UI・UX / Interactive Experience
 
 - **Glassmorphism**  
-  採用毛玻璃質感與流動漸變背景，營造現代沉浸式體驗。  
+  毛玻璃 + 漸變背景  
+  ガラスモーフィズムUI  
+  Modern glassmorphism UI
 
-- **Mobile Optimized**
-  - 防誤觸設計：優化 Slider 手勢，避免滑動時誤改參數  
-  - 智慧導航：工具列於手機端自動壓縮為單行  
-  - 導引系統：智慧箭咀提示，偵測操作後自動淡出  
+- **Mobile Optimized / モバイル最適化**
+  - 防誤觸設計  
+  - タッチ誤操作防止  
+  - Anti-mis-touch design  
+
+  - 智慧導航  
+  - スマートナビゲーション  
+  - Smart navigation  
 
 - **Contextual Editing**  
-  點擊門票不同區域，即可開啟對應設定面板（抽屜式 UI）。  
+  點擊畫布直接開設定  
+  クリックで編集パネル表示  
+  Click canvas to edit contextually  
 
 ---
 
-### 🖨️ 專業印刷工作流
+## 🖨️ 專業印刷工作流 / 印刷対応 / Print Workflow
 
-- **PDF 匯出**  
-  支援輸出實體尺寸（150 x 65mm）高品質 PDF，方便印刷廠轉 CMYK。  
+- **PDF 匯出 / PDF出力 / PDF Export**  
+  150 x 65mm 印刷尺寸  
 
-- **300 DPI 輸出**  
-  支援高解析 PNG，並可切換 **+3mm 出血位（Bleed）**。  
+- **300 DPI 輸出 / 高解像度出力 / High Resolution Export**  
+  支援 PNG + 出血位  
 
-- **Retina Preview**  
-  基於 140 DPI 預覽技術，確保顯示細緻流暢。  
+- **Retina Preview / 高精細プレビュー / Retina Preview**  
 
 ---
 
-## 🌐 語言支援 / Language Support
+## 🌐 語言支援 / 言語対応 / Language Support
 
-- 自動設備語言偵測（Auto-detection for system language）
+- 自動語言偵測  
+- 自動言語検出  
+- Auto language detection  
 
-支援 7 種語言：
+支援：
 - 繁體中文  
-- 簡體中文  
+- 简体中文  
 - English  
 - 日本語  
 - 한국어  
@@ -66,79 +86,86 @@ Features smart contrast engine, interactive design, and high-resolution output f
 
 ---
 
-## 📝 機能說明 / Features
+## 📝 功能 / 機能 / Features
 
-### 🔹 簡易設定
+### 🔹 簡易設定 / 基本設定 / Basic Settings
 
-- **一鍵神推配色**  
-  選擇成員後，自動同步 Logo、背景、文字與陰影顏色。  
+- 一鍵神推配色  
+- ワンクリック配色  
+- One-click member theme  
 
-- **即時內容編輯**  
-  可自訂：
-  - 公演名稱  
-  - 生誕祭資訊  
-  - 日期  
-  - 場地  
-  - 整理編號  
+- 即時內容編輯  
+- リアルタイム編集  
+- Real-time editing  
 
-- **QR Code 工具**  
-  - 根據網址自動生成 QR Code  
-  - 可切換邊框顯示  
+- QR Code 工具  
+- QRコード生成  
+- QR code generator  
 
 ---
 
-### 🔹 詳細設定
+### 🔹 詳細設定 / 詳細設定 / Advanced Settings
 
-- **歸一化微調**  
-  精確控制：
-  - X / Y 座標  
-  - 字距  
-  - 行高  
-  - 字體大小  
+- 歸一化微調（位置 / 字距 / 行高）  
+- 詳細パラメータ調整  
+- Fine-tune positioning & typography  
 
-- **備份功能**  
-  支援匯出 / 匯入 JSON 設定，方便保存與分享。  
+- JSON 備份  
+- 設定保存 / 読み込み  
+- Export / import settings  
 
-- **陰影深度自訂**  
-  可調整背景 AKB48 浮水印的偏移與透明度。  
-
----
-
-## 🛠️ 使用技術 / Built With
-
-- **Core:** HTML5, CSS3 (Flex / Grid), JavaScript (ES6+)  
-- **Engine:** Canvas API  
-- **Libraries:**  
-  - Lucide Icons  
-  - QRCode.js  
-  - jsPDF  
+- 陰影與背景調整  
+- 背景・影調整  
+- Shadow & watermark control  
 
 ---
 
-## ⚠️ 免責聲明 / Disclaimer
+## 🛠️ 使用技術 / 技術 / Built With
 
-本網站純屬粉絲興趣製作，禁止用於任何商業、非法或誤導他人之用途。  
+- HTML5  
+- CSS3 (Flex / Grid)  
+- JavaScript (ES6+)  
+- Canvas API  
 
-著作權屬 **AKB48 及 DH 株式会社** 所有，製作者恕不承擔相關責任。  
-
-This site is a non-commercial fan creation.  
-All rights belong to **AKB48** and **DH Corporation**.  
-The creator assumes no responsibility for any misuse.
+Libraries:
+- Lucide Icons  
+- QRCode.js  
+- jsPDF  
 
 ---
 
-## 📎 製作者 / Credit
+## ⚠️ 免責聲明 / 免責事項 / Disclaimer
 
-- **製作:** gomensensei  
-- **聯繫 / 回報:** X (Twitter) [@sorrysir_gomen](https://twitter.com/sorrysir_gomen)  
-- **支持開發:** PayPal 捐款連結  
-- **資料來源:** AKB48 Official, 48pedia  
+本網站為非商業粉絲創作。  
+本サイトは非商用ファン作品です。  
+This is a non-commercial fan project.  
+
+所有權利屬 AKB48 及 DH 株式会社。  
+権利は AKB48 および DH 株式会社に帰属します。  
+All rights belong to AKB48 and DH Corporation.  
+
+---
+
+## 📎 製作者 / クレジット / Credit
+
+- gomensensei  
+- X (Twitter): @sorrysir_gomen  
+- Data: AKB48 Official, 48pedia  
 
 ---
 
 ## 💖 Note
 
 這不只是一個工具。  
-而是一張門票、一種執念、一段屬於劇場門外的熱血記錄。
+それはただのツールではない。  
+This is more than a tool.  
+
+是一張門票，一種執念。  
+それは一枚のチケットであり、想いである。  
+It is a ticket, a passion.  
+
+一段屬於劇場門外的熱血記錄。  
+劇場の外で紡がれる熱い物語。  
+A story of passion beyond the theater.
 
 ---
