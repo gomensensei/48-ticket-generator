@@ -31,6 +31,26 @@
                 <option value="id">Bahasa Indonesia</option>
             </select>
             <button class="tool-btn" id="themeToggleBtn"><i data-lucide="moon"></i></button>
+            <div class="account-shell">
+                <button class="tool-btn account-toggle" id="accountToggleBtn" type="button" aria-haspopup="dialog" aria-expanded="false">
+                    <i data-lucide="user-circle"></i><span data-i18n="accountNavGuest">Account</span>
+                </button>
+                <div class="account-popover glass-solid" id="accountPopover" hidden>
+                    <p class="memo-status" id="cloudStatus" data-i18n="cloudLocalOnly">Local-only mode. Login is optional.</p>
+                    <form id="cloudLoginForm" class="cloud-login-form">
+                        <input id="cloudNicknameInput" class="modern-input cloud-email-input" type="text" autocomplete="nickname" data-i18n-placeholder="cloudNicknamePlaceholder" placeholder="nickname">
+                        <input id="cloudEmailInput" class="modern-input cloud-email-input" type="email" inputmode="email" autocomplete="email" data-i18n-placeholder="cloudEmailPlaceholder" placeholder="email@example.com">
+                        <input id="cloudPasswordInput" class="modern-input cloud-email-input" type="password" autocomplete="current-password" minlength="6" data-i18n-placeholder="cloudPasswordPlaceholder" placeholder="6+ characters">
+                        <button class="btn-mini account-form-button" id="cloudSignInBtn" type="submit" data-auth-action="signin" data-i18n="cloudSignIn">Sign in</button>
+                        <button class="btn-mini account-form-button secondary" id="cloudSignUpBtn" type="submit" data-auth-action="signup" data-i18n="cloudCreateAccount">Create account</button>
+                    </form>
+                    <div id="cloudActions" class="cloud-actions" hidden>
+                        <span class="cloud-user-pill" id="cloudUserLabel"></span>
+                        <button class="btn-mini account-form-button secondary" id="cloudLogoutBtn" type="button" data-i18n="cloudSignOut">Sign out</button>
+                    </div>
+                    <p id="cloudMessage" class="memo-status"></p>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -304,12 +324,44 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="drawer-section" id="sec-save">
+                    <div class="drawer-title"><i data-lucide="save"></i> <span data-i18n="save_settings">Save</span></div>
+
+                    <div class="save-panel local-save-panel">
+                        <div class="save-panel-heading">
+                            <div>
+                                <p class="save-panel-title" data-i18n="local_save_title">Local JSON save/load</p>
+                                <p class="memo-status" data-i18n="local_save_hint">Export or import this ticket as a JSON file.</p>
+                            </div>
+                            <span class="save-pill" data-i18n="cloudLocalStatus">Local only</span>
+                        </div>
+                        <div class="save-button-row">
+                            <button class="btn-mini" id="exportConfigBtnPanel" type="button"><i data-lucide="download-cloud" size="16"></i> <span data-i18n="export_config">Export Config</span></button>
+                            <button class="btn-mini" id="importConfigBtnPanel" type="button"><i data-lucide="upload-cloud" size="16"></i> <span data-i18n="import_config">Import Config</span></button>
+                        </div>
+                    </div>
+
+                    <div class="save-panel cloud-save-section" id="cloudSaveSection">
+                        <div class="save-panel-heading">
+                            <div>
+                                <p class="save-panel-title" data-i18n="cloudSaveTitle">Tool48 Account / Cloud Save</p>
+                                <p class="memo-status" data-i18n="cloudSaveHint">Login from the top-right Account button to use cloud slots.</p>
+                            </div>
+                            <span class="save-pill" id="cloudSlotStatus" data-i18n="cloudLocalOnly">Local-only mode</span>
+                        </div>
+                        <button class="btn-mini cloud-quick-save" id="cloudQuickSaveBtn" type="button" data-i18n="cloudSaveNextEmpty">Save to next empty slot</button>
+                        <div class="cloud-slot-list" id="cloudSlotList" aria-live="polite"></div>
+                        <p class="memo-status" id="cloudSlotMessage"></p>
+                    </div>
+                </div>
             </div>
         </aside>
 
         <div id="mobileScrollHint" class="scroll-hint-mobile"><i data-lucide="chevrons-down"></i></div>
 
         <nav class="icon-nav glass">
+            <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-save"><i data-lucide="save"></i><span data-i18n="save_settings">Save</span></div></div>
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-member"><i data-lucide="user"></i><span data-i18n="member_color">神推設定</span></div></div>
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-bg"><i data-lucide="image"></i><span data-i18n="background_settings">背景設定</span></div></div>
             <div class="nav-item-wrap"><div class="nav-icon" data-target="sec-logo"><i data-lucide="type"></i><span data-i18n="logo_settings">標誌設定</span></div></div>
@@ -349,6 +401,7 @@
     </div>
 
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js" defer></script>

@@ -9,6 +9,10 @@ const dpi = {
     140: { base: { w: Math.round(150 * 140 / 25.4), h: Math.round(65 * 140 / 25.4) }, bleed: { w: Math.round((150 + 6) * 140 / 25.4), h: Math.round((65 + 6) * 140 / 25.4) } },
     70: { base: { w: Math.round(150 * 70 / 25.4), h: Math.round(65 * 70 / 25.4) }, bleed: { w: Math.round((150 + 6) * 70 / 25.4), h: Math.round((65 + 6) * 70 / 25.4) } }
 };
+const SUPABASE_URL = 'https://jappifgnjssqxvjodgiv.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_oXfJyHkRtn1BHBw-9ictBQ__01qBCZg';
+const CLOUD_TABLE = 'ticket_saves';
+const CLOUD_SLOT_NUMS = [1, 2, 3];
 
 const PREVIEW_DPI = 140; 
 const CSS_BASE_DPI = 70;
@@ -16,11 +20,22 @@ const CSS_BASE_DPI = 70;
 let langs = {}, currentLang = 'ja';
 let previewScale = window.innerWidth > 800 ? 1.5 : 1.0; 
 let members = [], qrImage = null;
+let cloud = { client: null, user: null, records: [], busy: false, ready: false, dirty: false, statusKey: '' };
+let suppressCloudDirty = false;
 
 const debounce = (func, delay) => {
     let timeoutId;
     return (...args) => { clearTimeout(timeoutId); timeoutId = setTimeout(() => func(...args), delay); };
 };
+
+function t(key, replacements = {}) {
+    const dictionary = langs[currentLang] || langs.en || {};
+    const fallback = langs.en || {};
+    const template = dictionary[key] || fallback[key] || key;
+    return Object.entries(replacements).reduce((value, [name, replacement]) => {
+        return value.split(`{${name}}`).join(String(replacement));
+    }, template);
+}
 
 async function loadLanguages() {
     try {
@@ -41,6 +56,7 @@ async function loadLanguages() {
 const changeLanguage = (lang) => {
     currentLang = lang;
     if (!langs[lang]) return;
+    document.documentElement.lang = lang;
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
@@ -66,6 +82,12 @@ const changeLanguage = (lang) => {
         if(langs[lang][key]) el.setAttribute('data-label', langs[lang][key]);
     });
 
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (langs[lang][key]) el.placeholder = langs[lang][key];
+    });
+
+    updateCloudUI();
     debouncedDrawTicket();
     if (typeof lucide !== 'undefined') lucide.createIcons();
 };
@@ -239,44 +261,556 @@ async function loadMembers() {
     } catch (error) { console.error(error); }
 }
 
-$('exportConfigBtn')?.addEventListener('click', () => {
+function isTicketStateControl(el) {
+    if (!el || !el.id || el.type === 'file') return false;
+    if (el.closest('.account-popover') || el.closest('.cloud-save-section')) return false;
+    if (el.id.startsWith('cloud') || el.id.startsWith('account')) return false;
+    return true;
+}
+
+function getTicketConfig() {
     const config = {};
     document.querySelectorAll('input, select').forEach(el => {
-        if (el.id && el.type !== 'file') {
+        if (isTicketStateControl(el)) {
             config[el.id] = el.type === 'checkbox' ? el.checked : el.value;
         }
     });
+    return config;
+}
+
+function applyTicketConfig(config, options = {}) {
+    if (!config || typeof config !== 'object') return;
+    suppressCloudDirty = Boolean(options.keepClean);
+    try {
+        Object.keys(config).forEach(id => {
+            const el = $(id);
+            if (el && isTicketStateControl(el)) {
+                if (el.type === 'checkbox') el.checked = Boolean(config[id]);
+                else el.value = config[id];
+                const syncInput = document.querySelector(`.sync-slider[data-target="${id}"]`);
+                if (syncInput) syncInput.value = config[id];
+            }
+        });
+        if (config.memberSelector && $('memberSelector')) {
+            $('memberSelector').dispatchEvent(new Event('change'));
+        }
+        refreshQRCode();
+        debouncedDrawTicket();
+    } finally {
+        suppressCloudDirty = false;
+    }
+    if (!options.keepClean) markCloudDirty();
+}
+
+function exportTicketConfig() {
+    const config = getTicketConfig();
     const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
     link.download = `TicketConfig_${Date.now()}.json`;
     link.click();
-});
+    URL.revokeObjectURL(url);
+}
 
-$('importConfigBtn')?.addEventListener('click', () => $('configFileInput').click());
-
-$('configFileInput')?.addEventListener('change', (e) => {
-    const file = e.target.files[0];
+function importTicketConfigFile(file) {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (re) => {
         try {
             const config = JSON.parse(re.target.result);
-            Object.keys(config).forEach(id => {
-                const el = $(id);
-                if (el) {
-                    if (el.type === 'checkbox') el.checked = config[id];
-                    else el.value = config[id];
-                    const syncInput = document.querySelector(`.sync-slider[data-target="${id}"]`);
-                    if (syncInput) syncInput.value = config[id];
-                }
-            });
-            debouncedDrawTicket();
+            applyTicketConfig(config);
         } catch (err) { console.error("Import failed:", err); }
     };
     reader.readAsText(file);
+}
+
+$('exportConfigBtn')?.addEventListener('click', exportTicketConfig);
+$('exportConfigBtnPanel')?.addEventListener('click', exportTicketConfig);
+
+$('importConfigBtn')?.addEventListener('click', () => $('configFileInput').click());
+$('importConfigBtnPanel')?.addEventListener('click', () => $('configFileInput').click());
+
+$('configFileInput')?.addEventListener('change', (e) => {
+    importTicketConfigFile(e.target.files[0]);
+    e.target.value = '';
 });
+
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[char]));
+}
+
+function buildTicketPayload(slotNum) {
+    return {
+        type: 'ticket-generator',
+        version: 1,
+        slot_num: slotNum,
+        saved_at: new Date().toISOString(),
+        ticket_config: getTicketConfig()
+    };
+}
+
+function extractTicketConfig(payload) {
+    if (!payload || typeof payload !== 'object') return {};
+    return payload.ticket_config || payload.config || payload;
+}
+
+function buildCloudTitle(slotNum) {
+    const eventName = $('text2')?.value.trim() || '';
+    const eventDate = $('text4Line1')?.value.trim() || '';
+    const title = [eventName, eventDate].filter(Boolean).join(' / ');
+    return (title || t('cloudSlotDefaultTitle', { slot: slotNum })).slice(0, 120);
+}
+
+function findCloudSlot(slotNum) {
+    return cloud.records.find(record => Number(record.slot_num) === Number(slotNum));
+}
+
+function formatCloudTime(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    try {
+        return new Intl.DateTimeFormat(currentLang, { dateStyle: 'medium', timeStyle: 'short' }).format(date);
+    } catch (_error) {
+        return date.toLocaleString();
+    }
+}
+
+function getCloudDisplayName() {
+    return cloud.user?.user_metadata?.display_name || cloud.user?.email || t('cloudAccount');
+}
+
+function setAccountToggleLabel(label) {
+    const toggle = $('accountToggleBtn');
+    if (!toggle) return;
+    const icon = toggle.querySelector('svg, i');
+    toggle.textContent = '';
+    if (icon) toggle.appendChild(icon);
+    const text = document.createElement('span');
+    text.textContent = label;
+    toggle.appendChild(text);
+}
+
+function getCloudStatusText(statusKey) {
+    if (statusKey) return t(statusKey, { count: cloud.records.length });
+    if (!cloud.ready) return t('cloudUnavailable');
+    if (!cloud.user) return t('cloudLocalOnly');
+    return cloud.dirty ? t('cloudUnsavedChanges') : t('cloudSaveAvailable');
+}
+
+function setCloudMessage(message) {
+    if ($('cloudMessage')) $('cloudMessage').textContent = message || '';
+    if ($('cloudSlotMessage')) $('cloudSlotMessage').textContent = message || '';
+}
+
+function setCloudBusy(isBusy) {
+    cloud.busy = isBusy;
+    updateCloudUI();
+}
+
+function markCloudDirty() {
+    if (suppressCloudDirty || !cloud.user || cloud.busy) return;
+    cloud.dirty = true;
+    cloud.statusKey = 'cloudUnsavedChanges';
+    updateCloudUI();
+}
+
+function normalizeCloudRecords(records) {
+    const bySlot = new Map();
+    (Array.isArray(records) ? records : []).forEach(record => {
+        const slot = Number(record.slot_num);
+        if (!CLOUD_SLOT_NUMS.includes(slot) || bySlot.has(slot)) return;
+        bySlot.set(slot, record);
+    });
+    return CLOUD_SLOT_NUMS.map(slot => bySlot.get(slot)).filter(Boolean);
+}
+
+function renderCloudSlots() {
+    const list = $('cloudSlotList');
+    if (!list) return;
+    const loggedIn = Boolean(cloud.user);
+    list.innerHTML = '';
+
+    CLOUD_SLOT_NUMS.forEach(slot => {
+        const record = findCloudSlot(slot);
+        const card = document.createElement('div');
+        card.className = `cloud-slot${record ? '' : ' is-empty'}`;
+
+        const title = record?.title || t('cloudEmptySlot');
+        const meta = record
+            ? t('cloudSlotUpdated', { time: formatCloudTime(record.updated_at || record.created_at) })
+            : t('cloudEmptySlotHint');
+        const state = record ? t('cloudSlotFilled') : t('cloudSlotEmpty');
+        const saveLabel = record ? t('cloudOverwriteSlot') : t('cloudSaveSlot');
+
+        card.innerHTML = `
+            <div class="cloud-slot-header">
+                <div>
+                    <span class="cloud-slot-label">${escapeHtml(t('cloudSlotLabel', { slot }))}</span>
+                    <span class="cloud-slot-title">${escapeHtml(title)}</span>
+                    <span class="cloud-slot-meta">${escapeHtml(meta)}</span>
+                </div>
+                <span class="cloud-slot-state">${escapeHtml(state)}</span>
+            </div>
+            <div class="cloud-slot-actions">
+                <button class="btn-mini" type="button" data-cloud-action="save" data-slot="${slot}">${escapeHtml(saveLabel)}</button>
+                <button class="btn-mini" type="button" data-cloud-action="load" data-slot="${slot}">${escapeHtml(t('cloudLoadSlot'))}</button>
+                <button class="btn-mini delete" type="button" data-cloud-action="delete" data-slot="${slot}">${escapeHtml(t('cloudDeleteSlot'))}</button>
+            </div>
+        `;
+
+        card.querySelectorAll('button').forEach(button => {
+            const needsRecord = button.dataset.cloudAction === 'load' || button.dataset.cloudAction === 'delete';
+            button.disabled = cloud.busy || !loggedIn || (needsRecord && !record);
+        });
+
+        list.appendChild(card);
+    });
+}
+
+function updateCloudUI(statusKey) {
+    if (statusKey) cloud.statusKey = statusKey;
+    const loggedIn = Boolean(cloud.user);
+    const statusText = getCloudStatusText(statusKey || cloud.statusKey);
+
+    if ($('cloudSaveSection')) $('cloudSaveSection').classList.toggle('is-local-only', !loggedIn);
+    if ($('cloudStatus')) $('cloudStatus').textContent = statusText;
+    if ($('cloudSlotStatus')) $('cloudSlotStatus').textContent = statusText;
+    if ($('cloudLoginForm')) $('cloudLoginForm').hidden = loggedIn || !cloud.ready;
+    if ($('cloudActions')) $('cloudActions').hidden = !loggedIn;
+    if ($('cloudUserLabel')) $('cloudUserLabel').textContent = loggedIn ? getCloudDisplayName() : '';
+    if ($('cloudQuickSaveBtn')) $('cloudQuickSaveBtn').disabled = cloud.busy || !loggedIn;
+    if ($('cloudLogoutBtn')) $('cloudLogoutBtn').disabled = cloud.busy;
+
+    ['cloudNicknameInput', 'cloudEmailInput', 'cloudPasswordInput', 'cloudSignInBtn', 'cloudSignUpBtn'].forEach(id => {
+        const node = $(id);
+        if (node) node.disabled = cloud.busy || loggedIn || !cloud.ready;
+    });
+
+    setAccountToggleLabel(loggedIn ? getCloudDisplayName() : t('accountNavGuest'));
+    renderCloudSlots();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function requireCloudLogin(silent) {
+    const ok = Boolean(cloud.client && cloud.user && cloud.ready);
+    if (!ok && !silent) {
+        updateCloudUI('cloudLocalOnly');
+        setCloudMessage(t('cloudLoginRequired'));
+    }
+    return ok;
+}
+
+async function initCloudSave() {
+    if (!$('cloudStatus') && !$('cloudSlotList')) return;
+    if (!window.supabase?.createClient) {
+        cloud.ready = false;
+        updateCloudUI('cloudUnavailable');
+        setCloudMessage(t('cloudUnavailable'));
+        return;
+    }
+
+    try {
+        cloud.client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
+        cloud.ready = true;
+        const { data, error } = await cloud.client.auth.getSession();
+        if (error) throw error;
+        cloud.user = data.session?.user || null;
+
+        cloud.client.auth.onAuthStateChange(async (_event, session) => {
+            cloud.user = session?.user || null;
+            cloud.dirty = false;
+            cloud.statusKey = '';
+            if (!cloud.user) {
+                cloud.records = [];
+                setCloudMessage('');
+                updateCloudUI('cloudLocalOnly');
+                return;
+            }
+            await loadCloudSlots({ silent: true });
+            updateCloudUI('cloudSaveAvailable');
+        });
+
+        if (cloud.user) await loadCloudSlots({ silent: true });
+        updateCloudUI(cloud.user ? 'cloudSaveAvailable' : 'cloudLocalOnly');
+    } catch (error) {
+        console.warn('Cloud Save unavailable:', error);
+        cloud.ready = false;
+        setCloudMessage(t('cloudUnavailable'));
+        updateCloudUI('cloudUnavailable');
+    }
+}
+
+function bindCloudEvents() {
+    const popover = $('accountPopover');
+    const toggle = $('accountToggleBtn');
+
+    toggle?.addEventListener('click', () => {
+        if (!popover) return;
+        popover.hidden = !popover.hidden;
+        toggle.setAttribute('aria-expanded', String(!popover.hidden));
+    });
+
+    document.addEventListener('click', event => {
+        if (!popover || popover.hidden) return;
+        if (popover.contains(event.target) || toggle?.contains(event.target)) return;
+        popover.hidden = true;
+        toggle?.setAttribute('aria-expanded', 'false');
+    });
+
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && popover) {
+            popover.hidden = true;
+            toggle?.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    $('cloudLoginForm')?.addEventListener('submit', loginCloudAccount);
+    $('cloudLogoutBtn')?.addEventListener('click', logoutCloudAccount);
+    $('cloudQuickSaveBtn')?.addEventListener('click', saveNextEmptyCloudSlot);
+    $('cloudSlotList')?.addEventListener('click', event => {
+        const button = event.target.closest('button[data-cloud-action]');
+        if (!button) return;
+        const slot = Number(button.dataset.slot);
+        if (button.dataset.cloudAction === 'save') saveCloudSlot(slot);
+        if (button.dataset.cloudAction === 'load') loadCloudSlot(slot);
+        if (button.dataset.cloudAction === 'delete') deleteCloudSlot(slot);
+    });
+}
+
+async function loginCloudAccount(event) {
+    event.preventDefault();
+    if (!cloud.client) {
+        setCloudMessage(t('cloudUnavailable'));
+        updateCloudUI('cloudUnavailable');
+        return;
+    }
+
+    const action = event.submitter?.dataset.authAction === 'signup' ? 'signup' : 'signin';
+    const nickname = $('cloudNicknameInput')?.value.trim() || '';
+    const email = $('cloudEmailInput')?.value.trim() || '';
+    const password = $('cloudPasswordInput')?.value || '';
+
+    if (!email || !password) {
+        setCloudMessage(t('cloudMissingEmailPassword'));
+        return;
+    }
+    if (action === 'signup' && !nickname) {
+        setCloudMessage(t('cloudMissingSignup'));
+        return;
+    }
+
+    setCloudBusy(true);
+    setCloudMessage(t(action === 'signup' ? 'cloudSigningUp' : 'cloudSigningIn'));
+
+    let result;
+    try {
+        result = action === 'signup'
+            ? await cloud.client.auth.signUp({ email, password, options: { data: { display_name: nickname }, emailRedirectTo: window.location.href } })
+            : await cloud.client.auth.signInWithPassword({ email, password });
+    } catch (error) {
+        result = { error };
+    }
+
+    setCloudBusy(false);
+    if ($('cloudPasswordInput')) $('cloudPasswordInput').value = '';
+
+    if (result.error) {
+        console.warn(result.error);
+        setCloudMessage(result.error.message || t('cloudActionFailed'));
+        updateCloudUI('cloudActionFailed');
+        return;
+    }
+
+    cloud.user = result.data.session?.user || cloud.user;
+    cloud.dirty = false;
+    setCloudMessage(action === 'signup' && !result.data.session ? t('cloudSignupNeedsConfirm') : t('cloudSignedIn'));
+    if (cloud.user) {
+        await loadCloudSlots({ silent: true });
+        if ($('accountPopover')) $('accountPopover').hidden = true;
+    }
+    updateCloudUI(cloud.user ? 'cloudSaveAvailable' : 'cloudLocalOnly');
+}
+
+async function logoutCloudAccount() {
+    if (!cloud.client) return;
+    setCloudBusy(true);
+    const { error } = await cloud.client.auth.signOut();
+    setCloudBusy(false);
+    if (error) {
+        console.warn(error);
+        setCloudMessage(error.message || t('cloudLogoutFailed'));
+        updateCloudUI('cloudLogoutFailed');
+        return;
+    }
+    cloud.user = null;
+    cloud.records = [];
+    cloud.dirty = false;
+    setCloudMessage(t('cloudLoggedOut'));
+    updateCloudUI('cloudLocalOnly');
+}
+
+async function loadCloudSlots(options = {}) {
+    if (!requireCloudLogin(options.silent)) return;
+    setCloudBusy(true);
+    let response;
+    try {
+        response = await cloud.client
+            .from(CLOUD_TABLE)
+            .select('id,user_id,slot_num,title,ticket_payload,created_at,updated_at')
+            .eq('user_id', cloud.user.id)
+            .in('slot_num', CLOUD_SLOT_NUMS)
+            .order('slot_num', { ascending: true })
+            .order('updated_at', { ascending: false });
+    } catch (error) {
+        response = { data: null, error };
+    }
+    setCloudBusy(false);
+
+    const { data, error } = response;
+    if (error) {
+        console.warn(error);
+        setCloudMessage(error.message || t('cloudActionFailed'));
+        updateCloudUI('cloudActionFailed');
+        return;
+    }
+
+    cloud.records = normalizeCloudRecords(data);
+    if (!options.silent) setCloudMessage(t('cloudSlotsLoaded', { count: cloud.records.length }));
+    updateCloudUI(options.silent ? undefined : 'cloudSaveAvailable');
+}
+
+async function saveNextEmptyCloudSlot() {
+    if (!requireCloudLogin()) return;
+    const emptySlot = CLOUD_SLOT_NUMS.find(slot => !findCloudSlot(slot));
+    if (!emptySlot) {
+        setCloudMessage(t('cloudSlotFull'));
+        updateCloudUI('cloudSlotFull');
+        return;
+    }
+    await saveCloudSlot(emptySlot, { confirmOverwrite: false });
+}
+
+async function saveCloudSlot(slotNum, options = {}) {
+    slotNum = Number(slotNum);
+    if (!CLOUD_SLOT_NUMS.includes(slotNum)) {
+        setCloudMessage(t('cloudInvalidSlot'));
+        updateCloudUI('cloudInvalidSlot');
+        return;
+    }
+    if (!requireCloudLogin()) return;
+
+    const existing = findCloudSlot(slotNum);
+    if (existing && options.confirmOverwrite !== false) {
+        const ok = window.confirm(t('cloudConfirmOverwrite', { slot: slotNum, title: existing.title || t('cloudEmptySlot') }));
+        if (!ok) {
+            setCloudMessage(t('cloudOverwriteCanceled'));
+            return;
+        }
+    }
+
+    const row = {
+        user_id: cloud.user.id,
+        slot_num: slotNum,
+        title: buildCloudTitle(slotNum),
+        ticket_payload: buildTicketPayload(slotNum),
+        updated_at: new Date().toISOString()
+    };
+
+    setCloudBusy(true);
+    let result;
+    try {
+        result = existing
+            ? await cloud.client.from(CLOUD_TABLE).update(row).eq('id', existing.id).eq('user_id', cloud.user.id).select('id').single()
+            : await cloud.client.from(CLOUD_TABLE).insert(row).select('id').single();
+    } catch (error) {
+        result = { data: null, error };
+    }
+    setCloudBusy(false);
+
+    if (result.error) {
+        console.warn(result.error);
+        setCloudMessage(result.error.message || t('cloudActionFailed'));
+        updateCloudUI('cloudActionFailed');
+        return;
+    }
+
+    cloud.dirty = false;
+    await loadCloudSlots({ silent: true });
+    setCloudMessage(t(existing ? 'cloudOverwriteSuccess' : 'cloudSaveSuccess'));
+    updateCloudUI('cloudSaved');
+}
+
+async function loadCloudSlot(slotNum) {
+    if (!requireCloudLogin()) return;
+    const record = findCloudSlot(slotNum);
+    if (!record) {
+        setCloudMessage(t('cloudNoSlotRecord'));
+        return;
+    }
+    try {
+        applyTicketConfig(extractTicketConfig(record.ticket_payload), { keepClean: true });
+        cloud.dirty = false;
+        setCloudMessage(t('cloudLoadSuccess'));
+        updateCloudUI('cloudSaveAvailable');
+    } catch (error) {
+        console.warn(error);
+        setCloudMessage(t('cloudActionFailed'));
+        updateCloudUI('cloudActionFailed');
+    }
+}
+
+async function deleteCloudSlot(slotNum) {
+    if (!requireCloudLogin()) return;
+    const record = findCloudSlot(slotNum);
+    if (!record) {
+        setCloudMessage(t('cloudNoSlotRecord'));
+        return;
+    }
+    if (!window.confirm(t('cloudConfirmDelete', { slot: slotNum, title: record.title || t('cloudEmptySlot') }))) return;
+
+    setCloudBusy(true);
+    let response;
+    try {
+        response = await cloud.client
+            .from(CLOUD_TABLE)
+            .delete()
+            .eq('id', record.id)
+            .eq('user_id', cloud.user.id);
+    } catch (error) {
+        response = { error };
+    }
+    setCloudBusy(false);
+
+    const { error } = response;
+    if (error) {
+        console.warn(error);
+        setCloudMessage(error.message || t('cloudActionFailed'));
+        updateCloudUI('cloudActionFailed');
+        return;
+    }
+
+    await loadCloudSlots({ silent: true });
+    setCloudMessage(t('cloudDeleteSuccess'));
+    updateCloudUI('cloudDeleted');
+}
+
+function bindTicketDirtyTracking() {
+    document.querySelectorAll('input, select').forEach(el => {
+        if (!isTicketStateControl(el)) return;
+        const eventName = el.tagName === 'SELECT' || el.type === 'checkbox' ? 'change' : 'input';
+        el.addEventListener(eventName, markCloudDirty);
+    });
+}
 
 $('swapBgColors')?.addEventListener('click', () => {
     const temp = $('rect1Color').value;
@@ -422,7 +956,7 @@ document.querySelectorAll('.sync-slider').forEach(slider => {
     }
 });
 
-$('qrCodeUrl')?.addEventListener('input', debounce(() => {
+function refreshQRCode() {
     const url = $('qrCodeUrl').value, qrContainer = $('qrPreview');
     qrContainer.innerHTML = '';
     if (!url) { qrImage = null; debouncedDrawTicket(); return; }
@@ -435,10 +969,12 @@ $('qrCodeUrl')?.addEventListener('input', debounce(() => {
             qrImage.src = qrElement.tagName === 'IMG' ? qrElement.src : qrElement.toDataURL('image/png');
         }
     }, 300);
-}, 500));
+}
+
+$('qrCodeUrl')?.addEventListener('input', debounce(refreshQRCode, 500));
 
 $('showQR').addEventListener('change', () => debouncedDrawTicket());
-document.querySelectorAll('input').forEach(el => { if(!el.classList.contains('sync-slider')) el.addEventListener('input', () => debouncedDrawTicket()); });
+document.querySelectorAll('input').forEach(el => { if(isTicketStateControl(el) && !el.classList.contains('sync-slider')) el.addEventListener('input', () => debouncedDrawTicket()); });
 $('languageSelector')?.addEventListener('change', (e) => changeLanguage(e.target.value));
 $('themeToggleBtn')?.addEventListener('click', () => { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
 
@@ -477,11 +1013,14 @@ if (workspace) {
 }
 
 window.addEventListener('resize', () => debouncedDrawTicket());
+bindCloudEvents();
+bindTicketDirtyTracking();
 
 window.onload = async () => { 
     drawTicket(); 
     await Promise.all([loadLanguages(), loadMembers()]);
     initSidebarNav();
+    await initCloudSave();
     waitForFonts().then(() => debouncedDrawTicket()); 
 };
 
