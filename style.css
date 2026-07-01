@@ -61,6 +61,7 @@ body {
 .account-toggle svg, .account-toggle i { width: 18px; height: 18px; flex-shrink: 0; }
 .account-popover { position: absolute; top: calc(100% + 10px); right: 0; width: min(360px, calc(100vw - 24px)); padding: 14px; border-radius: 18px; display: grid; gap: 10px; z-index: 250; }
 .account-popover[hidden], .cloud-actions[hidden], .cloud-login-form[hidden] { display: none !important; }
+.account-popover { max-height: calc(100dvh - 70px); overflow: auto; }
 .cloud-login-form { display: grid; grid-template-columns: 1fr; gap: 8px; min-width: 0; }
 .cloud-email-input { min-height: 40px; font-size: 0.9rem; }
 .account-form-button { width: 100%; min-height: 40px; border-radius: 14px; }

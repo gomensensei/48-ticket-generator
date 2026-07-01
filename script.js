@@ -247,7 +247,7 @@ async function loadMembers() {
         const response = await fetch('members.json');
         members = await response.json();
         const selector = $('memberSelector'), groups = {};
-        members.forEach(m => { const gen = m.generation || '其他'; if(!groups[gen]) groups[gen] = []; groups[gen].push(m); });
+        members.filter(isSelectableMember).forEach(m => { const gen = m.generation || '其他'; if(!groups[gen]) groups[gen] = []; groups[gen].push(m); });
         for (const [gen, mems] of Object.entries(groups)) {
             const optgroup = document.createElement('optgroup');
             optgroup.label = gen;
@@ -259,6 +259,10 @@ async function loadMembers() {
             selector.appendChild(optgroup);
         }
     } catch (error) { console.error(error); }
+}
+
+function isSelectableMember(member) {
+    return Boolean(member) && member.active !== false && member.selectable !== false && member.hiddenFromSelection !== true;
 }
 
 function isTicketStateControl(el) {
