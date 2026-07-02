@@ -48,6 +48,9 @@ body {
 .glass-solid { background: var(--bg-panel-solid); backdrop-filter: blur(25px); border: 1px solid var(--border-glass); box-shadow: var(--shadow-soft); }
 
 .topbar { height: 60px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid var(--border-glass); flex-shrink: 0; position: relative;}
+.brand-cluster { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.tool48-home-link { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 6px 11px; border-radius: 999px; background: rgba(255,255,255,0.58); border: 1px solid var(--border-glass); color: var(--primary); font-size: 0.78rem; font-weight: 900; text-decoration: none; box-shadow: 0 8px 22px rgba(246,118,166,0.14); }
+.tool48-home-link:hover { color: var(--primary-hover); background: rgba(255,255,255,0.78); }
 .brand-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); text-shadow: 0 2px 10px rgba(246,118,166,0.2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 .topbar-tools { display: flex; align-items: center; gap: 12px; }
 .tool-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; flex-shrink: 0; }
@@ -204,7 +207,9 @@ input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
 .special-link .nav-icon:hover { width: 320px; background: rgba(255, 92, 141, 0.1); animation: none; }
 
 .global-footer { height: auto; min-height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 10px 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-glass); flex-wrap: wrap; gap: 10px; z-index: 10;}
-.copyright { flex: 1; text-align: left; line-height: 1.5; min-width: 300px; word-break: break-word;}
+.footer-copy { flex: 1; min-width: 300px; }
+.copyright { text-align: left; line-height: 1.5; word-break: break-word;}
+.privacy-promise { margin-top: 3px; color: var(--text-muted); font-size: 0.76rem; font-weight: 700; line-height: 1.45; }
 .footer-links { display: flex; flex-direction: row; gap: 16px; align-items: center; flex-shrink: 0; }
 .footer-links a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.2s; white-space: nowrap; }
 .footer-links a:hover { color: var(--primary); }
@@ -217,7 +222,9 @@ input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
 
 @media (max-width: 800px) {
     .topbar { padding: 0 5px; gap: 4px; flex-wrap: nowrap;}
-    .brand-title { font-size: 0.8rem; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: -0.5px;}
+    .brand-cluster { gap: 5px; min-width: 0; flex: 1; }
+    .tool48-home-link { min-height: 30px; padding: 4px 7px; font-size: 0.68rem; }
+    .brand-title { font-size: 0.8rem; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: 0;}
     .topbar-tools { gap: 4px; flex-shrink: 0; display: flex; align-items: center;}
     .lang-select { width: auto; max-width: 45vw; padding: 4px; font-size: 0.7rem; line-height: normal; height: auto; min-height: 30px; letter-spacing: -0.5px;}
     .tool-btn { padding: 4px; flex-shrink: 0; }
@@ -256,7 +263,9 @@ input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
     @keyframes bounceHint { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
 
     .global-footer { flex-direction: column; padding: 10px 5px 20px 5px; text-align: center; justify-content: center; gap: 4px; overflow: hidden;}
-    .copyright { text-align: center; width: 100%; font-size: 0.55rem; letter-spacing: -0.5px; white-space: nowrap; }
+    .footer-copy { min-width: 0; width: 100%; }
+    .copyright { text-align: center; width: 100%; font-size: 0.55rem; letter-spacing: 0; white-space: normal; }
+    .privacy-promise { font-size: 0.62rem; }
     .footer-links { justify-content: center; width: 100%;}
     .footer-links a { font-size: 0.7rem; }
 }

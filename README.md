@@ -1,171 +1,110 @@
-# 🎟️ 48 Ticket Generator
+# 48 Ticket Generator | 48 票券生成器 | 48チケットジェネレーター
 
-一個結合復刻美學與現代 Web 技術的 AKB48 劇場門票產生器。  
-支援極致自訂化、智能配色與 300 DPI 印刷品質輸出，旨在為每位粉絲提供最具質感的應援體驗。  
-
-AKB48劇場チケットを再現したジェネレーター。  
-高度なカスタマイズ、スマート配色、300 DPI印刷品質に対応し、最高の応援体験を提供します。  
-
-A premium AKB48 Ticket Generator blending retro aesthetics with modern UI/UX.  
-Supports full customization, smart color system, and high-resolution (300 DPI) output for print.
+![Version](https://img.shields.io/badge/Version-2026.07.03-pink)
+![License](https://img.shields.io/badge/License-Non--Commercial-blue)
+![Platform](https://img.shields.io/badge/Platform-Web-orange)
+![Cloud Save](https://img.shields.io/badge/Cloud%20Save-Optional-lightblue)
 
 ---
 
-## ✨ 核心亮點 / 技術的特徴 / Technical Highlights
+## Project Overview | 專案簡介 | プロジェクト概要
 
-### 🎨 智能顯色與配色系統  
-### 🎨 スマート配色システム  
-### 🎨 Smart Color System  
+**[ZH]** 這是一個為 AKB48 劇場日回憶而製作的非官方 ticket-style 圖像生成工具。它可以把公演名稱、日期、座位、成員推色、QR code 與備註整理成高解像度圖片或 PDF，適合生誕祭、應援企劃與個人紀念使用。
 
-- **Smart Contrast Engine**  
-  系統自動計算背景亮度，動態切換文字色彩與浮水印透明度，確保清晰易讀。  
-  背景の明度を自動計算し、文字色と透かしの透明度を最適化。  
-  Automatically adjusts text color and watermark opacity based on background luminance.
+**[EN]** 48 Ticket Generator is an unofficial fan-made ticket-style image creator for AKB48 theater-day memories. It turns performance details, dates, seats, oshi colors, QR codes, and notes into polished PNG or PDF exports.
 
-- **Color Swap System**  
-  一鍵對調 Logo / 文字 / 陰影色。  
-  ロゴやテキストカラーをワンクリックで入れ替え可能。  
-  Instantly swap logo, text, and shadow colors.
-
-- **Member Preset**  
-  內建完整成員資料，套用官方推色與雙色特效。  
-  メンバープリセットで公式カラーとエフェクトを即適用。  
-  Apply official member colors with dual-color lighting effects instantly.
+**[JP]** 48 Ticket Generator は、AKB48 劇場日の思い出を ticket-style 画像として残すための非公式ファンツールです。公演名、日付、座席、推しカラー、QR code、メモを高解像度の PNG / PDF として出力できます。
 
 ---
 
-## 🚀 極致 UI/UX 互動 / UI・UX / Interactive Experience
+## Main Features | 功能說明 | 主な機能
 
-- **Glassmorphism**  
-  毛玻璃 + 漸變背景  
-  ガラスモーフィズムUI  
-  Modern glassmorphism UI
+### 1. Ticket-style Canvas Export
+* **[ZH]** 使用 Canvas 生成 ticket-style 圖像，支援 70 / 140 / 300 DPI 與印刷出血位。
+* **[EN]** Canvas-based ticket image rendering with 70 / 140 / 300 DPI export and optional bleed.
+* **[JP]** Canvas による ticket-style 画像生成。70 / 140 / 300 DPI と出血設定に対応します。
 
-- **Mobile Optimized / モバイル最適化**
-  - 防誤觸設計  
-  - タッチ誤操作防止  
-  - Anti-mis-touch design  
+### 2. Member Color Presets
+* **[ZH]** 可套用成員推色、雙色效果與頭像，快速建立個人化紀念票。
+* **[EN]** Apply member color presets, dual-color effects, and avatar styling for personalized tickets.
+* **[JP]** メンバーの推しカラー、2色効果、アバター表示で個人向けの記念チケットを作れます。
 
-  - 智慧導航  
-  - スマートナビゲーション  
-  - Smart navigation  
+### 3. Detailed Layout Controls
+* **[ZH]** 可微調文字位置、字距、行高、背景、logo、QR code 與 footer 色彩。
+* **[EN]** Fine-tune text position, spacing, line height, background, logo, QR code, and footer colors.
+* **[JP]** 文字位置、字間、行間、背景、logo、QR code、footer 色を細かく調整できます。
 
-- **Contextual Editing**  
-  點擊畫布直接開設定  
-  クリックで編集パネル表示  
-  Click canvas to edit contextually  
+### 4. Local JSON Backup
+* **[ZH]** 不登入也可匯出 / 匯入 JSON 設定，完整保留本機 workflow。
+* **[EN]** Export and import JSON settings without login, preserving the local-first workflow.
+* **[JP]** ログインなしで JSON 設定の書き出し / 読み込みができ、ローカル利用を維持します。
 
----
-
-## 🖨️ 專業印刷工作流 / 印刷対応 / Print Workflow
-
-- **PDF 匯出 / PDF出力 / PDF Export**  
-  150 x 65mm 印刷尺寸  
-
-- **300 DPI 輸出 / 高解像度出力 / High Resolution Export**  
-  支援 PNG + 出血位  
-
-- **Retina Preview / 高精細プレビュー / Retina Preview**  
+### 5. Optional Tool48 Account / Cloud Save
+* **[ZH]** 登入後可使用最多 3 個 cloud slots。登入是可選功能，不會鎖住本機使用。
+* **[EN]** Signed-in users can use up to 3 cloud slots. Login is optional and local use remains unlocked.
+* **[JP]** ログイン後は最大 3 つの cloud slots を使えます。ログインは任意で、ローカル利用は制限されません。
 
 ---
 
-## 🌐 語言支援 / 言語対応 / Language Support
+## Technical Highlights | 技術亮點 | 技術的特徴
 
-- 自動語言偵測  
-- 自動言語検出  
-- Auto language detection  
-
-支援：
-- 繁體中文  
-- 简体中文  
-- English  
-- 日本語  
-- 한국어  
-- ไทย  
-- Bahasa Indonesia  
+* **Smart Contrast Engine**: Calculates background luminance and adjusts text readability.
+* **High-resolution Export Workflow**: Uses Canvas plus jsPDF for print-oriented output.
+* **Responsive Editing UI**: Desktop drawer controls and compact mobile navigation.
+* **Multilingual i18n**: `langs.json` drives UI text for Traditional Chinese, Simplified Chinese, Japanese, English, Korean, Thai, and Indonesian.
+* **Privacy-first Design**: We will not disclose personal data without explicit consent.
 
 ---
 
-## 📝 功能 / 機能 / Features
+## Quick Start | 快速開始 | クイックスタート
 
-### 🔹 簡易設定 / 基本設定 / Basic Settings
+1. Keep all project files in the same folder.
+2. Open `index.html`, or run a simple local server if browser file access is restricted.
+3. Choose a language, edit the ticket, then export PNG / PDF or JSON.
 
-- 一鍵神推配色  
-- ワンクリック配色  
-- One-click member theme  
+```bash
+python -m http.server 4173
+```
 
-- 即時內容編輯  
-- リアルタイム編集  
-- Real-time editing  
+Open:
 
-- QR Code 工具  
-- QRコード生成  
-- QR code generator  
-
----
-
-### 🔹 詳細設定 / 詳細設定 / Advanced Settings
-
-- 歸一化微調（位置 / 字距 / 行高）  
-- 詳細パラメータ調整  
-- Fine-tune positioning & typography  
-
-- JSON 備份  
-- 設定保存 / 読み込み  
-- Export / import settings  
-
-- 陰影與背景調整  
-- 背景・影調整  
-- Shadow & watermark control  
+```text
+http://127.0.0.1:4173/
+```
 
 ---
 
-## 🛠️ 使用技術 / 技術 / Built With
+## File Structure | 檔案結構 | ファイル構成
 
-- HTML5  
-- CSS3 (Flex / Grid)  
-- JavaScript (ES6+)  
-- Canvas API  
-
-Libraries:
-- Lucide Icons  
-- QRCode.js  
-- jsPDF  
+* `index.html` - Main UI, canvas, settings panels, account popover, footer.
+* `style.css` - Glass UI, responsive layout, editor controls, account styling.
+* `script.js` - Canvas drawing, export workflow, local JSON, i18n, optional Supabase cloud save.
+* `langs.json` - Multilingual copy.
+* `members.json` - Member names, colors, avatar data.
+* `fonts/` - Local font assets used by the ticket renderer.
 
 ---
 
-## ⚠️ 免責聲明 / 免責事項 / Disclaimer
+## Maintenance | 維護 | メンテナンス
 
-本網站為非商業粉絲創作。  
-本サイトは非商用ファン作品です。  
-This is a non-commercial fan project.  
-
-所有權利屬 AKB48 及 DH 株式会社。  
-権利は AKB48 および DH 株式会社に帰属します。  
-All rights belong to AKB48 and DH Corporation.  
+* Update member colors and names in `members.json`.
+* Update UI text in `langs.json`.
+* Keep local JSON import/export working even when cloud features change.
+* Cloud save uses the public Supabase client only. Never commit service-role or backend-only secrets.
+* Treat the 3 cloud slots as a hard cap unless the UI and database contract are updated together.
 
 ---
 
-## 📎 製作者 / クレジット / Credit
+## Disclaimer | 免責聲明 | 免責事項
 
-- gomensensei  
-- X (Twitter): @sorrysir_gomen  
-- Data: AKB48 Official, 48pedia  
+**[ZH]** 本專案為非官方、非商業粉絲創作，只供 fan 創作、紀念及設計參考使用。票券風圖片並非真實票券、官方文件或入場憑證。所有名稱、商標、圖片及相關素材權利屬 AKB48、DH Co., Ltd. 及各自權利持有人。
 
----
+**[EN]** This is an unofficial, non-commercial fan-made project for fan creation, memories, and design reference only. Ticket-style images are not real tickets, official documents, or entry passes. All names, trademarks, images, and related materials belong to AKB48, DH Co., Ltd., and their respective rights holders.
 
-## 💖 Note
-
-這不只是一個工具。  
-それはただのツールではない。  
-This is more than a tool.  
-
-是一張門票，一種執念。  
-それは一枚のチケットであり、想いである。  
-It is a ticket, a passion.  
-
-一段屬於劇場門外的熱血記錄。  
-劇場の外で紡がれる熱い物語。  
-A story of passion beyond the theater.
+**[JP]** 本プロジェクトは非公式・非商用のファン制作物です。ticket-style 画像は実際のチケット、公式書類、入場証ではありません。名称、商標、画像、関連素材の権利は AKB48、DH Co., Ltd. および各権利者に帰属します。
 
 ---
+
+## Created by | 製作 | 制作
+
+**ゴメン先生 (gomensensei)**

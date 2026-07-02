@@ -108,7 +108,8 @@
     "cloudInvalidSlot": "スロット番号は1から3のみです。",
     "cloudConfirmOverwrite": "Slot {slot}「{title}」を上書きしますか？",
     "cloudConfirmDelete": "Slot {slot}「{title}」を削除しますか？",
-    "cloudOverwriteCanceled": "上書きをキャンセルしました。"
+    "cloudOverwriteCanceled": "上書きをキャンセルしました。",
+    "privacy_promise": "明確な同意なしに、個人情報を開示することはありません。"
   },
   "zh-TW": {
     "site_title": "AKB48劇場門票生成器",
@@ -219,7 +220,8 @@
     "cloudInvalidSlot": "slot 編號只可以是 1 至 3。",
     "cloudConfirmOverwrite": "要覆寫 Slot {slot}「{title}」嗎？",
     "cloudConfirmDelete": "要刪除 Slot {slot}「{title}」嗎？",
-    "cloudOverwriteCanceled": "已取消覆寫。"
+    "cloudOverwriteCanceled": "已取消覆寫。",
+    "privacy_promise": "未經你明確同意，不會披露你的個人資料。"
   },
   "en": {
     "site_title": "AKB48 Theater Ticket Generator",
@@ -330,7 +332,8 @@
     "cloudInvalidSlot": "Slot number must be 1, 2, or 3.",
     "cloudConfirmOverwrite": "Overwrite Slot {slot} \"{title}\"?",
     "cloudConfirmDelete": "Delete Slot {slot} \"{title}\"?",
-    "cloudOverwriteCanceled": "Overwrite canceled."
+    "cloudOverwriteCanceled": "Overwrite canceled.",
+    "privacy_promise": "We will not disclose your personal data without your explicit consent."
   },
   "zh-CN": {
     "site_title": "AKB48劇場門票生成器",
@@ -441,7 +444,8 @@
     "cloudInvalidSlot": "slot 编号只能是 1 至 3。",
     "cloudConfirmOverwrite": "要覆盖 Slot {slot}「{title}」吗？",
     "cloudConfirmDelete": "要删除 Slot {slot}「{title}」吗？",
-    "cloudOverwriteCanceled": "已取消覆盖。"
+    "cloudOverwriteCanceled": "已取消覆盖。",
+    "privacy_promise": "未经你明确同意，不会披露你的个人资料。"
   },
   "ko": {
     "site_title": "48 티켓 생성기",
@@ -552,7 +556,8 @@
     "cloudInvalidSlot": "슬롯 번호는 1, 2, 3만 가능합니다.",
     "cloudConfirmOverwrite": "Slot {slot} \"{title}\"을 덮어쓸까요?",
     "cloudConfirmDelete": "Slot {slot} \"{title}\"을 삭제할까요?",
-    "cloudOverwriteCanceled": "덮어쓰기를 취소했습니다."
+    "cloudOverwriteCanceled": "덮어쓰기를 취소했습니다.",
+    "privacy_promise": "명시적인 동의 없이 개인 정보를 공개하지 않습니다."
   },
   "th": {
     "site_title": "เครื่องสร้างตั๋ว 48",
@@ -663,7 +668,8 @@
     "cloudInvalidSlot": "หมายเลขสล็อตต้องเป็น 1, 2 หรือ 3 เท่านั้น",
     "cloudConfirmOverwrite": "เขียนทับ Slot {slot} \"{title}\" หรือไม่?",
     "cloudConfirmDelete": "ลบ Slot {slot} \"{title}\" หรือไม่?",
-    "cloudOverwriteCanceled": "ยกเลิกการเขียนทับแล้ว"
+    "cloudOverwriteCanceled": "ยกเลิกการเขียนทับแล้ว",
+    "privacy_promise": "เราจะไม่เปิดเผยข้อมูลส่วนบุคคลของคุณหากไม่ได้รับความยินยอมอย่างชัดเจนจากคุณ"
   },
   "id": {
     "site_title": "Pembuat Tiket 48",
@@ -774,6 +780,7 @@
     "cloudInvalidSlot": "Nomor slot hanya boleh 1, 2, atau 3.",
     "cloudConfirmOverwrite": "Timpa Slot {slot} \"{title}\"?",
     "cloudConfirmDelete": "Hapus Slot {slot} \"{title}\"?",
-    "cloudOverwriteCanceled": "Penimpaan dibatalkan."
+    "cloudOverwriteCanceled": "Penimpaan dibatalkan.",
+    "privacy_promise": "Kami tidak akan mengungkapkan data pribadi Anda tanpa persetujuan jelas dari Anda."
   }
 }
