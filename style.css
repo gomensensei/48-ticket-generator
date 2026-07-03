@@ -39,7 +39,9 @@ body {
     background: linear-gradient(-45deg, #FFD1DF, #92B7F0, #FFF0F5, #D2A8E5, #FFD1DF);
     background-size: 300% 300%;
     animation: gradientBG 12s ease infinite;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
 }
+input, textarea, select { -webkit-user-select: text; user-select: text; }
 [data-theme="dark"] body { background: linear-gradient(-45deg, #2A151D, #161D2B, #151515, #261A28); background-size: 300% 300%; }
 @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
@@ -264,11 +266,11 @@ input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
     .scroll-hint-mobile.fade-out { opacity: 0; }
     @keyframes bounceHint { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
 
-    .global-footer { align-items: center; flex-direction: row; padding: 8px 10px; margin: 8px 8px 12px; text-align: left; justify-content: space-between; gap: 6px 10px; overflow: hidden; line-height: 1.35;}
+    .global-footer { align-items: center; flex-direction: row; padding: 8px 10px; margin: 8px 8px 12px; text-align: left; justify-content: space-between; gap: 6px 10px; overflow: hidden; line-height: 1.35; font-size: 0.6rem;}
     .footer-copy { min-width: 0; width: auto; flex: 1 1 220px; }
-    .copyright { display: inline; text-align: left; width: auto; font-size: 0.55rem; letter-spacing: 0; white-space: normal; }
-    .privacy-promise { display: inline; font-size: 0.55rem; }
+    .copyright { display: inline; text-align: left; width: auto; font-size: 0.6rem; letter-spacing: 0; white-space: normal; }
+    .privacy-promise { display: inline; font-size: 0.6rem; }
     .privacy-promise::before { content: " "; }
     .footer-links { justify-content: flex-start; width: auto; flex: 0 0 auto; gap: 8px 10px;}
-    .footer-links a { font-size: 0.7rem; }
+    .footer-links a { font-size: 0.6rem; }
 }
