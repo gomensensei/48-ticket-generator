@@ -211,7 +211,7 @@ input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
 .global-footer { height: auto; min-height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; margin: 10px 14px 14px; font-size: 0.8rem; color: var(--text-muted); border: 1px solid var(--border-glass); border-radius: 18px; background: rgba(255,255,255,0.46); box-shadow: 0 10px 28px rgba(246,118,166,0.08); flex-wrap: wrap; gap: 10px; z-index: 10; text-align: left;}
 .footer-copy { flex: 1; min-width: 300px; }
 .copyright { text-align: left; line-height: 1.5; word-break: break-word;}
-.privacy-promise { margin-top: 3px; color: var(--text-muted); font-size: 0.76rem; font-weight: 700; line-height: 1.45; }
+.privacy-promise { margin-top: 0; color: var(--text-muted); font-size: 0.76rem; font-weight: 700; line-height: 1.45; }
 .footer-links { display: flex; flex-direction: row; gap: 16px; align-items: center; flex-shrink: 0; }
 .footer-links a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.2s; white-space: nowrap; }
 .footer-links a:hover { color: var(--primary); }
@@ -264,10 +264,11 @@ input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
     .scroll-hint-mobile.fade-out { opacity: 0; }
     @keyframes bounceHint { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
 
-    .global-footer { align-items: flex-start; flex-direction: column; padding: 12px; margin: 8px 8px 12px; text-align: left; justify-content: flex-start; gap: 8px; overflow: hidden;}
-    .footer-copy { min-width: 0; width: 100%; }
-    .copyright { text-align: center; width: 100%; font-size: 0.55rem; letter-spacing: 0; white-space: normal; }
-    .privacy-promise { font-size: 0.62rem; }
-    .footer-links { justify-content: flex-start; width: 100%;}
+    .global-footer { align-items: center; flex-direction: row; padding: 8px 10px; margin: 8px 8px 12px; text-align: left; justify-content: space-between; gap: 6px 10px; overflow: hidden; line-height: 1.35;}
+    .footer-copy { min-width: 0; width: auto; flex: 1 1 220px; }
+    .copyright { display: inline; text-align: left; width: auto; font-size: 0.55rem; letter-spacing: 0; white-space: normal; }
+    .privacy-promise { display: inline; font-size: 0.55rem; }
+    .privacy-promise::before { content: " "; }
+    .footer-links { justify-content: flex-start; width: auto; flex: 0 0 auto; gap: 8px 10px;}
     .footer-links a { font-size: 0.7rem; }
 }
