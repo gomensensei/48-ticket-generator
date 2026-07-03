@@ -987,8 +987,59 @@ $('dlPDF')?.addEventListener('click', () => { $('downloadModal').style.display =
 $('dl300')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(300, 'png'); });
 $('dl70')?.addEventListener('click', () => { $('downloadModal').style.display = 'none'; drawTicket(70, 'png'); });
 
+function isMobileExportDevice() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && window.innerWidth <= 768) || window.matchMedia('(max-width: 768px)').matches;
+}
+
+function getMobileSaveText() {
+    const map = {
+        'zh-HK': '請長按圖片，然後選擇儲存圖片。',
+        'zh-CN': '请长按图片，然后选择保存图片。',
+        ja: '画像を長押しして保存してください。',
+        ko: '이미지를 길게 눌러 저장해 주세요.',
+        th: 'กดรูปภาพค้างไว้เพื่อบันทึก',
+        id: 'Tekan lama gambar untuk menyimpan.',
+        en: 'Long-press the image to save it.'
+    };
+    return map[currentLang] || map.en;
+}
+
+function openMobileImageSaveOverlay(dataUrl) {
+    document.getElementById('mobileResultOverlay')?.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'mobileResultOverlay';
+    overlay.style.cssText = 'position:fixed; inset:0; z-index:3000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:20px; box-sizing:border-box; background:rgba(0,0,0,.86); backdrop-filter:blur(8px); opacity:0; transition:opacity .25s ease;';
+
+    const hint = document.createElement('div');
+    hint.textContent = getMobileSaveText();
+    hint.style.cssText = 'max-width:min(92vw,420px); color:#fff; background:#ff4f9a; padding:10px 18px; border-radius:999px; text-align:center; font-weight:900; line-height:1.35; box-shadow:0 8px 24px rgba(255,79,154,.34);';
+
+    const img = document.createElement('img');
+    img.src = dataUrl;
+    img.className = 'allow-save';
+    img.style.cssText = 'max-width:100%; max-height:72dvh; border-radius:18px; object-fit:contain; box-shadow:0 18px 48px rgba(0,0,0,.52); -webkit-touch-callout:default; user-select:auto;';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.setAttribute('aria-label', 'Close');
+    closeBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+    closeBtn.style.cssText = 'position:absolute; top:18px; right:18px; width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,.28); color:#fff; background:rgba(255,255,255,.16); display:grid; place-items:center;';
+    closeBtn.onclick = () => {
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.remove(), 250);
+    };
+
+    overlay.append(hint, img, closeBtn);
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+}
+
 function triggerDownload(canvasObj, dpiStr) {
-    const link = document.createElement('a'); link.download = `Ticket_${dpiStr}_${Date.now()}.png`; link.href = canvasObj.toDataURL('image/png'); link.click();
+    const dataUrl = canvasObj.toDataURL('image/png');
+    const link = document.createElement('a'); link.download = `Ticket_${dpiStr}_${Date.now()}.png`; link.href = dataUrl; link.click();
+    if (dpiStr === '70dpi' && isMobileExportDevice()) {
+        setTimeout(() => openMobileImageSaveOverlay(dataUrl), 220);
+    }
 }
 
 function triggerPDFDownload(canvasObj, hasBleed) {
