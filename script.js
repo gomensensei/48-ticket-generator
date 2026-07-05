@@ -37,6 +37,14 @@ function t(key, replacements = {}) {
     }, template);
 }
 
+function getCloudActionErrorMessage(error) {
+    const message = [error?.message, error?.details, error?.hint].filter(Boolean).join(' ');
+    if (/tool48_ticket_cloud_slot_limit_reached|ticket_saves slot|slot_num|cloud slot/i.test(message)) {
+        return t('cloudSlotFull');
+    }
+    return error?.message || t('cloudActionFailed');
+}
+
 async function loadLanguages() {
     try {
         const response = await fetch('langs.json');
@@ -630,7 +638,7 @@ async function loginCloudAccount(event) {
 
     if (result.error) {
         console.warn(result.error);
-        setCloudMessage(result.error.message || t('cloudActionFailed'));
+        setCloudMessage(getCloudActionErrorMessage(result.error));
         updateCloudUI('cloudActionFailed');
         return;
     }
