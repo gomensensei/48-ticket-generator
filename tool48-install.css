@@ -1,0 +1,134 @@
+.tool48-install-bar {
+  position: fixed;
+  left: max(12px, env(safe-area-inset-left));
+  right: max(12px, env(safe-area-inset-right));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 2147483000;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 64, 129, 0.22);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 16px 42px rgba(46, 31, 52, 0.18);
+  color: #243447;
+  font-family: "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.35;
+  transform: translateY(calc(100% + 24px));
+  transition: transform 0.24s ease, opacity 0.2s ease;
+  opacity: 0;
+  user-select: none;
+}
+
+.tool48-install-bar.is-visible {
+  display: flex;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.tool48-install-mark {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: #ff4081;
+  position: relative;
+  box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.08);
+}
+
+.tool48-install-mark::before,
+.tool48-install-mark::after {
+  content: "";
+  position: absolute;
+  background: #fff;
+  border-radius: 999px;
+}
+
+.tool48-install-mark::before {
+  width: 16px;
+  height: 4px;
+  left: 9px;
+  top: 15px;
+}
+
+.tool48-install-mark::after {
+  width: 4px;
+  height: 16px;
+  left: 15px;
+  top: 9px;
+}
+
+.tool48-install-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.tool48-install-copy strong {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #182231;
+}
+
+.tool48-install-copy span {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(36, 52, 71, 0.72);
+}
+
+.tool48-install-action,
+.tool48-install-close {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.tool48-install-action {
+  padding: 8px 11px;
+  background: #ff4081;
+  color: #fff;
+  font-size: 0.72rem;
+}
+
+.tool48-install-close {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  background: rgba(36, 52, 71, 0.08);
+  color: #243447;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.tool48-turnstile-box {
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  margin: 2px 0 8px;
+}
+
+.tool48-reset-link {
+  border: 0;
+  background: transparent;
+  color: #ff4081;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 2px 0 4px;
+  justify-self: start;
+}
+
+@media (min-width: 821px) {
+  .tool48-install-bar {
+    display: none !important;
+  }
+}
