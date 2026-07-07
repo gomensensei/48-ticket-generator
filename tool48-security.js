@@ -328,7 +328,7 @@
 
   function localizeButtons(root) {
     (root || document).querySelectorAll("[data-tool48-reset-password]").forEach(function (button) {
-      button.textContent = text("forgotPassword");
+      if (!button.hasAttribute("data-i18n")) button.textContent = text("forgotPassword");
       button.setAttribute("aria-label", text("forgotPassword"));
     });
   }
